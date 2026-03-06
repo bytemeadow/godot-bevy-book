@@ -1,0 +1,423 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Sync Modes - The godot-bevy Book 👾</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/css/custom.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../getting-started/index.html"><strong aria-hidden="true">2.</strong> Getting Started</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../getting-started/installation.html"><strong aria-hidden="true">2.1.</strong> Installation</a></li><li class="chapter-item "><a href="../getting-started/basic-concepts.html"><strong aria-hidden="true">2.2.</strong> Basic Concepts</a></li><li class="chapter-item "><a href="../getting-started/plugins.html"><strong aria-hidden="true">2.3.</strong> Plugin System</a></li><li class="chapter-item "><a href="../getting-started/examples.html"><strong aria-hidden="true">2.4.</strong> Examples</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../scene-tree/index.html"><strong aria-hidden="true">3.</strong> Scene Tree</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../scene-tree/timing.html"><strong aria-hidden="true">3.1.</strong> Initialization and Timing</a></li><li class="chapter-item "><a href="../scene-tree/querying.html"><strong aria-hidden="true">3.2.</strong> Querying with Node Type Markers</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/index.html"><strong aria-hidden="true">3.3.</strong> Custom Nodes</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../scene-tree/custom-nodes/automatic-markers.html"><strong aria-hidden="true">3.3.1.</strong> Automatic Markers</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/property-mapping-with-bevy-bundle.html"><strong aria-hidden="true">3.3.2.</strong> Property Mapping (BevyBundle)</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/nodes-from-components-and-bundles.html"><strong aria-hidden="true">3.3.3.</strong> Nodes from Components and Bundles</a></li></ol></li><li class="chapter-item "><a href="../scene-tree/spawning-scenes.html"><strong aria-hidden="true">3.4.</strong> Spawning Scenes</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../transforms/index.html"><strong aria-hidden="true">4.</strong> Transform System</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../transforms/sync-modes.html" class="active"><strong aria-hidden="true">4.1.</strong> Sync Modes</a></li><li class="chapter-item "><a href="../transforms/custom-sync.html"><strong aria-hidden="true">4.2.</strong> Custom Transform Sync</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../input/index.html"><strong aria-hidden="true">5.</strong> Input Handling</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../input/bevy-vs-godot.html"><strong aria-hidden="true">5.1.</strong> Bevy vs Godot Input</a></li><li class="chapter-item "><a href="../input/signals.html"><strong aria-hidden="true">5.2.</strong> Signal Handling</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../timing/index.html"><strong aria-hidden="true">6.</strong> Timing & Schedules</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../threading/index.html"><strong aria-hidden="true">7.</strong> Threading & Main Thread Access</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../profiling/profiling.html"><strong aria-hidden="true">8.</strong> Bevy Godot Profiling</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../debugging/index.html"><strong aria-hidden="true">9.</strong> Debugging</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../testing/index.html"><strong aria-hidden="true">10.</strong> Integration Testing</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../platform-targets/index.html"><strong aria-hidden="true">11.</strong> Platform Targets</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../platform-targets/android.html"><strong aria-hidden="true">11.1.</strong> Android</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../project-transition/index.html"><strong aria-hidden="true">12.</strong> Project Transition Patterns</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../project-transition/transitional-mailbox-bridge.html"><strong aria-hidden="true">12.1.</strong> Transitional Mailbox Bridge (Godot -&gt; Bevy Messages)</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../migration/index.html"><strong aria-hidden="true">13.</strong> Migration Guides</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../migration/v0.10-to-v0.11.html"><strong aria-hidden="true">13.1.</strong> v0.10 to v0.11</a></li><li class="chapter-item "><a href="../migration/v0.9-to-v0.10.html"><strong aria-hidden="true">13.2.</strong> v0.9 to v0.10</a></li><li class="chapter-item "><a href="../migration/v0.8-to-v0.9.html"><strong aria-hidden="true">13.3.</strong> v0.8 to v0.9</a></li><li class="chapter-item "><a href="../migration/v0.7-to-v0.8.html"><strong aria-hidden="true">13.4.</strong> v0.7 to v0.8</a></li><li class="chapter-item "><a href="../migration/v0.6-to-v0.7.html"><strong aria-hidden="true">13.5.</strong> v0.6 to v0.7</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The godot-bevy Book 👾</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/bytemeadow/godot-bevy" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/bytemeadow/godot-bevy/edit/main/book/src/transforms/sync-modes.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="transform-sync-modes"><a class="header" href="#transform-sync-modes">Transform Sync Modes</a></h1>
+<p>godot-bevy provides three transform synchronization modes to fit different use cases. Understanding these modes is crucial for optimal performance and correct behavior.</p>
+<h2 id="available-modes"><a class="header" href="#available-modes">Available Modes</a></h2>
+<h3 id="transformsyncmodedisabled"><a class="header" href="#transformsyncmodedisabled"><code>TransformSyncMode::Disabled</code></a></h3>
+<p>No transform syncing occurs and no transform components are created.</p>
+<p><strong>Characteristics:</strong></p>
+<ul>
+<li>✅ Zero performance overhead</li>
+<li>✅ Best for when your ECS systems rarely read/write Godot Node transforms, or you wish to explicitly control when
+synchronization occurs</li>
+<li>❌ Godot Transform changes aren't automatically reflected in ECS</li>
+<li>❌ ECS Transform changes aren't automatically reflected in Godot</li>
+</ul>
+<p><strong>Use when:</strong></p>
+<ul>
+<li>Building platformers with CharacterBody2D</li>
+<li>You need maximum performance</li>
+</ul>
+<h3 id="transformsyncmodeoneway-default"><a class="header" href="#transformsyncmodeoneway-default"><code>TransformSyncMode::OneWay</code> (Default)</a></h3>
+<p>Synchronizes transforms from ECS to Godot only.</p>
+<p><strong>Characteristics:</strong></p>
+<ul>
+<li>✅ ECS components control Godot node positions</li>
+<li>✅ Good performance (minimal overhead)</li>
+<li>✅ Clean ECS architecture</li>
+<li>❌ Godot changes don't reflect in ECS</li>
+</ul>
+<p><strong>Use when:</strong></p>
+<ul>
+<li>Building pure ECS games</li>
+<li>All movement logic is in Bevy systems</li>
+<li>You don't need to read Godot transforms</li>
+<li>Physics is controlled in ECS, i.e., you've disabled all Godot Physics engines and use something like Avian physics</li>
+</ul>
+<h3 id="transformsyncmodetwoway"><a class="header" href="#transformsyncmodetwoway"><code>TransformSyncMode::TwoWay</code></a></h3>
+<p>Full bidirectional synchronization between ECS and Godot.</p>
+<p><strong>Characteristics:</strong></p>
+<ul>
+<li>✅ Changes in either system are reflected</li>
+<li>✅ Works with Godot animations</li>
+<li>✅ Supports hybrid architectures</li>
+<li>❌ Highest performance cost</li>
+</ul>
+<p><strong>Use when:</strong></p>
+<ul>
+<li>Migrating from GDScript to ECS</li>
+<li>Using Godot's AnimationPlayer</li>
+<li>Mixing ECS and GDScript logic</li>
+</ul>
+<h2 id="configuration"><a class="header" href="#configuration">Configuration</a></h2>
+<p>Configure the sync mode in your <code>#[bevy_app]</code> function:</p>
+<h3 id="disabled-mode"><a class="header" href="#disabled-mode">Disabled Mode</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[bevy_app]
+fn build_app(app: &amp;mut App) {
+    app.insert_resource(GodotTransformConfig::disabled());
+    
+    // Use direct physics instead
+    app.add_systems(Update, physics_movement);
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="one-way-mode-default"><a class="header" href="#one-way-mode-default">One-Way Mode (Default)</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[bevy_app]
+fn build_app(app: &amp;mut App) {
+    // One-way is the default, no configuration needed
+    // Or explicitly:
+    app.insert_resource(GodotTransformConfig::one_way());
+    
+    app.add_systems(Update, ecs_movement);
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="two-way-mode"><a class="header" href="#two-way-mode">Two-Way Mode</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[bevy_app]
+fn build_app(app: &amp;mut App) {
+    app.insert_resource(GodotTransformConfig::two_way());
+    
+    app.add_systems(Update, hybrid_movement);
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="performance-impact"><a class="header" href="#performance-impact">Performance Impact</a></h2>
+<h3 id="disabled-mode-performance"><a class="header" href="#disabled-mode-performance">Disabled Mode Performance</a></h3>
+<pre><code>Transform Components: Not created
+Sync Systems: Not running
+Memory Usage: None
+CPU Usage: None
+</code></pre>
+<h3 id="one-way-mode-performance"><a class="header" href="#one-way-mode-performance">One-Way Mode Performance</a></h3>
+<pre><code>Transform Components: Created
+Write Systems: Running (Last schedule)
+Read Systems: Not running
+Memory Usage: ~48 bytes per entity
+CPU Usage: O(changed entities)
+</code></pre>
+<h3 id="two-way-mode-performance"><a class="header" href="#two-way-mode-performance">Two-Way Mode Performance</a></h3>
+<pre><code>Transform Components: Created
+Write Systems: Running (Last schedule)
+Read Systems: Running (PreUpdate schedule)
+Memory Usage: ~48 bytes per entity
+CPU Usage: O(all entities with transforms)
+</code></pre>
+<h2 id="implementation-details"><a class="header" href="#implementation-details">Implementation Details</a></h2>
+<h3 id="system-execution-order"><a class="header" href="#system-execution-order">System Execution Order</a></h3>
+<p><strong>Write Systems (ECS → Godot)</strong></p>
+<ul>
+<li>Schedule: <code>Last</code></li>
+<li>Only processes changed transforms</li>
+<li>Runs for both OneWay and TwoWay modes</li>
+</ul>
+<p><strong>Read Systems (Godot → ECS)</strong></p>
+<ul>
+<li>Schedule: <code>PreUpdate</code></li>
+<li>Checks all transforms for external changes</li>
+<li>Only runs in TwoWay mode</li>
+</ul>
+<h3 id="change-detection"><a class="header" href="#change-detection">Change Detection</a></h3>
+<p>The system uses Bevy's change detection to optimize writes:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn post_update_transforms(
+    mut query: Query&lt;
+        (&amp;Transform, &amp;mut GodotNodeHandle),
+        Or&lt;(Added&lt;Transform&gt;, Changed&lt;Transform&gt;)&gt;
+    &gt;
+) {
+    // Only processes entities with new or changed transforms
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="common-patterns"><a class="header" href="#common-patterns">Common Patterns</a></h2>
+<h3 id="switching-modes-at-runtime"><a class="header" href="#switching-modes-at-runtime">Switching Modes at Runtime</a></h3>
+<p>While not common, you can change modes during runtime:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn switch_to_physics_mode(
+    mut commands: Commands,
+) {
+    commands.insert_resource(GodotTransformConfig::disabled());
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Note: Existing transform components remain but stop syncing.</p>
+<h3 id="checking-current-mode"><a class="header" href="#checking-current-mode">Checking Current Mode</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn check_sync_mode(
+    config: Res&lt;GodotTransformConfig&gt;,
+) {
+    match config.sync_mode {
+        TransformSyncMode::Disabled =&gt; {
+            println!("Using direct physics");
+        }
+        TransformSyncMode::OneWay =&gt; {
+            println!("ECS drives transforms");
+        }
+        TransformSyncMode::TwoWay =&gt; {
+            println!("Bidirectional sync active");
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
+<ol>
+<li><strong>Choose mode early</strong> - Switching modes mid-project can be complex</li>
+<li><strong>Default to OneWay</strong> - Unless you specifically need other modes</li>
+<li><strong>Benchmark your game</strong> - Measure actual performance impact</li>
+<li><strong>Document your choice</strong> - Help team members understand the architecture</li>
+</ol>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="transform-changes-not-visible"><a class="header" href="#transform-changes-not-visible">"Transform changes not visible"</a></h3>
+<ul>
+<li>Check you're not in Disabled mode</li>
+<li>Ensure transform components exist on entities</li>
+<li>Verify systems are running in correct schedules</li>
+</ul>
+<h3 id="performance-degradation-with-many-entities"><a class="header" href="#performance-degradation-with-many-entities">"Performance degradation with many entities"</a></h3>
+<ul>
+<li>Consider switching from TwoWay to OneWay</li>
+<li>Use Disabled mode for physics entities</li>
+<li>Profile to identify bottlenecks</li>
+</ul>
+<h3 id="godot-animations-not-affecting-ecs"><a class="header" href="#godot-animations-not-affecting-ecs">"Godot animations not affecting ECS"</a></h3>
+<ul>
+<li>Enable TwoWay mode for animated entities</li>
+<li>Ensure transforms aren't being overwritten by ECS systems</li>
+<li>Check system execution order</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../transforms/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../transforms/custom-sync.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../transforms/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../transforms/custom-sync.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

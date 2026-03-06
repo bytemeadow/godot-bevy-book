@@ -1,0 +1,397 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Spawning Scenes - The godot-bevy Book 👾</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/css/custom.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../getting-started/index.html"><strong aria-hidden="true">2.</strong> Getting Started</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../getting-started/installation.html"><strong aria-hidden="true">2.1.</strong> Installation</a></li><li class="chapter-item "><a href="../getting-started/basic-concepts.html"><strong aria-hidden="true">2.2.</strong> Basic Concepts</a></li><li class="chapter-item "><a href="../getting-started/plugins.html"><strong aria-hidden="true">2.3.</strong> Plugin System</a></li><li class="chapter-item "><a href="../getting-started/examples.html"><strong aria-hidden="true">2.4.</strong> Examples</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../scene-tree/index.html"><strong aria-hidden="true">3.</strong> Scene Tree</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../scene-tree/timing.html"><strong aria-hidden="true">3.1.</strong> Initialization and Timing</a></li><li class="chapter-item "><a href="../scene-tree/querying.html"><strong aria-hidden="true">3.2.</strong> Querying with Node Type Markers</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/index.html"><strong aria-hidden="true">3.3.</strong> Custom Nodes</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../scene-tree/custom-nodes/automatic-markers.html"><strong aria-hidden="true">3.3.1.</strong> Automatic Markers</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/property-mapping-with-bevy-bundle.html"><strong aria-hidden="true">3.3.2.</strong> Property Mapping (BevyBundle)</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/nodes-from-components-and-bundles.html"><strong aria-hidden="true">3.3.3.</strong> Nodes from Components and Bundles</a></li></ol></li><li class="chapter-item expanded "><a href="../scene-tree/spawning-scenes.html" class="active"><strong aria-hidden="true">3.4.</strong> Spawning Scenes</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../transforms/index.html"><strong aria-hidden="true">4.</strong> Transform System</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../transforms/sync-modes.html"><strong aria-hidden="true">4.1.</strong> Sync Modes</a></li><li class="chapter-item "><a href="../transforms/custom-sync.html"><strong aria-hidden="true">4.2.</strong> Custom Transform Sync</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../input/index.html"><strong aria-hidden="true">5.</strong> Input Handling</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../input/bevy-vs-godot.html"><strong aria-hidden="true">5.1.</strong> Bevy vs Godot Input</a></li><li class="chapter-item "><a href="../input/signals.html"><strong aria-hidden="true">5.2.</strong> Signal Handling</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../timing/index.html"><strong aria-hidden="true">6.</strong> Timing & Schedules</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../threading/index.html"><strong aria-hidden="true">7.</strong> Threading & Main Thread Access</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../profiling/profiling.html"><strong aria-hidden="true">8.</strong> Bevy Godot Profiling</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../debugging/index.html"><strong aria-hidden="true">9.</strong> Debugging</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../testing/index.html"><strong aria-hidden="true">10.</strong> Integration Testing</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../platform-targets/index.html"><strong aria-hidden="true">11.</strong> Platform Targets</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../platform-targets/android.html"><strong aria-hidden="true">11.1.</strong> Android</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../project-transition/index.html"><strong aria-hidden="true">12.</strong> Project Transition Patterns</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../project-transition/transitional-mailbox-bridge.html"><strong aria-hidden="true">12.1.</strong> Transitional Mailbox Bridge (Godot -&gt; Bevy Messages)</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../migration/index.html"><strong aria-hidden="true">13.</strong> Migration Guides</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../migration/v0.10-to-v0.11.html"><strong aria-hidden="true">13.1.</strong> v0.10 to v0.11</a></li><li class="chapter-item "><a href="../migration/v0.9-to-v0.10.html"><strong aria-hidden="true">13.2.</strong> v0.9 to v0.10</a></li><li class="chapter-item "><a href="../migration/v0.8-to-v0.9.html"><strong aria-hidden="true">13.3.</strong> v0.8 to v0.9</a></li><li class="chapter-item "><a href="../migration/v0.7-to-v0.8.html"><strong aria-hidden="true">13.4.</strong> v0.7 to v0.8</a></li><li class="chapter-item "><a href="../migration/v0.6-to-v0.7.html"><strong aria-hidden="true">13.5.</strong> v0.6 to v0.7</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The godot-bevy Book 👾</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/bytemeadow/godot-bevy" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/bytemeadow/godot-bevy/edit/main/book/src/scene-tree/spawning-scenes.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="spawning-godot-scenes-with-nodetreeview"><a class="header" href="#spawning-godot-scenes-with-nodetreeview">Spawning Godot scenes with <code>NodeTreeView</code></a></h1>
+<p><code>GodotScene</code> is a Bevy <code>Component</code> that lets us attach and instantiate Godot scene files (<code>.tscn</code>) to Bevy entities.
+When we add a <code>GodotScene</code> to an entity, it spawns that scene in Godot's scene tree and links it to our Bevy entity,
+letting us combine Godot's visual editor with Bevy's ECS architecture.</p>
+<p>When we spawn scenes, we almost always need to reach into that scene’s node tree to:</p>
+<ul>
+<li>grab child nodes like sprites, notifiers, or UI controls</li>
+<li>connect signals</li>
+<li>drive animations or physics bodies</li>
+</ul>
+<p>Doing this manually with raw <code>GodotNodeHandle</code> lookups quickly becomes repetitive and fragile.<br />
+The <code>#[derive(NodeTreeView)]</code> macro gives us a <strong>typed, ergonomic view</strong> of a scene’s node tree, driven by node paths.</p>
+<p>This page explains how to:</p>
+<ol>
+<li>Define a <code>NodeTreeView</code> for a scene</li>
+<li>Spawn the scene via <code>GodotScene</code></li>
+<li>Use the generated view to access nodes and connect signals</li>
+</ol>
+<h2 id="1-spawn-godot-scenes-with-godotscene"><a class="header" href="#1-spawn-godot-scenes-with-godotscene">1. Spawn Godot scenes with <code>GodotScene</code></a></h2>
+<p>To spawn a Godot scene from Bevy, insert <code>GodotScene</code> into our entity:</p>
+<pre><code class="language-rust ignore"><span class="boring">use bevy::prelude::*;
+</span><span class="boring">use godot_bevy::prelude::{GodotResource, GodotScene};
+</span><span class="boring">use bevy::state::app::StatesPlugin;
+</span><span class="boring">use bevy_asset_loader::asset_collection::AssetCollection;
+</span><span class="boring">
+</span><span class="boring">#[derive(Debug, Default, Clone, Eq, PartialEq, Hash, States)]
+</span><span class="boring">enum GameState {
+</span><span class="boring">    #[default]
+</span><span class="boring">    Loading,
+</span><span class="boring">    InGame,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn plugin(app: &amp;mut App) {
+</span><span class="boring">    app.add_plugins(StatesPlugin)
+</span><span class="boring">        .init_state::&lt;GameState&gt;()
+</span><span class="boring">        .add_loading_state(
+</span><span class="boring">            LoadingState::new(GameState::Loading).continue_to_state(GameState::InGame),
+</span><span class="boring">        );
+</span><span class="boring">    app.configure_loading_state(
+</span><span class="boring">        LoadingStateConfig::new(GameState::Loading).load_collection::&lt;PickupAssets&gt;(),
+</span><span class="boring">    );
+</span><span class="boring">    app.add_message::&lt;PickupBodyEntered&gt;();
+</span><span class="boring">    app.add_systems(Update, pickup_system);
+</span><span class="boring">}
+</span><span class="boring">
+</span>/// This example uses `bevy_asset_loader` to load the
+/// scene file as a packed scene at startup.
+#[derive(AssetCollection, Resource)]
+pub struct CharacterAssets {
+    #[asset(path = "scenes/character.tscn")]
+    pub character_scene: Handle&lt;GodotResource&gt;,
+}
+
+fn spawn_character(mut commands: Commands, assets: Res&lt;CharacterAssets&gt;) {
+    commands
+        .spawn_empty()
+        // Add additional Bevy components here (e.g. position, gameplay data, etc.)
+        .insert(Transform::default())
+        .insert(
+            // Attach the Godot scene to this Bevy entity
+            GodotScene::from_handle(assets.character_scene.clone())
+            // Optionally, connect signals here with the
+            // `with_signal_connection` builder method discussed below. 
+        );
+}</code></pre>
+<p>At this point, the Bevy entity is linked to the Godot scene instance.<br />
+Now we would like to access nodes inside that scene.</p>
+<h2 id="2-access-scene-children-with-nodetreeview"><a class="header" href="#2-access-scene-children-with-nodetreeview">2. Access scene children with <code>NodeTreeView</code></a></h2>
+<p>Let's assume we have a Godot scene with the following node structure:</p>
+<ul>
+<li><code>Node2D</code> (the “character”)
+<ul>
+<li><code>AnimatedSprite2D</code></li>
+<li><code>VisibleOnScreenNotifier2D</code></li>
+</ul>
+</li>
+</ul>
+<p>We can describe the nodes of the scene we want to access by their path like so:</p>
+<pre><code class="language-rust ignore"><span class="boring">use godot_bevy::interop::GodotNodeHandle;
+</span><span class="boring">use godot_bevy::prelude::NodeTreeView;
+</span><span class="boring">
+</span>#[derive(NodeTreeView)]
+pub struct CharacterNodes {
+    #[node("AnimatedSprite2D")]
+    pub animated_sprite: GodotNodeHandle,
+
+    #[node("VisibleOnScreenNotifier2D")]
+    pub visibility_notifier: GodotNodeHandle,
+}</code></pre>
+<p>The <code>NodeTreeView</code> field types can be <code>GodotNodeHandle</code> or <code>Option&lt;GodotNodeHandle&gt;</code>.</p>
+<p>The <code>#[node("&lt;node_path&gt;")]</code> attribute supports wildcards (<code>*</code>).
+See below or the <code>NodeTreeView</code> docs for more details.</p>
+<p>Then we can access the tree view in our system like this:</p>
+<pre><code class="language-rust ignore">fn new_character_initialize(
+    entities: Query&lt;&amp;GodotNodeHandle, Added&lt;Character&gt;&gt;,
+    mut godot: GodotAccess,
+) {
+    for handle in &amp;entities {
+        let character = godot.get::&lt;RigidBody2D&gt;(*handle);
+        let character_nodes = CharacterNodes::from_node(character).unwrap();
+    }
+}</code></pre>
+<h3 id="path-patterns"><a class="header" href="#path-patterns">Path patterns</a></h3>
+<p>Node paths support simple patterns to avoid hard-coding full names:</p>
+<ul>
+<li><code>/root/*/HUD/CurrentLevel</code> - matches any single node name where * appears</li>
+<li><code>/root/Level*/HUD/CurrentLevel</code> - matches node names starting with "Level"</li>
+<li><code>*/HUD/CurrentLevel</code> - matches relative to the base node</li>
+</ul>
+<h3 id="generated-path-constants"><a class="header" href="#generated-path-constants">Generated path constants</a></h3>
+<p>For each <code>#[node("&lt;node_path&gt;")]</code> field, <code>NodeTreeView</code> generates a public string constant named<br />
+<code>&lt;UPPERCASE_FIELD_NAME&gt;_PATH</code> inside our struct’s <code>impl</code>.</p>
+<p>Given the <code>CharacterNodes</code> example above, the macro generates an impl like:</p>
+<pre><code class="language-rust ignore">impl CharacterNodes {
+    pub const ANIMATED_SPRITE_PATH: &amp;'static str = "AnimatedSprite2D";
+    pub const VISIBILITY_NOTIFIER_PATH: &amp;'static str = "VisibleOnScreenNotifier2D";
+}</code></pre>
+<p>These constants are very convenient when we need to refer to the same path in multiple places, especially when
+connecting signals from a spawned scene (covered below).</p>
+<h2 id="3-connect-signals-to-scene-children-using-godotscenewith_signal_connection"><a class="header" href="#3-connect-signals-to-scene-children-using-godotscenewith_signal_connection">3. Connect signals to scene children using <code>GodotScene::with_signal_connection</code></a></h2>
+<p>When spawning scenes, we often want to connect signals to child nodes.</p>
+<p>There are three useful resources when connecting signals:</p>
+<ul>
+<li><code>GodotScene</code>'s <code>with_signal_connection</code> builder method.</li>
+<li><code>NodeTreeView</code>'s generated path constants.</li>
+<li><code>godot_bevy::interop::&lt;GODOT_NODE_TYPE&gt;Signals</code> types which contain string constants for all signals of a given Godot node type.</li>
+</ul>
+<p>Here is an example using the <code>CharacterNodes</code> <code>NodeTreeView</code> from above and
+the <code>VisibleOnScreenNotifier2DSignals::SCREEN_EXITED</code> string constant to
+connect the <code>VisibleOnScreenNotifier2D</code>'s <code>screen_exited</code> signal to a Bevy message.</p>
+<pre><code class="language-rust ignore">use godot_bevy::interop::VisibleOnScreenNotifier2DSignals;
+use godot_bevy::prelude::GodotScene;
+use bevy::ecs::entity::Entity;
+use bevy::prelude::Message;
+
+#[derive(Message, Debug, Clone, Copy)]
+pub struct CharacterScreenExited {
+    pub entity: Entity,
+}
+
+fn spawn_character_with_signals(mut commands: Commands, assets: Res&lt;CharacterAssets&gt;) {
+    commands
+        .spawn_empty()
+        .insert(Transform::default())
+        .insert(
+            GodotScene::from_handle(assets.character_scene.clone())
+                .with_signal_connection(
+                    
+                    // Use the NodeTreeView-generated path constant:
+                    CharacterNodes::VISIBILITY_NOTIFIER_PATH,
+                    
+                    // The Godot signal we want to connect:
+                    VisibleOnScreenNotifier2DSignals::SCREEN_EXITED,
+                    
+                    // Closure to turn a Godot signal into a Bevy message:
+                    |_args, _node_handle, entity| {
+                        Some(CharacterScreenExited {
+                            entity: entity.expect("entity was provided"),
+                        })
+                    },
+                ),
+        );
+}</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../scene-tree/custom-nodes/nodes-from-components-and-bundles.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../transforms/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../scene-tree/custom-nodes/nodes-from-components-and-bundles.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../transforms/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

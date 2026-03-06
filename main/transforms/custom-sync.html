@@ -1,0 +1,609 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Custom Transform Sync - The godot-bevy Book 👾</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/css/custom.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../getting-started/index.html"><strong aria-hidden="true">2.</strong> Getting Started</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../getting-started/installation.html"><strong aria-hidden="true">2.1.</strong> Installation</a></li><li class="chapter-item "><a href="../getting-started/basic-concepts.html"><strong aria-hidden="true">2.2.</strong> Basic Concepts</a></li><li class="chapter-item "><a href="../getting-started/plugins.html"><strong aria-hidden="true">2.3.</strong> Plugin System</a></li><li class="chapter-item "><a href="../getting-started/examples.html"><strong aria-hidden="true">2.4.</strong> Examples</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../scene-tree/index.html"><strong aria-hidden="true">3.</strong> Scene Tree</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../scene-tree/timing.html"><strong aria-hidden="true">3.1.</strong> Initialization and Timing</a></li><li class="chapter-item "><a href="../scene-tree/querying.html"><strong aria-hidden="true">3.2.</strong> Querying with Node Type Markers</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/index.html"><strong aria-hidden="true">3.3.</strong> Custom Nodes</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../scene-tree/custom-nodes/automatic-markers.html"><strong aria-hidden="true">3.3.1.</strong> Automatic Markers</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/property-mapping-with-bevy-bundle.html"><strong aria-hidden="true">3.3.2.</strong> Property Mapping (BevyBundle)</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/nodes-from-components-and-bundles.html"><strong aria-hidden="true">3.3.3.</strong> Nodes from Components and Bundles</a></li></ol></li><li class="chapter-item "><a href="../scene-tree/spawning-scenes.html"><strong aria-hidden="true">3.4.</strong> Spawning Scenes</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../transforms/index.html"><strong aria-hidden="true">4.</strong> Transform System</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../transforms/sync-modes.html"><strong aria-hidden="true">4.1.</strong> Sync Modes</a></li><li class="chapter-item expanded "><a href="../transforms/custom-sync.html" class="active"><strong aria-hidden="true">4.2.</strong> Custom Transform Sync</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../input/index.html"><strong aria-hidden="true">5.</strong> Input Handling</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../input/bevy-vs-godot.html"><strong aria-hidden="true">5.1.</strong> Bevy vs Godot Input</a></li><li class="chapter-item "><a href="../input/signals.html"><strong aria-hidden="true">5.2.</strong> Signal Handling</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../timing/index.html"><strong aria-hidden="true">6.</strong> Timing & Schedules</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../threading/index.html"><strong aria-hidden="true">7.</strong> Threading & Main Thread Access</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../profiling/profiling.html"><strong aria-hidden="true">8.</strong> Bevy Godot Profiling</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../debugging/index.html"><strong aria-hidden="true">9.</strong> Debugging</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../testing/index.html"><strong aria-hidden="true">10.</strong> Integration Testing</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../platform-targets/index.html"><strong aria-hidden="true">11.</strong> Platform Targets</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../platform-targets/android.html"><strong aria-hidden="true">11.1.</strong> Android</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../project-transition/index.html"><strong aria-hidden="true">12.</strong> Project Transition Patterns</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../project-transition/transitional-mailbox-bridge.html"><strong aria-hidden="true">12.1.</strong> Transitional Mailbox Bridge (Godot -&gt; Bevy Messages)</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../migration/index.html"><strong aria-hidden="true">13.</strong> Migration Guides</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../migration/v0.10-to-v0.11.html"><strong aria-hidden="true">13.1.</strong> v0.10 to v0.11</a></li><li class="chapter-item "><a href="../migration/v0.9-to-v0.10.html"><strong aria-hidden="true">13.2.</strong> v0.9 to v0.10</a></li><li class="chapter-item "><a href="../migration/v0.8-to-v0.9.html"><strong aria-hidden="true">13.3.</strong> v0.8 to v0.9</a></li><li class="chapter-item "><a href="../migration/v0.7-to-v0.8.html"><strong aria-hidden="true">13.4.</strong> v0.7 to v0.8</a></li><li class="chapter-item "><a href="../migration/v0.6-to-v0.7.html"><strong aria-hidden="true">13.5.</strong> v0.6 to v0.7</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The godot-bevy Book 👾</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/bytemeadow/godot-bevy" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/bytemeadow/godot-bevy/edit/main/book/src/transforms/custom-sync.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="custom-transform-sync"><a class="header" href="#custom-transform-sync">Custom Transform Sync</a></h1>
+<p>For performance-critical applications, you can create custom transform sync systems that only synchronize specific entities. This uses compile-time queries for maximum performance and automatically handles both 2D and 3D nodes.</p>
+<h2 id="when-to-use-custom-sync"><a class="header" href="#when-to-use-custom-sync">When to Use Custom Sync</a></h2>
+<p>Use custom transform sync when:</p>
+<ul>
+<li>You have many entities but only some need synchronization</li>
+<li>Performance is critical and you want to minimize overhead</li>
+<li>You need fine-grained control over which entities sync</li>
+<li>Different entity types need different sync directions</li>
+</ul>
+<h2 id="basic-usage"><a class="header" href="#basic-usage">Basic Usage</a></h2>
+<h3 id="1-disable-auto-sync"><a class="header" href="#1-disable-auto-sync">1. Disable Auto Sync</a></h3>
+<h4 id="option-a-when-adding-the-plugin-manually"><a class="header" href="#option-a-when-adding-the-plugin-manually">Option A: When Adding the Plugin Manually</a></h4>
+<p>Use the <code>.without_auto_sync()</code> method to disable automatic transform syncing while keeping the Transform and TransformSyncMetadata components:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use godot_bevy::prelude::*;
+
+#[bevy_app]
+fn build_app(app: &amp;mut App) {
+    // Disable auto sync but keep transform components
+    app.add_plugins(
+        GodotTransformSyncPlugin::default()
+            .without_auto_sync()
+    );
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="option-b-when-using-godotdefaultplugins"><a class="header" href="#option-b-when-using-godotdefaultplugins">Option B: When Using GodotDefaultPlugins</a></h4>
+<p>If you're using <code>GodotDefaultPlugins</code>, you need to disable the included <code>GodotTransformSyncPlugin</code> and add your own configured version:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use godot_bevy::prelude::*;
+
+#[bevy_app]
+fn build_app(app: &amp;mut App) {
+    // Remove the default transform sync plugin and add a custom one
+    app.add_plugins(
+        GodotDefaultPlugins
+            .build()
+            .disable::&lt;GodotTransformSyncPlugin&gt;()
+    );
+
+    // Add your custom-configured transform sync plugin
+    app.add_plugins(
+        GodotTransformSyncPlugin::default()
+            .without_auto_sync()
+    );
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="2-define-custom-systems"><a class="header" href="#2-define-custom-systems">2. Define Custom Systems</a></h3>
+<p>Use the <code>add_transform_sync_systems!</code> macro to define which entities should sync:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use godot_bevy::add_transform_sync_systems;
+use godot_bevy::interop::node_markers::*;
+use bevy::ecs::query::{Or, With};
+
+#[bevy_app]
+fn build_app(app: &amp;mut App) {
+    // Disable auto sync
+    app.add_plugins(
+        GodotTransformSyncPlugin::default()
+            .without_auto_sync()
+    );
+
+    // Sync all physics bodies (both 2D and 3D automatically)
+    add_transform_sync_systems! {
+        app,
+        PhysicsEntities = Or&lt;(
+            With&lt;RigidBody2DMarker&gt;,
+            With&lt;CharacterBody2DMarker&gt;,
+            With&lt;StaticBody2DMarker&gt;,
+            With&lt;RigidBody3DMarker&gt;,
+            With&lt;CharacterBody3DMarker&gt;,
+            With&lt;StaticBody3DMarker&gt;,
+        )&gt;
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="advanced-usage"><a class="header" href="#advanced-usage">Advanced Usage</a></h2>
+<h3 id="directional-sync-control"><a class="header" href="#directional-sync-control">Directional Sync Control</a></h3>
+<p>You can specify which direction of synchronization you need for optimal performance:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>add_transform_sync_systems! {
+    app,
+    // Only ECS → Godot (one-way sync)
+    UIElements = bevy_to_godot: With&lt;UIElement&gt;,
+
+    // Only Godot → ECS (useful for reading physics results)
+    PhysicsResults = godot_to_bevy: With&lt;PhysicsActor&gt;,
+
+    // Full bidirectional sync
+    Player = With&lt;Player&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>This provides significant performance benefits:</p>
+<ul>
+<li><strong><code>bevy_to_godot</code> only</strong>: Skips reading Godot transforms, ideal for UI elements and ECS-driven entities</li>
+<li><strong><code>godot_to_bevy</code> only</strong>: Skips writing to Godot, useful for reading physics results</li>
+<li><strong>Both directions</strong> (no prefix): Full synchronization when needed</li>
+</ul>
+<h3 id="real-example-high-volume-transform-sync"><a class="header" href="#real-example-high-volume-transform-sync">Real Example: High-Volume Transform Sync</a></h3>
+<p>From the <a href="https://github.com/bytemeadow/godot-bevy/tree/main/examples/perf-test">perf-test</a> example, which benchmarks transform sync with tens of thousands of entities:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use godot_bevy::{add_transform_sync_systems, prelude::*};
+
+#[derive(Component)]
+struct Particle;
+
+#[bevy_app]
+fn build_app(app: &amp;mut App) {
+    // Disable auto sync since we want custom sync for performance
+    app.add_plugins(
+        GodotTransformSyncPlugin::default()
+            .without_auto_sync()
+    );
+
+    // Add custom transform sync systems for Particle entities only
+    // Only sync Bevy -&gt; Godot since particles are driven by ECS movement systems
+    add_transform_sync_systems! {
+        app,
+        Particle = bevy_to_godot: With&lt;Particle&gt;
+    }
+
+    // ... movement systems, etc.
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="multiple-sync-systems-in-one-call"><a class="header" href="#multiple-sync-systems-in-one-call">Multiple Sync Systems in One Call</a></h3>
+<p>You can define multiple sync systems with different directions in a single macro call:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>add_transform_sync_systems! {
+    app,
+    // All physics bodies (bidirectional) - both 2D and 3D
+    PhysicsBodies = Or&lt;(
+        With&lt;RigidBody2DMarker&gt;,
+        With&lt;CharacterBody2DMarker&gt;,
+        With&lt;StaticBody2DMarker&gt;,
+        With&lt;RigidBody3DMarker&gt;,
+        With&lt;CharacterBody3DMarker&gt;,
+        With&lt;StaticBody3DMarker&gt;,
+    )&gt;,
+
+    // UI elements (ECS-driven only) - both 2D and 3D
+    UIElements = bevy_to_godot: Or&lt;(
+        With&lt;ButtonMarker&gt;,
+        With&lt;LabelMarker&gt;,
+        With&lt;Sprite3DMarker&gt;,
+    )&gt;,
+
+    // Physics result readers (Godot-driven only) - both 2D and 3D
+    PhysicsReaders = godot_to_bevy: With&lt;PhysicsListener&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="custom-marker-components"><a class="header" href="#custom-marker-components">Custom Marker Components</a></h3>
+<p>For maximum control, create custom marker components:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bevy::prelude::*;
+
+#[derive(Component)]
+struct NeedsTransformSync;
+
+#[derive(Component)]
+struct HighPrioritySync;
+
+#[derive(Component)]
+struct ReadOnlyTransform;
+
+// Opt-in sync systems
+add_transform_sync_systems! {
+    app,
+    // Only entities explicitly marked for sync
+    OptInEntities = With&lt;NeedsTransformSync&gt;,
+
+    // High priority entities (bidirectional)
+    HighPriorityEntities = With&lt;HighPrioritySync&gt;,
+
+    // Read-only from Godot
+    ReadOnlyEntities = godot_to_bevy: With&lt;ReadOnlyTransform&gt;,
+}
+
+// In your spawning systems
+fn spawn_entity(mut commands: Commands) {
+    commands.spawn((
+        RigidBody3DMarker,
+        NeedsTransformSync,  // Only entities with this will sync
+        // ... other components
+    ));
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="key-features"><a class="header" href="#key-features">Key Features</a></h2>
+<h3 id="built-in-change-detection"><a class="header" href="#built-in-change-detection">Built-in Change Detection</a></h3>
+<p>The custom sync systems automatically use <code>TransformSyncMetadata</code> to prevent infinite loops:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// The generated systems automatically include change detection
+// No need to manually handle sync loops - it's built in!
+add_transform_sync_systems! {
+    app,
+    Player = With&lt;Player&gt;,  // Safe bidirectional sync
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="compile-time-optimization"><a class="header" href="#compile-time-optimization">Compile-time Optimization</a></h3>
+<p>Each sync system targets only specific entities, avoiding unnecessary iteration:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// This creates separate optimized systems for each query
+add_transform_sync_systems! {
+    app,
+    FastEntities = With&lt;Player&gt;,           // Only checks Player entities
+    SlowEntities = With&lt;DebugMarker&gt;,      // Only checks DebugMarker entities
+    PhysicsEntities = With&lt;RigidBody2DMarker&gt;, // Only checks physics entities
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="automatic-system-registration"><a class="header" href="#automatic-system-registration">Automatic System Registration</a></h3>
+<p>The macro automatically registers systems in the appropriate schedules:</p>
+<ul>
+<li><code>bevy_to_godot</code> systems run in the <code>Last</code> schedule</li>
+<li><code>godot_to_bevy</code> systems run in the <code>PreUpdate</code> schedule</li>
+<li>Bidirectional sync (no prefix) runs in both schedules</li>
+</ul>
+<h3 id="2d-and-3d-support"><a class="header" href="#2d-and-3d-support">2D and 3D Support</a></h3>
+<p>The macro automatically handles both 2D and 3D nodes in the same system:</p>
+<ul>
+<li>Uses <code>AnyOf&lt;(&amp;Node2DMarker, &amp;Node3DMarker)&gt;</code> to query both types</li>
+<li>Runtime type detection chooses the appropriate transform conversion</li>
+<li>Single system per query instead of separate 2D/3D systems</li>
+</ul>
+<h2 id="common-use-cases"><a class="header" href="#common-use-cases">Common Use Cases</a></h2>
+<h3 id="ui-elements-ecs--godot-only"><a class="header" href="#ui-elements-ecs--godot-only">UI Elements (ECS → Godot only)</a></h3>
+<p>UI elements are typically driven by ECS systems and don't need to be read back:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Component)]
+struct HealthBar;
+
+#[derive(Component)]
+struct MenuItem;
+
+add_transform_sync_systems! {
+    app,
+    UIElements = bevy_to_godot: Or&lt;(
+        With&lt;HealthBar&gt;,
+        With&lt;MenuItem&gt;,
+        With&lt;LabelMarker&gt;,
+    )&gt;
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="physics-results-godot--ecs-only"><a class="header" href="#physics-results-godot--ecs-only">Physics Results (Godot → ECS only)</a></h3>
+<p>When using Godot physics, you often only need to read the results:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Component)]
+struct PhysicsActor;
+
+add_transform_sync_systems! {
+    app,
+    PhysicsActors = godot_to_bevy: Or&lt;(
+        With&lt;RigidBody2DMarker&gt;,
+        With&lt;CharacterBody2DMarker&gt;,
+        With&lt;RigidBody3DMarker&gt;,
+        With&lt;CharacterBody3DMarker&gt;,
+        With&lt;PhysicsActor&gt;,
+    )&gt;
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="interactive-elements-bidirectional"><a class="header" href="#interactive-elements-bidirectional">Interactive Elements (Bidirectional)</a></h3>
+<p>Player characters and interactive objects often need both directions:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Component)]
+struct Player;
+
+#[derive(Component)]
+struct NPC;
+
+add_transform_sync_systems! {
+    app,
+    Interactive = Or&lt;(With&lt;Player&gt;, With&lt;NPC&gt;)&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
+<h3 id="1-start-simple"><a class="header" href="#1-start-simple">1. Start Simple</a></h3>
+<p>Begin with a single, broad filter and optimize as needed:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Component)]
+struct GameEntity;
+
+add_transform_sync_systems! {
+    app,
+    GameEntities = With&lt;GameEntity&gt;
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="2-use-descriptive-names"><a class="header" href="#2-use-descriptive-names">2. Use Descriptive Names</a></h3>
+<p>Choose clear names for your sync systems:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>add_transform_sync_systems! {
+    app,
+    MovingEntities = Or&lt;(With&lt;Player&gt;, With&lt;Enemy&gt;)&gt;,
+    StaticUI = bevy_to_godot: With&lt;StaticUIElement&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="3-avoid-over-optimization"><a class="header" href="#3-avoid-over-optimization">3. Avoid Over-Optimization</a></h3>
+<p>Don't create too many specialized systems unless profiling shows it's necessary:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Good: Logical groups
+add_transform_sync_systems! {
+    app,
+    GameEntities = Or&lt;(With&lt;Player&gt;, With&lt;Enemy&gt;, With&lt;Pickup&gt;)&gt;,
+    UiElements = bevy_to_godot: Or&lt;(With&lt;ButtonMarker&gt;, With&lt;LabelMarker&gt;)&gt;,
+}
+
+// Avoid: Too many micro-optimizations
+add_transform_sync_systems! {
+    app,
+    Players = With&lt;Player&gt;,
+    Enemies = With&lt;Enemy&gt;,
+    Pickups = With&lt;Pickup&gt;,
+    Buttons = bevy_to_godot: With&lt;ButtonMarker&gt;,
+    Labels = bevy_to_godot: With&lt;LabelMarker&gt;,
+    // ... too granular
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="4-profile-performance"><a class="header" href="#4-profile-performance">4. Profile Performance</a></h3>
+<p>Use Bevy's diagnostic tools to measure the impact of your custom sync systems:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
+
+#[bevy_app]
+fn build_app(app: &amp;mut App) {
+    app.add_plugins((
+        FrameTimeDiagnosticsPlugin,
+        LogDiagnosticsPlugin::default(),
+    ));
+
+    // Your custom sync systems
+    add_transform_sync_systems! {
+        app,
+        OptimizedEntities = With&lt;Player&gt;,
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="syntax-reference"><a class="header" href="#syntax-reference">Syntax Reference</a></h2>
+<p>The macro supports three sync directions:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>add_transform_sync_systems! {
+    app,
+    // Bidirectional sync (default)
+    EntityName = With&lt;Component&gt;,
+
+    // One-way: ECS → Godot only
+    EntityName = bevy_to_godot: With&lt;Component&gt;,
+
+    // One-way: Godot → ECS only
+    EntityName = godot_to_bevy: With&lt;Component&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>You can mix multiple directions in a single macro call, and use any Bevy query filter:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>add_transform_sync_systems! {
+    app,
+    PhysicsBodies = Or&lt;(With&lt;CharacterBody2DMarker&gt;, With&lt;RigidBody2DMarker&gt;)&gt;,
+    UIElements = bevy_to_godot: (With&lt;UIElement&gt;, Without&lt;Disabled&gt;),
+    PlayerInputs = godot_to_bevy: With&lt;PlayerInput&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../transforms/sync-modes.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../input/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../transforms/sync-modes.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../input/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
