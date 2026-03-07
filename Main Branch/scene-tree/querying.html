@@ -1,0 +1,415 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Querying with Node Type Markers - The godot-bevy Book 👾 </title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/css/custom.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../getting-started/index.html"><strong aria-hidden="true">2.</strong> Getting Started</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../getting-started/installation.html"><strong aria-hidden="true">2.1.</strong> Installation</a></li><li class="chapter-item "><a href="../getting-started/basic-concepts.html"><strong aria-hidden="true">2.2.</strong> Basic Concepts</a></li><li class="chapter-item "><a href="../getting-started/plugins.html"><strong aria-hidden="true">2.3.</strong> Plugin System</a></li><li class="chapter-item "><a href="../getting-started/examples.html"><strong aria-hidden="true">2.4.</strong> Examples</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../scene-tree/index.html"><strong aria-hidden="true">3.</strong> Scene Tree</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../scene-tree/timing.html"><strong aria-hidden="true">3.1.</strong> Initialization and Timing</a></li><li class="chapter-item expanded "><a href="../scene-tree/querying.html" class="active"><strong aria-hidden="true">3.2.</strong> Querying with Node Type Markers</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/index.html"><strong aria-hidden="true">3.3.</strong> Custom Nodes</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../scene-tree/custom-nodes/automatic-markers.html"><strong aria-hidden="true">3.3.1.</strong> Automatic Markers</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/property-mapping-with-bevy-bundle.html"><strong aria-hidden="true">3.3.2.</strong> Property Mapping (BevyBundle)</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/nodes-from-components-and-bundles.html"><strong aria-hidden="true">3.3.3.</strong> Nodes from Components and Bundles</a></li></ol></li><li class="chapter-item "><a href="../scene-tree/spawning-scenes.html"><strong aria-hidden="true">3.4.</strong> Spawning Scenes</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../transforms/index.html"><strong aria-hidden="true">4.</strong> Transform System</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../transforms/sync-modes.html"><strong aria-hidden="true">4.1.</strong> Sync Modes</a></li><li class="chapter-item "><a href="../transforms/custom-sync.html"><strong aria-hidden="true">4.2.</strong> Custom Transform Sync</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../input/index.html"><strong aria-hidden="true">5.</strong> Input Handling</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../input/bevy-vs-godot.html"><strong aria-hidden="true">5.1.</strong> Bevy vs Godot Input</a></li><li class="chapter-item "><a href="../input/signals.html"><strong aria-hidden="true">5.2.</strong> Signal Handling</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../timing/index.html"><strong aria-hidden="true">6.</strong> Timing & Schedules</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../threading/index.html"><strong aria-hidden="true">7.</strong> Threading & Main Thread Access</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../profiling/profiling.html"><strong aria-hidden="true">8.</strong> Bevy Godot Profiling</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../debugging/index.html"><strong aria-hidden="true">9.</strong> Debugging</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../testing/index.html"><strong aria-hidden="true">10.</strong> Integration Testing</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../platform-targets/index.html"><strong aria-hidden="true">11.</strong> Platform Targets</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../platform-targets/android.html"><strong aria-hidden="true">11.1.</strong> Android</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../project-transition/index.html"><strong aria-hidden="true">12.</strong> Project Transition Patterns</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../project-transition/transitional-mailbox-bridge.html"><strong aria-hidden="true">12.1.</strong> Transitional Mailbox Bridge (Godot -&gt; Bevy Messages)</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../migration/index.html"><strong aria-hidden="true">13.</strong> Migration Guides</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../migration/v0.10-to-v0.11.html"><strong aria-hidden="true">13.1.</strong> v0.10 to v0.11</a></li><li class="chapter-item "><a href="../migration/v0.9-to-v0.10.html"><strong aria-hidden="true">13.2.</strong> v0.9 to v0.10</a></li><li class="chapter-item "><a href="../migration/v0.8-to-v0.9.html"><strong aria-hidden="true">13.3.</strong> v0.8 to v0.9</a></li><li class="chapter-item "><a href="../migration/v0.7-to-v0.8.html"><strong aria-hidden="true">13.4.</strong> v0.7 to v0.8</a></li><li class="chapter-item "><a href="../migration/v0.6-to-v0.7.html"><strong aria-hidden="true">13.5.</strong> v0.6 to v0.7</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">
+                        <a href=".." title="Switch to a different version">
+                            The godot-bevy Book 👾 
+                        </a>
+                    </h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/bytemeadow/godot-bevy" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/bytemeadow/godot-bevy/edit/main/book/src/scene-tree/querying.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="querying-with-node-type-markers"><a class="header" href="#querying-with-node-type-markers">Querying with Node Type Markers</a></h1>
+<p>When godot-bevy discovers nodes in your Godot scene tree, it automatically creates ECS entities with <code>GodotNodeHandle</code> components to represent them. To enable efficient, type-safe querying, the library also adds <strong>marker components</strong> that indicate what type of Godot node each entity represents.</p>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>Every entity that represents a Godot node gets marker components automatically:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use godot_bevy::prelude::*;
+
+// Query all Sprite2D entities - no runtime type checking needed!
+fn update_sprites(sprites: Query&lt;&amp;GodotNodeHandle, With&lt;Sprite2DMarker&gt;&gt;, mut godot: GodotAccess) {
+    for handle in sprites.iter() {
+        // We know this is a Sprite2D, so .get() is safe
+        let sprite = godot.get::&lt;Sprite2D&gt;(*handle);
+        // Work with the sprite...
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="available-marker-components"><a class="header" href="#available-marker-components">Available Marker Components</a></h2>
+<h3 id="base-node-types"><a class="header" href="#base-node-types">Base Node Types</a></h3>
+<ul>
+<li><code>NodeMarker</code> - All nodes (every entity gets this)</li>
+<li><code>Node2DMarker</code> - All 2D nodes</li>
+<li><code>Node3DMarker</code> - All 3D nodes</li>
+<li><code>ControlMarker</code> - UI control nodes</li>
+<li><code>CanvasItemMarker</code> - Canvas items</li>
+</ul>
+<h3 id="visual-nodes"><a class="header" href="#visual-nodes">Visual Nodes</a></h3>
+<ul>
+<li><code>Sprite2DMarker</code> / <code>Sprite3DMarker</code></li>
+<li><code>AnimatedSprite2DMarker</code> / <code>AnimatedSprite3DMarker</code></li>
+<li><code>MeshInstance2DMarker</code> / <code>MeshInstance3DMarker</code></li>
+</ul>
+<h3 id="physics-bodies"><a class="header" href="#physics-bodies">Physics Bodies</a></h3>
+<ul>
+<li><code>RigidBody2DMarker</code> / <code>RigidBody3DMarker</code></li>
+<li><code>CharacterBody2DMarker</code> / <code>CharacterBody3DMarker</code></li>
+<li><code>StaticBody2DMarker</code> / <code>StaticBody3DMarker</code></li>
+</ul>
+<h3 id="areas-and-collision"><a class="header" href="#areas-and-collision">Areas and Collision</a></h3>
+<ul>
+<li><code>Area2DMarker</code> / <code>Area3DMarker</code></li>
+<li><code>CollisionShape2DMarker</code> / <code>CollisionShape3DMarker</code></li>
+<li><code>CollisionPolygon2DMarker</code> / <code>CollisionPolygon3DMarker</code></li>
+</ul>
+<h3 id="audio-players"><a class="header" href="#audio-players">Audio Players</a></h3>
+<ul>
+<li><code>AudioStreamPlayerMarker</code></li>
+<li><code>AudioStreamPlayer2DMarker</code></li>
+<li><code>AudioStreamPlayer3DMarker</code></li>
+</ul>
+<h3 id="ui-elements"><a class="header" href="#ui-elements">UI Elements</a></h3>
+<ul>
+<li><code>LabelMarker</code></li>
+<li><code>ButtonMarker</code></li>
+<li><code>LineEditMarker</code></li>
+<li><code>TextEditMarker</code></li>
+<li><code>PanelMarker</code></li>
+</ul>
+<h3 id="cameras-and-lighting"><a class="header" href="#cameras-and-lighting">Cameras and Lighting</a></h3>
+<ul>
+<li><code>Camera2DMarker</code> / <code>Camera3DMarker</code></li>
+<li><code>DirectionalLight3DMarker</code></li>
+<li><code>SpotLight3DMarker</code></li>
+</ul>
+<h3 id="animation-and-timing"><a class="header" href="#animation-and-timing">Animation and Timing</a></h3>
+<ul>
+<li><code>AnimationPlayerMarker</code></li>
+<li><code>AnimationTreeMarker</code></li>
+<li><code>TimerMarker</code></li>
+</ul>
+<h3 id="path-nodes"><a class="header" href="#path-nodes">Path Nodes</a></h3>
+<ul>
+<li><code>Path2DMarker</code> / <code>Path3DMarker</code></li>
+<li><code>PathFollow2DMarker</code> / <code>PathFollow3DMarker</code></li>
+</ul>
+<h2 id="hierarchical-markers"><a class="header" href="#hierarchical-markers">Hierarchical Markers</a></h2>
+<p>Node type markers follow Godot's inheritance hierarchy. For example, a <code>CharacterBody2D</code> entity will have:</p>
+<ul>
+<li><code>NodeMarker</code> (all nodes inherit from Node)</li>
+<li><code>Node2DMarker</code> (CharacterBody2D inherits from Node2D)</li>
+<li><code>CharacterBody2DMarker</code> (the specific type)</li>
+</ul>
+<p>This lets you query at any level of specificity:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Query ALL nodes
+fn system1(nodes: Query&lt;&amp;GodotNodeHandle, With&lt;NodeMarker&gt;&gt;) { /* ... */ }
+
+// Query all 2D nodes  
+fn system2(nodes_2d: Query&lt;&amp;GodotNodeHandle, With&lt;Node2DMarker&gt;&gt;) { /* ... */ }
+
+// Query only CharacterBody2D nodes
+fn system3(characters: Query&lt;&amp;GodotNodeHandle, With&lt;CharacterBody2DMarker&gt;&gt;) { /* ... */ }
+<span class="boring">}</span></code></pre></pre>
+<h2 id="advanced-query-patterns"><a class="header" href="#advanced-query-patterns">Advanced Query Patterns</a></h2>
+<h3 id="combining-markers"><a class="header" href="#combining-markers">Combining Markers</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Entities that have BOTH a Sprite2D AND a RigidBody2D
+fn physics_sprites(
+    query: Query&lt;&amp;GodotNodeHandle, (With&lt;Sprite2DMarker&gt;, With&lt;RigidBody2DMarker&gt;)&gt;,
+    mut godot: GodotAccess,
+) {
+    for handle in query.iter() {
+        let sprite = godot.get::&lt;Sprite2D&gt;(*handle);
+        let body = godot.get::&lt;RigidBody2D&gt;(*handle);
+        // Work with both components...
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="excluding-node-types"><a class="header" href="#excluding-node-types">Excluding Node Types</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// All sprites EXCEPT character bodies (e.g., environmental sprites)
+fn environment_sprites(
+    query: Query&lt;&amp;GodotNodeHandle, (With&lt;Sprite2DMarker&gt;, Without&lt;CharacterBody2DMarker&gt;)&gt;,
+    mut godot: GodotAccess,
+) {
+    for handle in query.iter() {
+        // These are sprites but not character bodies
+        let sprite = godot.get::&lt;Sprite2D&gt;(*handle);
+        // Work with environmental sprites...
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="multiple-specific-types"><a class="header" href="#multiple-specific-types">Multiple Specific Types</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Handle different audio player types efficiently
+fn update_audio_system(
+    players_1d: Query&lt;&amp;GodotNodeHandle, With&lt;AudioStreamPlayerMarker&gt;&gt;,
+    players_2d: Query&lt;&amp;GodotNodeHandle, With&lt;AudioStreamPlayer2DMarker&gt;&gt;,
+    players_3d: Query&lt;&amp;GodotNodeHandle, With&lt;AudioStreamPlayer3DMarker&gt;&gt;,
+    mut godot: GodotAccess,
+) {
+    // Process each type separately - no runtime type checking!
+    for handle in players_1d.iter() {
+        let player = godot.get::&lt;AudioStreamPlayer&gt;(*handle);
+        // Handle 1D audio...
+    }
+    
+    for handle in players_2d.iter() {
+        let player = godot.get::&lt;AudioStreamPlayer2D&gt;(*handle);
+        // Handle 2D spatial audio...
+    }
+    
+    for handle in players_3d.iter() {
+        let player = godot.get::&lt;AudioStreamPlayer3D&gt;(*handle);
+        // Handle 3D spatial audio...
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="performance-benefits"><a class="header" href="#performance-benefits">Performance Benefits</a></h2>
+<p>Node type markers provide significant performance improvements:</p>
+<ol>
+<li><strong>Reduced Iteration</strong>: Only process entities you care about</li>
+<li><strong>No Runtime Type Checking</strong>: Skip <code>try_get()</code> calls</li>
+<li><strong>Better ECS Optimization</strong>: Bevy can optimize queries with markers</li>
+<li><strong>Cache Efficiency</strong>: Process similar entities together</li>
+</ol>
+<h2 id="automatic-application"><a class="header" href="#automatic-application">Automatic Application</a></h2>
+<p>You don't need to add marker components manually. The library automatically:</p>
+<ol>
+<li>Detects the Godot node type during scene tree traversal</li>
+<li>Adds the appropriate marker component(s) to the entity</li>
+<li>Includes all parent type markers in the inheritance hierarchy</li>
+<li>Ensures every entity gets the base <code>NodeMarker</code></li>
+</ol>
+<p>This happens transparently when nodes are discovered in your scene tree, making the markers immediately available for your systems to use.</p>
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
+<ul>
+<li>Use specific markers when you know the exact node type: <code>With&lt;Sprite2DMarker&gt;</code></li>
+<li>Use hierarchy markers for broader categories: <code>With&lt;Node2DMarker&gt;</code> for all 2D nodes</li>
+<li>Combine markers to find entities with multiple components</li>
+<li>Prefer <code>.get()</code> over <code>.try_get()</code> when using markers - it's both faster and safer</li>
+</ul>
+<p>For migration information from pre-0.7.0 versions, see the <a href="../migration/v0.6-to-v0.7.html">Migration Guide</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../scene-tree/timing.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../scene-tree/custom-nodes/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../scene-tree/timing.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../scene-tree/custom-nodes/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

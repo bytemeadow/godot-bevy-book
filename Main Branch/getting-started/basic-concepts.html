@@ -1,0 +1,475 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Basic Concepts - The godot-bevy Book 👾 </title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/css/custom.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../getting-started/index.html"><strong aria-hidden="true">2.</strong> Getting Started</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../getting-started/installation.html"><strong aria-hidden="true">2.1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="../getting-started/basic-concepts.html" class="active"><strong aria-hidden="true">2.2.</strong> Basic Concepts</a></li><li class="chapter-item "><a href="../getting-started/plugins.html"><strong aria-hidden="true">2.3.</strong> Plugin System</a></li><li class="chapter-item "><a href="../getting-started/examples.html"><strong aria-hidden="true">2.4.</strong> Examples</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../scene-tree/index.html"><strong aria-hidden="true">3.</strong> Scene Tree</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../scene-tree/timing.html"><strong aria-hidden="true">3.1.</strong> Initialization and Timing</a></li><li class="chapter-item "><a href="../scene-tree/querying.html"><strong aria-hidden="true">3.2.</strong> Querying with Node Type Markers</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/index.html"><strong aria-hidden="true">3.3.</strong> Custom Nodes</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../scene-tree/custom-nodes/automatic-markers.html"><strong aria-hidden="true">3.3.1.</strong> Automatic Markers</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/property-mapping-with-bevy-bundle.html"><strong aria-hidden="true">3.3.2.</strong> Property Mapping (BevyBundle)</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/nodes-from-components-and-bundles.html"><strong aria-hidden="true">3.3.3.</strong> Nodes from Components and Bundles</a></li></ol></li><li class="chapter-item "><a href="../scene-tree/spawning-scenes.html"><strong aria-hidden="true">3.4.</strong> Spawning Scenes</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../transforms/index.html"><strong aria-hidden="true">4.</strong> Transform System</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../transforms/sync-modes.html"><strong aria-hidden="true">4.1.</strong> Sync Modes</a></li><li class="chapter-item "><a href="../transforms/custom-sync.html"><strong aria-hidden="true">4.2.</strong> Custom Transform Sync</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../input/index.html"><strong aria-hidden="true">5.</strong> Input Handling</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../input/bevy-vs-godot.html"><strong aria-hidden="true">5.1.</strong> Bevy vs Godot Input</a></li><li class="chapter-item "><a href="../input/signals.html"><strong aria-hidden="true">5.2.</strong> Signal Handling</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../timing/index.html"><strong aria-hidden="true">6.</strong> Timing & Schedules</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../threading/index.html"><strong aria-hidden="true">7.</strong> Threading & Main Thread Access</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../profiling/profiling.html"><strong aria-hidden="true">8.</strong> Bevy Godot Profiling</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../debugging/index.html"><strong aria-hidden="true">9.</strong> Debugging</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../testing/index.html"><strong aria-hidden="true">10.</strong> Integration Testing</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../platform-targets/index.html"><strong aria-hidden="true">11.</strong> Platform Targets</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../platform-targets/android.html"><strong aria-hidden="true">11.1.</strong> Android</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../project-transition/index.html"><strong aria-hidden="true">12.</strong> Project Transition Patterns</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../project-transition/transitional-mailbox-bridge.html"><strong aria-hidden="true">12.1.</strong> Transitional Mailbox Bridge (Godot -&gt; Bevy Messages)</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../migration/index.html"><strong aria-hidden="true">13.</strong> Migration Guides</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../migration/v0.10-to-v0.11.html"><strong aria-hidden="true">13.1.</strong> v0.10 to v0.11</a></li><li class="chapter-item "><a href="../migration/v0.9-to-v0.10.html"><strong aria-hidden="true">13.2.</strong> v0.9 to v0.10</a></li><li class="chapter-item "><a href="../migration/v0.8-to-v0.9.html"><strong aria-hidden="true">13.3.</strong> v0.8 to v0.9</a></li><li class="chapter-item "><a href="../migration/v0.7-to-v0.8.html"><strong aria-hidden="true">13.4.</strong> v0.7 to v0.8</a></li><li class="chapter-item "><a href="../migration/v0.6-to-v0.7.html"><strong aria-hidden="true">13.5.</strong> v0.6 to v0.7</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">
+                        <a href=".." title="Switch to a different version">
+                            The godot-bevy Book 👾 
+                        </a>
+                    </h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/bytemeadow/godot-bevy" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/bytemeadow/godot-bevy/edit/main/book/src/getting-started/basic-concepts.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="basic-concepts"><a class="header" href="#basic-concepts">Basic Concepts</a></h1>
+<p>Before diving into godot-bevy development, it's important to understand the key concepts that make this integration work.</p>
+<h2 id="the-hybrid-architecture"><a class="header" href="#the-hybrid-architecture">The Hybrid Architecture</a></h2>
+<p>godot-bevy creates a bridge between two powerful systems:</p>
+<h3 id="godot-side"><a class="header" href="#godot-side">Godot Side</a></h3>
+<ul>
+<li><strong>Scene tree</strong> with nodes</li>
+<li><strong>Visual editor</strong> for level design</li>
+<li><strong>Asset pipeline</strong> for resources</li>
+<li><strong>Rendering engine</strong></li>
+<li><strong>Physics engine</strong></li>
+</ul>
+<h3 id="bevy-side"><a class="header" href="#bevy-side">Bevy Side</a></h3>
+<ul>
+<li><strong>Entity Component System (ECS)</strong></li>
+<li><strong>Systems</strong> for game logic</li>
+<li><strong>Components</strong> for data</li>
+<li><strong>Resources</strong> for shared state</li>
+<li><strong>Schedules</strong> for execution order</li>
+</ul>
+<h3 id="the-bridge"><a class="header" href="#the-bridge">The Bridge</a></h3>
+<p>godot-bevy seamlessly connects these worlds:</p>
+<ul>
+<li>Godot nodes ↔ ECS entities</li>
+<li>Node properties ↔ Components</li>
+<li>Signals → Events</li>
+<li>Resources ↔ Assets</li>
+</ul>
+<h2 id="core-components"><a class="header" href="#core-components">Core Components</a></h2>
+<h3 id="entities"><a class="header" href="#entities">Entities</a></h3>
+<p>In godot-bevy, Godot nodes are automatically registered as ECS entities:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// When a node is added to the scene tree,
+// it becomes queryable as an entity
+fn find_player(
+    query: Query&lt;&amp;Name, With&lt;GodotNodeHandle&gt;&gt;,
+) {
+    for name in query.iter() {
+        if name.as_str() == "Player" {
+            // Found the player node!
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="components"><a class="header" href="#components">Components</a></h3>
+<p>Components store data on entities. godot-bevy provides several built-in components:</p>
+<ul>
+<li><code>GodotNodeHandle</code> - Reference to the Godot node</li>
+<li><code>Name</code> - Node name</li>
+<li><code>Groups</code> - Godot node groups</li>
+</ul>
+<p>For collision detection, use the <code>Collisions</code> system param (see <a href="./plugins.html">Plugins</a>).</p>
+<h3 id="systems"><a class="header" href="#systems">Systems</a></h3>
+<p>Systems contain your game logic and run on a schedule:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn movement_system(
+    time: Res&lt;Time&gt;,
+    mut query: Query&lt;&amp;mut Transform, With&lt;Player&gt;&gt;,
+) {
+    for mut transform in query.iter_mut() {
+        transform.translation.x += 
+            100.0 * time.delta_seconds();
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="the-bevy_app-macro"><a class="header" href="#the-bevy_app-macro">The #[bevy_app] Macro</a></h2>
+<p>The entry point for godot-bevy is the <code>#[bevy_app]</code> macro:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[bevy_app]
+fn build_app(app: &amp;mut App) {
+    // Configure your Bevy app here
+    app.add_systems(Update, my_system);
+}
+<span class="boring">}</span></code></pre></pre>
+<p>This macro:</p>
+<ol>
+<li>Creates the GDExtension entry point</li>
+<li>Sets up the Bevy app</li>
+<li>Integrates with Godot's lifecycle</li>
+<li>Handles all the bridging magic</li>
+</ol>
+<h3 id="configuring-core-behavior"><a class="header" href="#configuring-core-behavior">Configuring Core Behavior</a></h3>
+<p>The <code>#[bevy_app]</code> macro accepts configuration attributes to customize godot-bevy's core behavior:</p>
+<h4 id="scene-tree-relationships"><a class="header" href="#scene-tree-relationships">Scene Tree Relationships</a></h4>
+<p>godot-bevy mirrors Godot's scene tree with a custom ECS relationship:
+<code>GodotChildOf</code> / <code>GodotChildren</code>. This avoids conflicts with Bevy's built-in
+<code>ChildOf</code> / <code>Children</code> relationship (used by many plugins for their own hierarchies).</p>
+<p>By default, despawning a parent entity will also despawn its Godot children. You can
+disable that behavior with the <code>scene_tree_auto_despawn_children</code> attribute:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[bevy_app(scene_tree_auto_despawn_children = false)]
+fn build_app(app: &amp;mut App) {
+    // Children can outlive their parents (useful for pooling or custom lifetimes)
+    app.add_plugins(PhysicsPlugins::new(PhysicsUpdate));
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>When to use this:</strong></p>
+<ul>
+<li>✅ When you want entities to outlive their Godot nodes</li>
+<li>✅ When you manage lifetimes manually (pooling, reuse, gameplay-driven despawns)</li>
+<li>❌ When you rely on automatic child cleanup on parent despawn</li>
+</ul>
+<p><strong>Default behavior</strong> (when not specified): <code>scene_tree_auto_despawn_children = true</code></p>
+<h2 id="data-flow"><a class="header" href="#data-flow">Data Flow</a></h2>
+<p>Understanding how data flows between Godot and Bevy is crucial:</p>
+<h3 id="godot--bevy"><a class="header" href="#godot--bevy">Godot → Bevy</a></h3>
+<ol>
+<li>Node added to scene tree</li>
+<li>Entity created with components</li>
+<li>Signals converted to events</li>
+<li>Input forwarded to systems</li>
+</ol>
+<h3 id="bevy--godot"><a class="header" href="#bevy--godot">Bevy → Godot</a></h3>
+<ol>
+<li>Transform components sync to nodes</li>
+<li>Commands can modify scene tree</li>
+<li>Resources can be loaded</li>
+<li>Audio can be played</li>
+</ol>
+<h2 id="key-principles"><a class="header" href="#key-principles">Key Principles</a></h2>
+<h3 id="1-godot-for-content-bevy-for-logic"><a class="header" href="#1-godot-for-content-bevy-for-logic">1. Godot for Content, Bevy for Logic</a></h3>
+<ul>
+<li>Design levels in Godot's editor</li>
+<li>Write game logic in Bevy systems</li>
+<li>Let each tool do what it does best</li>
+</ul>
+<h3 id="2-components-as-the-source-of-truth"><a class="header" href="#2-components-as-the-source-of-truth">2. Components as the Source of Truth</a></h3>
+<ul>
+<li>Store game state in components</li>
+<li>Use Godot nodes for presentation</li>
+<li>Sync only what's necessary</li>
+</ul>
+<h3 id="3-systems-for-everything"><a class="header" href="#3-systems-for-everything">3. Systems for Everything</a></h3>
+<ul>
+<li>Movement? System.</li>
+<li>Combat? System.</li>
+<li>UI updates? System.</li>
+<li>This promotes modularity and reusability</li>
+</ul>
+<h3 id="4-leverage-both-ecosystems"><a class="header" href="#4-leverage-both-ecosystems">4. Leverage Both Ecosystems</a></h3>
+<ul>
+<li>Use Godot's assets and tools</li>
+<li>Use Bevy's plugins and crates</li>
+<li>Don't reinvent what already exists</li>
+</ul>
+<h3 id="5-the-godot-boundary-main-thread-only"><a class="header" href="#5-the-godot-boundary-main-thread-only">5. The Godot Boundary (Main Thread Only)</a></h3>
+<ul>
+<li>Any call into Godot (via <code>GodotAccess</code>, <code>Gd&lt;T&gt;</code>, <code>Input::singleton</code>, etc.) must run on the main thread</li>
+<li>Systems that include <code>GodotAccess</code> are forced onto the main thread and run sequentially, so keep them small and push heavy work to parallel systems</li>
+<li>Treat <code>GodotNodeHandle</code> as an ID; resolve to <code>Gd&lt;T&gt;</code> only via <code>GodotAccess</code></li>
+<li>See <a href="../threading/index.html">Thread Safety and Godot APIs</a> for details and patterns</li>
+</ul>
+<h2 id="common-patterns"><a class="header" href="#common-patterns">Common Patterns</a></h2>
+<h3 id="finding-nodes-by-name"><a class="header" href="#finding-nodes-by-name">Finding Nodes by Name</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn setup(
+    mut query: Query&lt;(&amp;Name, Entity)&gt;,
+) {
+    let player = query.iter()
+        .find_entity_by_name("Player")
+        .expect("Player node must exist");
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="reacting-to-signals"><a class="header" href="#reacting-to-signals">Reacting to Signals</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Message, Debug, Clone)]
+struct ButtonPressed;
+
+fn handle_button_press(
+    mut events: MessageReader&lt;ButtonPressed&gt;,
+) {
+    for _ in events.read() {
+        // Button was pressed!
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="spawning-godot-scenes"><a class="header" href="#spawning-godot-scenes">Spawning Godot Scenes</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">use bevy::app::{App, Plugin, Startup, Update};
+</span><span class="boring">use bevy::asset::{AssetServer, Handle};
+</span><span class="boring">use bevy::prelude::{Commands, Component, Res, Resource, Single, Transform, With};
+</span><span class="boring">use godot_bevy::bridge::GodotNodeHandle;
+</span><span class="boring">use godot_bevy::prelude::{GodotResource, GodotScene};
+</span><span class="boring">
+</span><span class="boring">struct EnemyPlugin;
+</span><span class="boring">
+</span><span class="boring">impl Plugin for EnemyPlugin {
+</span><span class="boring">    fn build(&amp;self, app: &amp;mut App) {
+</span><span class="boring">        app.add_systems(Startup, load_assets);
+</span><span class="boring">        app.add_systems(Update, spawn_enemy);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[derive(Resource, Debug)]
+</span><span class="boring">struct EnemyScene(Handle&lt;GodotResource&gt;);
+</span><span class="boring">
+</span><span class="boring">#[derive(Component, Debug)]
+</span><span class="boring">struct Enemy {
+</span><span class="boring">    health: i32,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[derive(Component, Debug)]
+</span><span class="boring">struct EnemySpawner;
+</span><span class="boring">
+</span><span class="boring">fn load_assets(mut commands: Commands, server: Res&lt;AssetServer&gt;) {
+</span><span class="boring">    let handle: Handle&lt;GodotResource&gt; = server.load("scenes/enemy.tscn");
+</span><span class="boring">    commands.insert_resource(EnemyScene(handle));
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn spawn_enemy(
+    mut commands: Commands,
+    enemy_scene: Res&lt;EnemyScene&gt;,
+    enemy_spawner: Single&lt;&amp;GodotNodeHandle, With&lt;EnemySpawner&gt;&gt;,
+) {
+    commands.spawn((
+        GodotScene::from_handle(enemy_scene.0.clone())
+            .with_parent(enemy_spawner.into_inner().id()),
+        Enemy { health: 100 },
+        Transform::default(),
+    ));
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<p>Now that you understand the basic concepts:</p>
+<ul>
+<li>Try the <a href="https://github.com/bytemeadow/godot-bevy/tree/main/examples">examples</a></li>
+<li>Read about specific systems in detail</li>
+<li>Start building your game!</li>
+</ul>
+<p>Remember: godot-bevy is about using the right tool for the right job. Embrace both Godot and Bevy's strengths!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../getting-started/installation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../getting-started/plugins.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../getting-started/installation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../getting-started/plugins.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
