@@ -1,0 +1,413 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>v0.11 to v0.12 - The godot-bevy Book 👾 Main Branch</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/css/custom.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../getting-started/index.html"><strong aria-hidden="true">2.</strong> Getting Started</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../getting-started/installation.html"><strong aria-hidden="true">2.1.</strong> Installation</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../getting-started/gdenv.html"><strong aria-hidden="true">2.1.1.</strong> Cargo Run Godot</a></li></ol></li><li class="chapter-item "><a href="../getting-started/basic-concepts.html"><strong aria-hidden="true">2.2.</strong> Basic Concepts</a></li><li class="chapter-item "><a href="../getting-started/plugins.html"><strong aria-hidden="true">2.3.</strong> Plugin System</a></li><li class="chapter-item "><a href="../getting-started/examples.html"><strong aria-hidden="true">2.4.</strong> Examples</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../scene-tree/index.html"><strong aria-hidden="true">3.</strong> Scene Tree</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../scene-tree/timing.html"><strong aria-hidden="true">3.1.</strong> Initialization and Timing</a></li><li class="chapter-item "><a href="../scene-tree/querying.html"><strong aria-hidden="true">3.2.</strong> Querying with Node Type Markers</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/index.html"><strong aria-hidden="true">3.3.</strong> Custom Nodes</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../scene-tree/custom-nodes/automatic-markers.html"><strong aria-hidden="true">3.3.1.</strong> Automatic Markers</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/property-mapping-with-bevy-bundle.html"><strong aria-hidden="true">3.3.2.</strong> Property Mapping (BevyBundle)</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/nodes-from-components-and-bundles.html"><strong aria-hidden="true">3.3.3.</strong> Nodes from Components and Bundles</a></li></ol></li><li class="chapter-item "><a href="../scene-tree/spawning-scenes.html"><strong aria-hidden="true">3.4.</strong> Spawning Scenes</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../transforms/index.html"><strong aria-hidden="true">4.</strong> Transform System</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../transforms/sync-modes.html"><strong aria-hidden="true">4.1.</strong> Sync Modes</a></li><li class="chapter-item "><a href="../transforms/custom-sync.html"><strong aria-hidden="true">4.2.</strong> Custom Transform Sync</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../input/index.html"><strong aria-hidden="true">5.</strong> Input Handling</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../input/bevy-vs-godot.html"><strong aria-hidden="true">5.1.</strong> Bevy vs Godot Input</a></li><li class="chapter-item "><a href="../input/signals.html"><strong aria-hidden="true">5.2.</strong> Signal Handling</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../timing/index.html"><strong aria-hidden="true">6.</strong> Timing & Schedules</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../threading/index.html"><strong aria-hidden="true">7.</strong> Threading & Main Thread Access</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../profiling/profiling.html"><strong aria-hidden="true">8.</strong> Bevy Godot Profiling</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../debugging/index.html"><strong aria-hidden="true">9.</strong> Debugging</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../testing/index.html"><strong aria-hidden="true">10.</strong> Integration Testing</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../platform-targets/index.html"><strong aria-hidden="true">11.</strong> Platform Targets</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../platform-targets/android.html"><strong aria-hidden="true">11.1.</strong> Android</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../project-transition/index.html"><strong aria-hidden="true">12.</strong> Project Transition Patterns</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../project-transition/transitional-mailbox-bridge.html"><strong aria-hidden="true">12.1.</strong> Transitional Mailbox Bridge (Godot -&gt; Bevy Messages)</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../migration/index.html"><strong aria-hidden="true">13.</strong> Migration Guides</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../migration/v0.11-to-v0.12.html" class="active"><strong aria-hidden="true">13.1.</strong> v0.11 to v0.12</a></li><li class="chapter-item "><a href="../migration/v0.10-to-v0.11.html"><strong aria-hidden="true">13.2.</strong> v0.10 to v0.11</a></li><li class="chapter-item "><a href="../migration/v0.9-to-v0.10.html"><strong aria-hidden="true">13.3.</strong> v0.9 to v0.10</a></li><li class="chapter-item "><a href="../migration/v0.8-to-v0.9.html"><strong aria-hidden="true">13.4.</strong> v0.8 to v0.9</a></li><li class="chapter-item "><a href="../migration/v0.7-to-v0.8.html"><strong aria-hidden="true">13.5.</strong> v0.7 to v0.8</a></li><li class="chapter-item "><a href="../migration/v0.6-to-v0.7.html"><strong aria-hidden="true">13.6.</strong> v0.6 to v0.7</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">
+                        <a href=".." title="Switch to a different version">
+                            The godot-bevy Book 👾 Main Branch
+                        </a>
+                    </h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/bytemeadow/godot-bevy" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/bytemeadow/godot-bevy/edit/main/book/src/migration/v0.11-to-v0.12.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="migration-guide-v011-to-v012"><a class="header" href="#migration-guide-v011-to-v012">Migration Guide: v0.11 to v0.12</a></h1>
+<p>This guide covers breaking changes when upgrading from godot-bevy 0.11.x to 0.12.0.</p>
+<h2 id="table-of-contents"><a class="header" href="#table-of-contents">Table of Contents</a></h2>
+<ul>
+<li><a href="#behavior-native-schedule-ordering">Native schedule ordering</a></li>
+<li><a href="#behavior-buttoninput-now-works-in-fixedupdate">ButtonInput now works in FixedUpdate</a></li>
+<li><a href="#behavior-twoway-transform-sync--now-per-axis-co-authorship">TwoWay transform sync -- now per-axis co-authorship</a></li>
+<li><a href="#breaking-godotactions-update-readers-need-aftergodotinputset">GodotActions: Update readers need .after(GodotInputSet)</a></li>
+<li><a href="#breaking-runfixedmainloop-removed-from-mainscheduleorder">RunFixedMainLoop removed from MainScheduleOrder</a></li>
+<li><a href="#breaking-physicsupdate-and-related-apis-removed">PhysicsUpdate and related APIs removed</a></li>
+<li><a href="#breaking-fixedupdate-now-runs-at-godots-physics-rate">FixedUpdate now runs at Godot's physics rate</a></li>
+<li><a href="#breaking-delta-time-use-restime-everywhere">Delta time: use Res&lt;Time&gt; everywhere</a></li>
+<li><a href="#new-enginetime_scale-honored-automatically">Engine.time_scale honored automatically</a></li>
+<li><a href="#new-physics-interpolation-support">Physics interpolation support</a></li>
+</ul>
+<hr />
+<h2 id="behavior-native-schedule-ordering"><a class="header" href="#behavior-native-schedule-ordering">Behavior: Native schedule ordering</a></h2>
+<p>The main schedule now runs in <strong>stock Bevy order</strong>:</p>
+<pre><code>First → PreUpdate → StateTransition → [FixedMain ×N] → Update → PostUpdate → Last
+</code></pre>
+<p>The prefix (<code>First</code> through <code>StateTransition</code>) runs in Godot's <code>_physics_process</code>; the suffix (<code>Update</code> through <code>Last</code>) runs in <code>_process</code>. <code>clear_trackers</code> fires once at the end of <code>_process</code>, covering the full render frame.</p>
+<p><strong>What changed from v0.11:</strong> In v0.11 the prefix ran in <code>_process</code> <em>after</em> the fixed steps. That meant <code>PreUpdate</code> and <code>StateTransition</code> came after the fixed loop instead of before it. The new ordering matches what you'd see in a plain Bevy desktop app.</p>
+<p><strong>Practical effects:</strong></p>
+<ul>
+<li><code>Changed&lt;T&gt;</code>, <code>Added&lt;T&gt;</code>, and <code>RemovedComponents</code> from <code>PreUpdate</code> mutations are visible in <code>FixedUpdate</code> within the same render frame.</li>
+<li><code>OnEnter</code> / <code>OnExit</code> state transitions (fired by <code>StateTransition</code>) are visible to <code>FixedUpdate</code> in the same frame.</li>
+<li>Systems that do clock-sensitive Godot FFI (e.g. reading physics state) and were previously safe in <code>First</code>/<code>PreUpdate</code> may now run under the physics clock. Move such work to <code>Update</code> or later if it must run after Godot's physics integration for the current frame.</li>
+</ul>
+<hr />
+<h2 id="behavior-buttoninput-now-works-in-fixedupdate"><a class="header" href="#behavior-buttoninput-now-works-in-fixedupdate">Behavior: ButtonInput now works in FixedUpdate</a></h2>
+<p><code>ButtonInput&lt;KeyCode&gt;::just_pressed</code> and <code>just_released</code> are now visible in <code>FixedUpdate</code>. Previously they were always false there because <code>PreUpdate</code> (where <code>keyboard_input_system</code> populates the resource) ran after the fixed steps. With native ordering, <code>PreUpdate</code> runs before the fixed steps -- so when a physics step runs, edges are already set by the time <code>FixedUpdate</code> runs.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Now visible in FixedUpdate (when a physics step runs on the edge's frame)
+app.add_systems(FixedUpdate, |keys: Res&lt;ButtonInput&lt;KeyCode&gt;&gt;| {
+    if keys.just_pressed(KeyCode::Space) { /* see caveats below */ }
+});
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Caveat:</strong> <code>just_pressed</code> is a one-render-frame edge (cleared each frame in <code>PreUpdate</code>), so the render frame's physics-step count matters:</p>
+<ul>
+<li>More physics than display (N steps/frame): <code>just_pressed</code> is <code>true</code> in all N <code>FixedUpdate</code> calls that frame.</li>
+<li>More display than physics: a frame can run <strong>zero</strong> physics steps; an edge landing on a step-less frame is never seen in <code>FixedUpdate</code> (cleared by the next frame). Same caveat as stock Bevy.</li>
+</ul>
+<p><code>GodotActions</code> uses Godot's per-tick edge state and has neither issue -- prefer it for fixed-rate gameplay input.</p>
+<p>No code change is required -- this is a fix. If you were working around the limitation (e.g. by reading input only in <code>Update</code> and storing state in a resource), the workaround is no longer necessary.</p>
+<hr />
+<h2 id="behavior-twoway-transform-sync--now-per-axis-co-authorship"><a class="header" href="#behavior-twoway-transform-sync--now-per-axis-co-authorship">Behavior: TwoWay transform sync — now per-axis co-authorship</a></h2>
+<p><code>TwoWay</code> transform sync is improved. The Godot→Bevy read runs in <code>PreUpdate</code> (before your systems), so Bevy systems see the latest Godot-authored transform the same frame -- the brownfield/hybrid guarantee. The echo guard is a per-entity value shadow, so a node can be <strong>co-authored per axis</strong>: Godot drives some translation/scale components while Bevy drives others, on the same node, every frame, and neither clobbers the other. Rotation is whole (quaternion components aren't independently meaningful); if both sides change the same axis in one frame, Bevy wins.</p>
+<p>No action required.</p>
+<hr />
+<h2 id="breaking-godotactions-update-readers-need-aftergodotinputset"><a class="header" href="#breaking-godotactions-update-readers-need-aftergodotinputset">Breaking: GodotActions Update readers need <code>.after(GodotInputSet)</code></a></h2>
+<p><code>GodotActionsPlugin</code> previously polled the process snapshot in <code>First</code>. It now polls in <code>Update</code> (to stay in the suffix, where the process clock is correct). If you have <code>Update</code> systems that read <code>Res&lt;GodotActions&gt;</code>, they must run after the poll:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Before: no ordering needed (poll was in First, readers ran later by default)
+app.add_systems(Update, my_system);
+
+// After: explicit ordering required
+app.add_systems(Update, my_system.after(GodotInputSet));
+<span class="boring">}</span></code></pre></pre>
+<p><code>FixedUpdate</code> systems are unaffected -- the fixed-schedule driver polls the physics snapshot automatically.</p>
+<p>If you added <code>.after(GodotInputSet)</code> already (as the <code>GodotActions</code> docs recommended), no change is needed.</p>
+<hr />
+<h2 id="breaking-runfixedmainloop-removed-from-mainscheduleorder"><a class="header" href="#breaking-runfixedmainloop-removed-from-mainscheduleorder">Breaking: RunFixedMainLoop removed from MainScheduleOrder</a></h2>
+<p><code>RunFixedMainLoop</code> is no longer a member of <code>MainScheduleOrder.labels</code>. Its slot is held by a private marker so <code>app.update()</code> does not drive the fixed loop (godot-bevy drives it from <code>_physics_process</code> instead).</p>
+<p><strong>Affected:</strong> plugins that insert top-level schedules by calling <code>insert_after(RunFixedMainLoop, MySchedule)</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// This panics -- RunFixedMainLoop is not in the label list
+order.insert_after(RunFixedMainLoop, MySchedule);
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Fix:</strong> insert relative to a schedule that is still in the list, or use the public anchor sets:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Prefix (before fixed steps): target First, PreUpdate, or StateTransition
+order.insert_after(PreUpdate, MyPrefixSchedule);
+
+// Suffix (after fixed steps): target Update, PostUpdate, or Last
+order.insert_after(Update, MySuffixSchedule);
+
+// Adjacent to the fixed loop: use the anchor sets on RunFixedMainLoop itself
+app.add_systems(
+    RunFixedMainLoop,
+    my_system.in_set(RunFixedMainLoopSystems::BeforeFixedMainLoop),
+);
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="breaking-physicsupdate-and-related-apis-removed"><a class="header" href="#breaking-physicsupdate-and-related-apis-removed">Breaking: PhysicsUpdate and related APIs removed</a></h2>
+<p>The custom <code>PhysicsUpdate</code>, <code>PrePhysicsUpdate</code>, <code>PhysicsDelta</code>, and <code>SystemDeltaTimer</code> types are removed. godot-bevy now drives Bevy's standard <code>FixedMain</code> schedule directly from Godot's <code>_physics_process</code>.</p>
+<h3 id="move-systems-to-standard-fixed-schedules"><a class="header" href="#move-systems-to-standard-fixed-schedules">Move systems to standard Fixed schedules</a></h3>
+<p>Before:</p>
+<pre><code class="language-rust ignore">app.add_systems(PhysicsUpdate, character_movement);
+app.add_systems(PrePhysicsUpdate, read_input);</code></pre>
+<p>After:</p>
+<pre><code class="language-rust ignore">app.add_systems(FixedUpdate, character_movement);
+app.add_systems(FixedPreUpdate, read_input);</code></pre>
+<p>The full <code>FixedMain</code> schedule order is:</p>
+<div class="table-wrapper"><table><thead><tr><th>Old</th><th>New equivalent</th></tr></thead><tbody>
+<tr><td><code>PrePhysicsUpdate</code></td><td><code>FixedFirst</code> or <code>FixedPreUpdate</code></td></tr>
+<tr><td><code>PhysicsUpdate</code></td><td><code>FixedUpdate</code></td></tr>
+<tr><td><em>(none)</em></td><td><code>FixedPostUpdate</code></td></tr>
+<tr><td><em>(none)</em></td><td><code>FixedLast</code></td></tr>
+</tbody></table>
+</div>
+<h3 id="replace-physicsdelta-with-restime"><a class="header" href="#replace-physicsdelta-with-restime">Replace PhysicsDelta with Res&lt;Time&gt;</a></h3>
+<p>Before:</p>
+<pre><code class="language-rust ignore">fn move_player(
+    physics_delta: Res&lt;PhysicsDelta&gt;,
+    mut q: Query&lt;&amp;mut Transform, With&lt;Player&gt;&gt;,
+) {
+    let delta = physics_delta.delta_seconds;
+    for mut t in &amp;mut q {
+        t.translation.x += 100.0 * delta;
+    }
+}</code></pre>
+<p>After:</p>
+<pre><code class="language-rust ignore">fn move_player(
+    time: Res&lt;Time&gt;,
+    mut q: Query&lt;&amp;mut Transform, With&lt;Player&gt;&gt;,
+) {
+    let delta = time.delta_secs();
+    for mut t in &amp;mut q {
+        t.translation.x += 100.0 * delta;
+    }
+}</code></pre>
+<p><code>Res&lt;Time&gt;</code> in a <code>FixedUpdate</code> system automatically reports the fixed physics delta — no special type needed.</p>
+<h3 id="systemdeltatimer-removed"><a class="header" href="#systemdeltatimer-removed">SystemDeltaTimer removed</a></h3>
+<p><code>SystemDeltaTimer</code> is removed. For cooldowns and accumulators inside fixed systems, use Bevy's standard timer types (<code>Timer</code>, <code>Stopwatch</code>) or accumulate <code>time.delta_secs()</code> directly.</p>
+<hr />
+<h2 id="breaking-fixedupdate-now-runs-at-godots-physics-rate"><a class="header" href="#breaking-fixedupdate-now-runs-at-godots-physics-rate">Breaking: FixedUpdate now runs at Godot's physics rate</a></h2>
+<p>Previously, <code>FixedUpdate</code> ran on Bevy's own 64 Hz clock (independent of Godot). Now it runs on Godot's authoritative physics clock.</p>
+<p><strong>Default rate:</strong> 60 Hz (controlled by Project Settings → Physics → Common → Physics Ticks Per Second).</p>
+<p><strong>Do not hardcode the timestep:</strong></p>
+<pre><code class="language-rust ignore">// BAD: breaks if you change physics rate in Project Settings
+let delta = 1.0 / 60.0;
+
+// GOOD: always correct
+fn my_system(time: Res&lt;Time&gt;) {
+    let delta = time.delta_secs();
+}</code></pre>
+<hr />
+<h2 id="new-enginetime_scale-honored-automatically"><a class="header" href="#new-enginetime_scale-honored-automatically">New: Engine.time_scale honored automatically</a></h2>
+<p>When <code>Engine.time_scale</code> is not 1.0 (slow-motion, fast-forward), the physics delta passed to <code>FixedMain</code> already incorporates the scale. You get slow-motion for free in physics systems — no extra code required.</p>
+<hr />
+<h2 id="new-physics-interpolation-support"><a class="header" href="#new-physics-interpolation-support">New: Physics interpolation support</a></h2>
+<p>godot-bevy now writes transforms at physics rate (<code>FixedLast</code>). To get smooth rendering between physics ticks, enable Godot's built-in physics interpolation.</p>
+<p><strong>In Project Settings:</strong> Physics → Common → Physics Interpolation = <code>true</code></p>
+<p><strong>In <code>project.godot</code>:</strong></p>
+<pre><code class="language-ini">[physics]
+common/physics_interpolation=true
+</code></pre>
+<p>When a node teleports (respawn, warp), call <code>reset_physics_interpolation()</code> on it immediately after moving so Godot doesn't interpolate across the jump.</p>
+<blockquote>
+<p>Bevy-side interpolation plugins and rollback netcode are not supported in godot-bevy's transform sync path — use Godot's built-in interpolation instead.</p>
+</blockquote>
+<hr />
+<h2 id="migration-checklist"><a class="header" href="#migration-checklist">Migration Checklist</a></h2>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Replace <code>PhysicsUpdate</code> with <code>FixedUpdate</code>.</li>
+<li><input disabled="" type="checkbox"/>
+Replace <code>PrePhysicsUpdate</code> with <code>FixedFirst</code> or <code>FixedPreUpdate</code>.</li>
+<li><input disabled="" type="checkbox"/>
+Replace <code>Res&lt;PhysicsDelta&gt;</code> + <code>physics_delta.delta_seconds</code> with <code>Res&lt;Time&gt;</code> + <code>time.delta_secs()</code>.</li>
+<li><input disabled="" type="checkbox"/>
+Remove any <code>SystemDeltaTimer</code> usage; use standard Bevy <code>Timer</code>/<code>Stopwatch</code> or accumulate <code>time.delta_secs()</code>.</li>
+<li><input disabled="" type="checkbox"/>
+Remove hardcoded <code>1.0 / 60.0</code> timestep constants; read <code>time.delta_secs()</code> instead.</li>
+<li><input disabled="" type="checkbox"/>
+Enable physics interpolation in <code>project.godot</code> if your game has moving objects.</li>
+<li><input disabled="" type="checkbox"/>
+Call <code>reset_physics_interpolation()</code> on nodes that teleport.</li>
+<li><input disabled="" type="checkbox"/>
+If using <code>avian</code> physics, pass <code>FixedUpdate</code> instead of <code>PhysicsUpdate</code> to <code>PhysicsPlugins::new(...)</code>.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../migration/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../migration/v0.10-to-v0.11.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../migration/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../migration/v0.10-to-v0.11.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
