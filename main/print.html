@@ -3386,6 +3386,9 @@ example</a></li>
 <blockquote>
 <p><strong>Note for version 0.9.3+</strong>: The <code>check-cfg</code> workaround is no longer needed. Tracy integration has been refactored to prevent dependency leaks.</p>
 </blockquote>
+<blockquote>
+<p><strong>Note for version 0.12.0+</strong>: The Godot editor uses a different Tracy client port than game instances. The default editor port is <code>7867</code>. It can be overridden by setting the <code>GODOT_EDITOR_TRACY_PORT=7867</code> environment variable. You override the game instance Tracy port as usual with <code>TRACY_PORT=8086</code>.</p>
+</blockquote>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="debugging"><a class="header" href="#debugging">Debugging</a></h1>
 <p>Godot-bevy includes a built-in entity inspector that displays your Bevy ECS state directly in the Godot editor. When running your game, you can see all entities, their components, and parent-child relationships in real time.</p>
 <h2 id="entity-inspector"><a class="header" href="#entity-inspector">Entity Inspector</a></h2>

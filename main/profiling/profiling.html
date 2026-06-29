@@ -229,6 +229,9 @@ example</a></li>
 <blockquote>
 <p><strong>Note for version 0.9.3+</strong>: The <code>check-cfg</code> workaround is no longer needed. Tracy integration has been refactored to prevent dependency leaks.</p>
 </blockquote>
+<blockquote>
+<p><strong>Note for version 0.12.0+</strong>: The Godot editor uses a different Tracy client port than game instances. The default editor port is <code>7867</code>. It can be overridden by setting the <code>GODOT_EDITOR_TRACY_PORT=7867</code> environment variable. You override the game instance Tracy port as usual with <code>TRACY_PORT=8086</code>.</p>
+</blockquote>
 
                     </main>
 
