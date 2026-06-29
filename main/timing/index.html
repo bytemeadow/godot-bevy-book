@@ -190,14 +190,15 @@
 <p>godot-bevy splits Bevy's standard <code>Main</code> schedule across Godot's two frame callbacks at the fixed-loop boundary. <code>app.update()</code> is never called in production: the prefix and the fixed loop run in <code>_physics_process</code>, and the suffix runs in <code>_process</code>.</p>
 <h3 id="physics-frames-_physics_process"><a class="header" href="#physics-frames-_physics_process">Physics Frames (<code>_physics_process</code>)</a></h3>
 <p>The <strong>prefix</strong> of the main schedule plus the fixed loop run here, on Godot's physics clock.</p>
+<p>The <code>TwoWay</code> notes below refer to <a href="../transforms/sync-modes.html"><code>TransformSyncMode::TwoWay</code></a> (bidirectional Godot↔ECS transform sync); they only affect <em>where</em> the Godot→ECS read runs.</p>
 <p><strong>What runs:</strong></p>
 <ul>
 <li><code>First</code></li>
-<li><code>PreUpdate</code> (reads Godot → ECS transforms, once per render frame)</li>
+<li><code>PreUpdate</code> (TwoWay: reads Godot → ECS transforms only on 0-physics-step frames)</li>
 <li><code>StateTransition</code></li>
 <li><code>FixedMain</code> (zero or more times per render frame)
 <ul>
-<li><code>FixedFirst</code> (TwoWay: re-reads Godot → ECS per physics step, steps 2..N)</li>
+<li><code>FixedFirst</code> (TwoWay: reads Godot → ECS every physics step)</li>
 <li><code>FixedPreUpdate</code></li>
 <li><code>FixedUpdate</code> (your physics logic)</li>
 <li><code>FixedPostUpdate</code></li>
@@ -235,10 +236,10 @@
 <h3 id="physics-frame-_physics_process"><a class="header" href="#physics-frame-_physics_process">Physics Frame (<code>_physics_process</code>)</a></h3>
 <pre><code>Physics Frame Start
     ├── First           ┐
-    ├── PreUpdate       │ prefix: once per render frame (reads Godot → ECS)
+    ├── PreUpdate       │ prefix: once per render frame (TwoWay read only on 0-step frames)
     ├── StateTransition ┘
     └── FixedMain       (once per physics step)
-        ├── FixedFirst      (TwoWay: re-reads Godot → ECS, steps 2..N)
+        ├── FixedFirst      (TwoWay: reads Godot → ECS every physics step)
         ├── FixedPreUpdate
         ├── FixedUpdate     (your physics/fixed logic)
         ├── FixedPostUpdate
@@ -344,12 +345,13 @@ fn physics_system(time: Res&lt;Time&gt;) {
 }
 <span class="boring">}</span></code></pre></pre>
 <h3 id="dont-expect-immediate-cross-schedule-visibility"><a class="header" href="#dont-expect-immediate-cross-schedule-visibility">Don't expect immediate cross-schedule visibility</a></h3>
-<p>Godot transforms written in <code>FixedLast</code> aren't read back into ECS until the next render frame's <code>PreUpdate</code> (which runs in the physics prefix).</p>
+<p>Godot transforms written in <code>FixedLast</code> aren't read back into ECS until the next physics step's <code>FixedFirst</code> (TwoWay), or — on a render frame with no physics step — that frame's <code>PreUpdate</code> fallback.</p>
+<p>Because the TwoWay read occurs in <code>FixedFirst</code>, any <em>prefix</em> schedule (<code>First</code>, <code>PreUpdate</code>, <code>StateTransition</code>) on a frame with one or more physics steps sees <strong>last frame's</strong> synced <code>Transform</code> — the fresh Godot value isn't merged until <code>FixedFirst</code> runs. Read this frame's Godot value in <code>FixedUpdate</code> onward (after <code>FixedFirst</code>) or in the <code>Update</code> suffix (after the last step's read), not in a prefix schedule.</p>
 <h2 id="performance-considerations"><a class="header" href="#performance-considerations">Performance Considerations</a></h2>
 <ol>
 <li><strong>Visual frames</strong> vary widely (30–144+ FPS)</li>
 <li><strong>FixedUpdate</strong> runs at a constant rate driven by Godot's physics clock</li>
-<li>Transform syncing from ECS → Godot happens in <code>FixedLast</code>; Godot → ECS happens in <code>PreUpdate</code> (and per physics step in <code>FixedFirst</code> under TwoWay)</li>
+<li>Transform syncing from ECS → Godot happens in <code>FixedLast</code>; Godot → ECS happens every physics step in <code>FixedFirst</code> (TwoWay), and in <code>PreUpdate</code> on 0-step frames</li>
 </ol>
 <blockquote>
 <p><strong>Note:</strong> Scene tree entities are initialized during <code>PreStartup</code>, before any <code>Startup</code> systems run. You can safely query Godot scene entities in <code>Startup</code> systems. See <a href="../scene-tree/timing.html">Scene Tree Initialization and Timing</a> for details.</p>

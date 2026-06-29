@@ -1866,7 +1866,7 @@ synchronization occurs</li>
 <li>✅ Works with Godot animations</li>
 <li>✅ Supports hybrid architectures</li>
 <li>✅ Per-axis co-authorship -- Godot and Bevy can drive different axes of the same node</li>
-<li>✅ Bevy reads the latest Godot value <em>before</em> your systems run (read in <code>PreUpdate</code>, and again per physics step in <code>FixedFirst</code>)</li>
+<li>✅ Bevy reads the latest Godot value <em>before</em> your systems run (read every physics step in <code>FixedFirst</code>; on 0-step frames, in <code>PreUpdate</code>)</li>
 <li>❌ Highest performance cost</li>
 </ul>
 <p><strong>Use when:</strong></p>
@@ -1876,13 +1876,14 @@ synchronization occurs</li>
 <li>Mixing ECS and GDScript logic</li>
 </ul>
 <h4 id="co-authorship-semantics"><a class="header" href="#co-authorship-semantics">Co-authorship semantics</a></h4>
-<p>The Godot→Bevy read runs in <code>PreUpdate</code> (before your systems), so a node moved from
-Godot -- by GDScript, an <code>AnimationPlayer</code>, or physics -- is visible to Bevy systems the
-same frame. It also runs once per physics step in <code>FixedFirst</code>, so when a render frame
-spans several physics steps a node moved from Godot <em>between</em> steps stays visible every
-step (matching the <code>FixedLast</code> write cadence) rather than being clobbered by a stale
-whole-transform write. The Bevy→Godot write runs in <code>FixedLast</code> and pushes only what Bevy
-changed, tracked against a per-entity value shadow. So a single node can be co-authored
+<p>The Godot→Bevy read occurs in <code>FixedFirst</code>, running once per physics step before your
+<code>FixedUpdate</code> systems, so a node moved from Godot -- by GDScript, an <code>AnimationPlayer</code>, or
+physics -- <em>between</em> steps stays visible every step (matching the <code>FixedLast</code> write cadence)
+rather than being clobbered by a stale whole-transform write. On a render frame with no
+physics step the read falls back to <code>PreUpdate</code>, keeping idle frames covered. Either way the
+last read precedes the <code>Update</code> suffix, so your <code>Update</code> systems see Godot's latest value the
+same frame. The Bevy→Godot write runs in <code>FixedLast</code> and pushes only what Bevy changed,
+tracked against a per-entity value shadow. So a single node can be co-authored
 <strong>per axis</strong>:</p>
 <pre><code class="language-gdscript"># quad.gd -- Godot drives x
 func _process(_dt): position.x = sin(t) * 100.0
@@ -1901,9 +1902,17 @@ fn move_y(mut q: Query&lt;&amp;mut Transform, With&lt;Quad&gt;&gt;) {
 is authored by one side at a time (2D rotation is a single angle anyway).</li>
 <li>If <strong>both sides change the same axis in the same frame</strong>, Bevy wins.</li>
 <li>A value authored in Godot's <strong>idle phase</strong> (<code>_process</code>, <code>AnimationPlayer</code> in idle) is seen
-by Bevy the next frame, since Bevy reads in the physics phase -- the same one-frame
-relationship any Godot <code>_physics_process</code> reader has with an idle-phase writer.</li>
+by Bevy the next frame, since Bevy's read runs in the physics phase, before Godot's
+idle phase within a frame -- the same one-frame relationship any Godot <code>_physics_process</code>
+reader has with an idle-phase writer.</li>
 </ul>
+<blockquote>
+<p><strong>Freshness trade:</strong> because the read occurs in <code>FixedFirst</code>, any <em>prefix</em> schedule
+(<code>First</code>, <code>PreUpdate</code>, <code>StateTransition</code>) on a frame with one or more physics steps sees
+<strong>last frame's</strong> synced <code>Transform</code> -- the fresh Godot value isn't merged until
+<code>FixedFirst</code> runs. Read this-frame's Godot value in <code>FixedUpdate</code> onward or in the
+<code>Update</code> suffix, not in a prefix schedule.</p>
+</blockquote>
 <h2 id="configuration"><a class="header" href="#configuration">Configuration</a></h2>
 <p>Configure the sync mode in your <code>#[bevy_app]</code> function:</p>
 <h3 id="disabled-mode"><a class="header" href="#disabled-mode">Disabled Mode</a></h3>
@@ -1956,7 +1965,7 @@ CPU Usage: O(changed entities)
 <h3 id="two-way-mode-performance"><a class="header" href="#two-way-mode-performance">Two-Way Mode Performance</a></h3>
 <pre><code>Transform Components: Created
 Write Systems: Running (FixedLast schedule)
-Read Systems: Running (PreUpdate + FixedFirst schedules)
+Read Systems: Running (FixedFirst every step, PreUpdate 0-step fallback)
 Memory Usage: ~48 bytes per entity
 CPU Usage: O(all entities with transforms)
 </code></pre>
@@ -1970,7 +1979,7 @@ CPU Usage: O(all entities with transforms)
 </ul>
 <p><strong>Read Systems (Godot → ECS)</strong></p>
 <ul>
-<li>Schedule: <code>PreUpdate</code> (once per render frame) and <code>FixedFirst</code> (per physics step, steps 2..N)</li>
+<li>Schedule: <code>FixedFirst</code> (every physics step) and <code>PreUpdate</code> (0-step frames only)</li>
 <li>Checks all transforms for external changes</li>
 <li>Only runs in TwoWay mode</li>
 </ul>
@@ -3120,14 +3129,15 @@ signals.connect(area, Area2DSignals::AREA_ENTERED, Some(entity), mapper);
 <p>godot-bevy splits Bevy's standard <code>Main</code> schedule across Godot's two frame callbacks at the fixed-loop boundary. <code>app.update()</code> is never called in production: the prefix and the fixed loop run in <code>_physics_process</code>, and the suffix runs in <code>_process</code>.</p>
 <h3 id="physics-frames-_physics_process"><a class="header" href="#physics-frames-_physics_process">Physics Frames (<code>_physics_process</code>)</a></h3>
 <p>The <strong>prefix</strong> of the main schedule plus the fixed loop run here, on Godot's physics clock.</p>
+<p>The <code>TwoWay</code> notes below refer to <a href="timing/../transforms/sync-modes.html"><code>TransformSyncMode::TwoWay</code></a> (bidirectional Godot↔ECS transform sync); they only affect <em>where</em> the Godot→ECS read runs.</p>
 <p><strong>What runs:</strong></p>
 <ul>
 <li><code>First</code></li>
-<li><code>PreUpdate</code> (reads Godot → ECS transforms, once per render frame)</li>
+<li><code>PreUpdate</code> (TwoWay: reads Godot → ECS transforms only on 0-physics-step frames)</li>
 <li><code>StateTransition</code></li>
 <li><code>FixedMain</code> (zero or more times per render frame)
 <ul>
-<li><code>FixedFirst</code> (TwoWay: re-reads Godot → ECS per physics step, steps 2..N)</li>
+<li><code>FixedFirst</code> (TwoWay: reads Godot → ECS every physics step)</li>
 <li><code>FixedPreUpdate</code></li>
 <li><code>FixedUpdate</code> (your physics logic)</li>
 <li><code>FixedPostUpdate</code></li>
@@ -3165,10 +3175,10 @@ signals.connect(area, Area2DSignals::AREA_ENTERED, Some(entity), mapper);
 <h3 id="physics-frame-_physics_process"><a class="header" href="#physics-frame-_physics_process">Physics Frame (<code>_physics_process</code>)</a></h3>
 <pre><code>Physics Frame Start
     ├── First           ┐
-    ├── PreUpdate       │ prefix: once per render frame (reads Godot → ECS)
+    ├── PreUpdate       │ prefix: once per render frame (TwoWay read only on 0-step frames)
     ├── StateTransition ┘
     └── FixedMain       (once per physics step)
-        ├── FixedFirst      (TwoWay: re-reads Godot → ECS, steps 2..N)
+        ├── FixedFirst      (TwoWay: reads Godot → ECS every physics step)
         ├── FixedPreUpdate
         ├── FixedUpdate     (your physics/fixed logic)
         ├── FixedPostUpdate
@@ -3274,12 +3284,13 @@ fn physics_system(time: Res&lt;Time&gt;) {
 }
 <span class="boring">}</span></code></pre></pre>
 <h3 id="dont-expect-immediate-cross-schedule-visibility"><a class="header" href="#dont-expect-immediate-cross-schedule-visibility">Don't expect immediate cross-schedule visibility</a></h3>
-<p>Godot transforms written in <code>FixedLast</code> aren't read back into ECS until the next render frame's <code>PreUpdate</code> (which runs in the physics prefix).</p>
+<p>Godot transforms written in <code>FixedLast</code> aren't read back into ECS until the next physics step's <code>FixedFirst</code> (TwoWay), or — on a render frame with no physics step — that frame's <code>PreUpdate</code> fallback.</p>
+<p>Because the TwoWay read occurs in <code>FixedFirst</code>, any <em>prefix</em> schedule (<code>First</code>, <code>PreUpdate</code>, <code>StateTransition</code>) on a frame with one or more physics steps sees <strong>last frame's</strong> synced <code>Transform</code> — the fresh Godot value isn't merged until <code>FixedFirst</code> runs. Read this frame's Godot value in <code>FixedUpdate</code> onward (after <code>FixedFirst</code>) or in the <code>Update</code> suffix (after the last step's read), not in a prefix schedule.</p>
 <h2 id="performance-considerations-1"><a class="header" href="#performance-considerations-1">Performance Considerations</a></h2>
 <ol>
 <li><strong>Visual frames</strong> vary widely (30–144+ FPS)</li>
 <li><strong>FixedUpdate</strong> runs at a constant rate driven by Godot's physics clock</li>
-<li>Transform syncing from ECS → Godot happens in <code>FixedLast</code>; Godot → ECS happens in <code>PreUpdate</code> (and per physics step in <code>FixedFirst</code> under TwoWay)</li>
+<li>Transform syncing from ECS → Godot happens in <code>FixedLast</code>; Godot → ECS happens every physics step in <code>FixedFirst</code> (TwoWay), and in <code>PreUpdate</code> on 0-step frames</li>
 </ol>
 <blockquote>
 <p><strong>Note:</strong> Scene tree entities are initialized during <code>PreStartup</code>, before any <code>Startup</code> systems run. You can safely query Godot scene entities in <code>Startup</code> systems. See <a href="timing/../scene-tree/timing.html">Scene Tree Initialization and Timing</a> for details.</p>
