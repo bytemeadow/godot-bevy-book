@@ -187,7 +187,7 @@
                         <h1 id="asset-loading"><a class="header" href="#asset-loading">Asset Loading</a></h1>
 <p>godot-bevy loads assets through Bevy's <code>AssetServer</code>, but Godot owns the filesystem. There are two lanes, and picking the wrong one is the mistake that works in the editor and 404s in an export.</p>
 <h2 id="two-lanes"><a class="header" href="#two-lanes">Two lanes</a></h2>
-<p><strong>Godot-imported resources</strong> — anything Godot imports and manages: <code>.png</code>, <code>.ogg</code>, <code>.glb</code>, <code>.tscn</code>, <code>.tres</code>, <code>.res</code>, <code>.wav</code>. Load these as <code>GodotResource</code> and cast:</p>
+<p><strong>Godot-imported resources</strong> -- anything Godot imports and manages: <code>.png</code>, <code>.ogg</code>, <code>.glb</code>, <code>.tscn</code>, <code>.tres</code>, <code>.res</code>, <code>.wav</code>. Load these as <code>GodotResource</code> and cast:</p>
 <pre><code class="language-rust ignore">let scene: Handle&lt;GodotResource&gt; = asset_server.load("res://player.tscn");
 
 // later, once loaded
@@ -196,8 +196,8 @@ if let Some(res) = assets.get_mut(&amp;scene) {
         // use the PackedScene
     }
 }</code></pre>
-<p>This lane goes through Godot's <code>ResourceLoader</code>, which resolves imports, <code>.remap</code>s, and <code>uid://</code> references — the things a raw file read can't.</p>
-<p><strong>Raw data files</strong> — your own formats: <code>.ron</code>, <code>.toml</code>, <code>.json</code>, a custom binary. Write a normal Bevy <code>AssetLoader</code> for the type and load it directly. The reader hands your loader the real file bytes:</p>
+<p>This lane goes through Godot's <code>ResourceLoader</code>, which resolves imports, <code>.remap</code>s, and <code>uid://</code> references -- the things a raw file read can't.</p>
+<p><strong>Raw data files</strong> -- your own formats: <code>.ron</code>, <code>.toml</code>, <code>.json</code>, a custom binary. Write a normal Bevy <code>AssetLoader</code> for the type and load it directly. The reader hands your loader the real file bytes:</p>
 <pre><code class="language-rust ignore">#[derive(Asset, TypePath)]
 struct Level { /* ... */ }
 
@@ -220,14 +220,14 @@ impl AssetLoader for LevelLoader {
 let level: Handle&lt;Level&gt; = asset_server.load("res://levels/one.level");</code></pre>
 <h2 id="the-imported-vs-data-rule"><a class="header" href="#the-imported-vs-data-rule">The imported-vs-data rule</a></h2>
 <p>The lanes are not interchangeable, and the reason only shows up in an <strong>exported</strong> build.</p>
-<p>When Godot imports <code>player.png</code>, the export <code>.pck</code> contains the <em>imported</em> form (a <code>.ctex</code>) plus a remap entry — <strong>not</strong> the original <code>player.png</code>. <code>ResourceLoader</code> follows the remap; a raw file read cannot. So a byte loader pointed at <code>res://player.png</code> works in the editor (the original file is right there on disk) and fails in an export (the original isn't in the <code>.pck</code>).</p>
+<p>When Godot imports <code>player.png</code>, the export <code>.pck</code> contains the <em>imported</em> form (a <code>.ctex</code>) plus a remap entry, <strong>not</strong> the original <code>player.png</code>. <code>ResourceLoader</code> follows the remap; a raw file read cannot. So a byte loader pointed at <code>res://player.png</code> works in the editor (the original file is right there on disk) and fails in an export (the original isn't in the <code>.pck</code>).</p>
 <p>Rule of thumb: <strong>load imported types as <code>GodotResource</code>; use byte loaders only for genuine data files</strong> that Godot doesn't import.</p>
 <h2 id="export-include-filter"><a class="header" href="#export-include-filter">Export include filter</a></h2>
-<p>Godot only packs <em>resources</em> into an export by default. Your <code>.ron</code>/<code>.toml</code>/<code>.json</code>/custom-extension files are not resources, so they're excluded — and dev works while the export 404s.</p>
+<p>Godot only packs <em>resources</em> into an export by default. Your <code>.ron</code>/<code>.toml</code>/<code>.json</code>/custom-extension files are not resources, so they're excluded, and dev works while the export 404s.</p>
 <p>Add them under the export preset's <strong>Resources → "Filters to export non-resource files"</strong>, e.g.:</p>
 <pre><code>*.ron, *.level
 </code></pre>
-<p>Without the filter the file simply isn't in the <code>.pck</code>.</p>
+<p>Without the filter the file isn't in the <code>.pck</code>.</p>
 <h2 id="uid-is-resource-only"><a class="header" href="#uid-is-resource-only"><code>uid://</code> is resource-only</a></h2>
 <p><code>uid://&lt;hash&gt;</code> is a resource reference resolved by Godot's <code>ResourceUID</code>/<code>ResourceLoader</code>, not a path a file read can open. Load <code>uid://</code> targets as <code>GodotResource</code>. Byte loaders over <code>uid://</code> are not supported.</p>
 <h2 id="load_folder-is-not-supported-over-resuser"><a class="header" href="#load_folder-is-not-supported-over-resuser"><code>load_folder</code> is not supported over <code>res://</code>/<code>user://</code></a></h2>
