@@ -4054,6 +4054,7 @@ BevyAppSingleton.send_event("damage", {"source": self, "amount": 10.0})
 <li><a href="migration/v0.11-to-v0.12.html#breaking-fixedupdate-now-runs-at-godots-physics-rate">FixedUpdate now runs at Godot's physics rate</a></li>
 <li><a href="migration/v0.11-to-v0.12.html#breaking-delta-time-use-restime-everywhere">Delta time: use Res&lt;Time&gt; everywhere</a></li>
 <li><a href="migration/v0.11-to-v0.12.html#new-enginetime_scale-honored-automatically">Engine.time_scale honored automatically</a></li>
+<li><a href="migration/v0.11-to-v0.12.html#breaking-scenetreepaused-now-runs-update-systems-process_mode--always">SceneTree.paused now runs Update systems (process_mode = ALWAYS)</a></li>
 <li><a href="migration/v0.11-to-v0.12.html#new-physics-interpolation-support">Physics interpolation support</a></li>
 <li><a href="migration/v0.11-to-v0.12.html#dependencies-gdext-bumped-to-054">Dependencies: gdext bumped to 0.5.4</a></li>
 </ul>
@@ -4327,7 +4328,17 @@ fn my_system(time: Res&lt;Time&gt;) {
 }</code></pre>
 <hr />
 <h2 id="new-enginetime_scale-honored-automatically"><a class="header" href="#new-enginetime_scale-honored-automatically">New: Engine.time_scale honored automatically</a></h2>
-<p>When <code>Engine.time_scale</code> is not 1.0 (slow-motion, fast-forward), the physics delta passed to <code>FixedMain</code> already incorporates the scale. You get slow-motion for free in physics systems — no extra code required.</p>
+<p><code>Engine.time_scale</code> (slow-motion, fast-forward, freeze) now scales <strong>both</strong> schedules. Godot's physics delta already incorporates the scale, so <code>FixedUpdate</code> systems reading <code>Res&lt;Time&gt;</code> slow down for free. The <code>Update</code> schedule scales too: godot-bevy mirrors <code>time_scale</code> onto <code>Time&lt;Virtual&gt;</code>, so timers, tweens, and camera lerps in <code>Update</code> honor it as well. <code>Time&lt;Real&gt;</code> stays truthful — read it for anything that must ignore time scaling (diagnostics, real-time UI).</p>
+<hr />
+<h2 id="breaking-scenetreepaused-now-runs-update-systems-process_mode--always"><a class="header" href="#breaking-scenetreepaused-now-runs-update-systems-process_mode--always">Breaking: SceneTree.paused now runs Update systems (process_mode = ALWAYS)</a></h2>
+<p><code>BevyApp</code> now sets its <code>process_mode</code> to <code>ALWAYS</code>, so <code>_process</code> and <code>_physics_process</code> keep firing while <code>SceneTree.paused</code> is <code>true</code>. Previously an INHERIT/PAUSABLE <code>BevyApp</code> froze both callbacks, so a tree-pause stopped the entire ECS -- including any Bevy-authored pause menu. Now the ECS keeps ticking through a pause, which is what makes a pause menu in Bevy possible.</p>
+<p>The trade-off: an <code>Update</code> system that does not scale by delta now <strong>runs</strong> under <code>SceneTree.paused</code>, where the frozen callback used to stop it. <code>FixedUpdate</code> is unaffected -- godot-bevy freezes the fixed schedule under pause (it keys on <code>Time&lt;Virtual&gt;</code>, and a tree-pause drives that), so physics-rate gameplay still halts.</p>
+<p>If you have <code>Update</code> work that must stop on pause, either:</p>
+<ul>
+<li>scale it by <code>Time&lt;Virtual&gt;::delta()</code> (it is 0 while paused), or</li>
+<li>gate it: <code>system.run_if(not(bevy_time::common_conditions::paused))</code>.</li>
+</ul>
+<p>There is no opt-out from <code>ALWAYS</code> -- it is the single behavior. Pausing the tree, pausing <code>Time&lt;Virtual&gt;</code> directly, and setting <code>Engine.time_scale</code> all still work; only the "the whole app freezes" side effect is gone.</p>
 <hr />
 <h2 id="new-physics-interpolation-support"><a class="header" href="#new-physics-interpolation-support">New: Physics interpolation support</a></h2>
 <p>godot-bevy now writes transforms at physics rate (<code>FixedLast</code>). To get smooth rendering between physics ticks, enable Godot's built-in physics interpolation.</p>
