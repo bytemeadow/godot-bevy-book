@@ -897,9 +897,9 @@ fn build_app(app: &amp;mut App) {
 </span><span class="boring">fn main() {
 </span>#[bevy_app]
 fn build_app(app: &amp;mut App) {
-    app.add_plugins(GodotTransformSyncPlugin::default())  // Move nodes
-        .add_plugins(GodotAudioPlugin)                    // Play sounds
-        .add_plugins(BevyInputBridgePlugin);              // Handle input
+    app.add_plugins(GodotTransformSyncPlugin::default())
+        .add_plugins(GodotAudioPlugin)
+        .add_plugins(BevyInputBridgePlugin);
 
     app.add_systems(Update, my_game_systems);
 }
@@ -910,7 +910,7 @@ fn build_app(app: &amp;mut App) {
 </span><span class="boring">fn main() {
 </span>#[bevy_app]
 fn build_app(app: &amp;mut App) {
-    app.add_plugins(GodotDefaultPlugins);  // All optional features
+    app.add_plugins(GodotDefaultPlugins);
     app.add_systems(Update, my_game_systems);
 }
 <span class="boring">}</span></code></pre></pre>
@@ -920,10 +920,9 @@ fn build_app(app: &amp;mut App) {
 </span><span class="boring">fn main() {
 </span>#[bevy_app]
 fn build_app(app: &amp;mut App) {
-    app.add_plugins(GodotTransformSyncPlugin::default())  // Move entities
-        .add_plugins(GodotAudioPlugin)                    // Play sounds
-        .add_plugins(BevyInputBridgePlugin);              // Input handling
-    // Core plugins handle entity creation
+    app.add_plugins(GodotTransformSyncPlugin::default())
+        .add_plugins(GodotAudioPlugin)
+        .add_plugins(BevyInputBridgePlugin);
 }
 <span class="boring">}</span></code></pre></pre>
 <p><strong>Physics Platformer</strong>:</p>
@@ -935,9 +934,9 @@ fn build_app(app: &amp;mut App) {
             sync_mode: TransformSyncMode::Disabled,  // Use Godot physics
             ..Default::default()
         })
-        .add_plugins(GodotCollisionsPlugin)         // Detect collisions
-        .add_plugins(GodotSignalsPlugin::&lt;UiSignal&gt;::default()) // Handle signals
-        .add_plugins(GodotAudioPlugin);             // Play sounds
+        .add_plugins(GodotCollisionsPlugin)
+        .add_plugins(GodotSignalsPlugin::&lt;UiSignal&gt;::default())
+        .add_plugins(GodotAudioPlugin);
 }
 <span class="boring">}</span></code></pre></pre>
 <p><strong>UI-Heavy Game</strong>:</p>
@@ -945,10 +944,9 @@ fn build_app(app: &amp;mut App) {
 </span><span class="boring">fn main() {
 </span>#[bevy_app]
 fn build_app(app: &amp;mut App) {
-    app.add_plugins(GodotSignalsPlugin::&lt;UiSignal&gt;::default()) // Button clicks, etc.
-        .add_plugins(BevyInputBridgePlugin)        // Keyboard shortcuts
-        .add_plugins(GodotAudioPlugin);            // UI sounds
-    // Don't need transform sync for UI
+    app.add_plugins(GodotSignalsPlugin::&lt;UiSignal&gt;::default())
+        .add_plugins(BevyInputBridgePlugin)
+        .add_plugins(GodotAudioPlugin);
 }
 <span class="boring">}</span></code></pre></pre>
 <h2 id="plugin-configuration"><a class="header" href="#plugin-configuration">Plugin Configuration</a></h2>
