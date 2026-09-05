@@ -321,6 +321,7 @@ godot-bevy = "0.11.0"
 bevy = { version = "0.18", default-features = false }
 godot = "0.4"
 </code></pre>
+<p>godot-bevy supports Godot API levels 4.2 through 4.6 via the mutually exclusive Cargo features <code>api-4-2</code>, <code>api-4-3</code>, <code>api-4-4</code>, <code>api-4-5</code>, and <code>api-4-6</code>, with or without default features. Set <code>compatibility_minimum</code> in your <code>.gdextension</code> file to the level you build against; the example below assumes 4.3.</p>
 <h2 id="configure-godot-integration"><a class="header" href="#configure-godot-integration">Configure Godot Integration</a></h2>
 <h3 id="1-create-extension-file"><a class="header" href="#1-create-extension-file">1. Create Extension File</a></h3>
 <p>Create <code>rust.gdextension</code> in your Godot project root:</p>
