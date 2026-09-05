@@ -585,6 +585,32 @@ fn build_app(app: &amp;mut App) {
 <li>Integrates with Godot's lifecycle</li>
 <li>Handles all the bridging magic</li>
 </ol>
+<h3 id="shutdown-lifecycle"><a class="header" href="#shutdown-lifecycle">Shutdown lifecycle</a></h3>
+<p>A <code>BevyApp</code> disposes of its world when the node is destroyed or when you call
+<code>teardown</code>. Reinitialization, <code>TestApp::cleanup</code>, and <code>TestApp</code> Drop use the same
+teardown path. Call explicit teardown or reinitialization between frames.
+Repeated teardown calls do nothing.</p>
+<p>After hosted Startup completes, a healthy app receives <code>AppExit::Success</code> and one
+final <code>Last</code> pass before disposal. Ordinary <code>Last</code> systems also run every render
+frame. Unstarted apps are dropped without running Startup or <code>Last</code>. Frame panics
+and an existing unwind suppress the terminal pass.</p>
+<p>Destruction includes <code>free</code>, queued node or ancestor deletion, scene replacement
+for scene-local apps, and graceful engine quit. An autoload survives scene
+replacement. Detaching or reparenting does not itself shut down a hosted world;
+scene-mirrored entities still follow their normal membership rules. The caller
+must eventually free a detached node. Use <code>queue_free</code> to delete a host or its
+ancestor from a system. Synchronous destruction while its Rust instance is
+borrowed is unsupported.</p>
+<p>At destruction, the node's children are already freed. At engine quit, other
+nodes may be gone too. <code>Last</code> systems and pending signal connections must tolerate
+expired Godot handles. Call <code>teardown</code> before deletion if cleanup needs live nodes.
+A terminal panic is caught and reported, and the app is still dropped. Resource
+destructor panics are also caught and reported. Other cleanup systems may not
+finish after a panic. Hard termination and aborting or double panics cannot
+provide this cleanup guarantee. Bevy <code>AppExit</code> messages do not quit Godot.</p>
+<p>The extension's <code>on_stage_deinit</code> hook is a separate process-level lifecycle event;
+it shuts down extension-wide services such as profiling and is not a replacement for
+per-<code>BevyApp</code> shutdown.</p>
 <h3 id="configuring-core-behavior"><a class="header" href="#configuring-core-behavior">Configuring Core Behavior</a></h3>
 <p>The <code>#[bevy_app]</code> macro accepts configuration attributes to customize godot-bevy's core behavior:</p>
 <h4 id="scene-tree-relationships"><a class="header" href="#scene-tree-relationships">Scene Tree Relationships</a></h4>
@@ -1411,6 +1437,48 @@ pub struct Player;
 pub struct Enemy;
 <span class="boring">}</span></code></pre></pre>
 <p>Each inner <code>field(as = T, …)</code> follows the same <code>as</code>/<code>default</code>/<code>with</code> grammar as the newtype form. The name before <code>:</code> (e.g. <code>stats</code>) is required by the grammar but ignored — the generated export properties use the inner field names (<code>health</code>, <code>mana</code>).</p>
+<h3 id="inspector-metadata-for-generated-exports"><a class="header" href="#inspector-metadata-for-generated-exports">Inspector metadata for generated exports</a></h3>
+<p>Metadata can be placed on a named or tuple primary field with
+<code>#[gdbevy(export, ...)]</code>, on <code>require(prop: Comp, ...)</code>, or on each field inside
+<code>require(group: Comp { field(as = T, ...), ... })</code>. Use one attribute per primary field.</p>
+<p>Export types must implement gdext's <code>Export</code> trait. Rust <code>String</code> does not, so
+export a <code>GString</code> and convert it when constructing the component:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bevy::prelude::Component;
+use godot::prelude::GString;
+use godot_bevy::prelude::GodotNode;
+
+#[derive(Component)]
+pub struct WeaponKind(pub String);
+
+#[derive(Component, GodotNode, Default)]
+#[gdbevy(class_name = WeaponNode)]
+#[gdbevy(require(
+    kind: WeaponKind,
+    as = GString,
+    with = from_godot_string,
+    default = GString::from("Hands"),
+    description = "Weapon selected by the designer",
+    hint = ENUM,
+    hint_string = "Hands,Knife"
+))]
+pub struct Weapon;
+
+fn from_godot_string(value: GString) -&gt; String {
+    value.to_string()
+}
+<span class="boring">}</span></code></pre></pre>
+<p><code>description</code> takes a string literal. Primary field <code>///</code> docs are copied before
+an explicit description. <code>hint</code> names a bare Godot <code>PropertyHint</code> variant, and
+<code>hint_string</code> takes an expression. A hint string requires a hint.</p>
+<p>Enable the <code>register-docs</code> feature on your <code>godot-bevy</code> dependency to register
+property descriptions in Godot's editor:</p>
+<pre><code class="language-toml">godot-bevy = { version = "0.11", features = ["register-docs"] }
+</code></pre>
+<p>This feature is off by default and requires Godot API 4.3 or later. With it off,
+hints still work and descriptions remain Rust docs. API 4.2 consumers must leave
+it disabled.</p>
 <h3 id="marker-companion"><a class="header" href="#marker-companion">Marker companion</a></h3>
 <p>Insert a component via <code>Default</code> with no exported property:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -1431,7 +1499,7 @@ pub struct Slider {
 
 fn percentage_to_fraction(v: f32) -&gt; f32 { v / 100.0 }
 <span class="boring">}</span></code></pre></pre>
-<p><code>as = T</code> is optional when the field type is already Godot-compatible; add it only when the export type differs from the Rust field type.</p>
+<p><code>as = T</code> is optional when the field type already implements gdext's <code>Export</code> trait; add it only when the export type differs from the Rust field type.</p>
 <h3 id="tuple-fields"><a class="header" href="#tuple-fields">Tuple fields</a></h3>
 <p>Tuple structs are supported for component-first nodes. Exported fields are named <code>value0</code>, <code>value1</code>, and so on in the generated Godot class.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -1454,6 +1522,9 @@ pub struct Velocity(
 <tr><td><code>require(prop: Comp, …)</code></td><td><code>as = T</code></td><td><strong>yes</strong></td><td>Export type for the generated property</td></tr>
 <tr><td><code>require(prop: Comp, …)</code></td><td><code>default = expr</code></td><td>no</td><td>Export default</td></tr>
 <tr><td><code>require(prop: Comp, …)</code></td><td><code>with = fn</code></td><td>no</td><td>Conversion before constructing the component</td></tr>
+<tr><td>generated primary or companion field</td><td><code>description = "..."</code></td><td>no</td><td>Property docs, registered with <code>register-docs</code></td></tr>
+<tr><td>generated primary or companion field</td><td><code>hint = NAME</code></td><td>no</td><td>Bare Godot <code>PropertyHint</code> variant</td></tr>
+<tr><td>generated primary or companion field</td><td><code>hint_string = expr</code></td><td>no</td><td>Hint string, requires <code>hint</code></td></tr>
 </tbody></table>
 </div>
 <h2 id="godot-first-bevycomponents"><a class="header" href="#godot-first-bevycomponents">Godot-first (<code>BevyComponents</code>)</a></h2>
@@ -1509,6 +1580,11 @@ pub struct PlayerNode {
 <tr><td>field</td><td><code>with = fn</code></td><td>no</td><td>Godot-value → component-value conversion</td></tr>
 </tbody></table>
 </div>
+<p>Godot-first classes own their gdext declaration, so use gdext's native
+<code>#[var(hint = ..., hint_string = ...)]</code> and Rust documentation attributes for
+Inspector metadata on those fields.</p>
+<p>Native property descriptions also require <code>godot-bevy/register-docs</code> and Godot
+API 4.3 or later. Keep metadata on the native attributes, outside <code>gdbevy</code>.</p>
 <h2 id="reserved-keys"><a class="header" href="#reserved-keys">Reserved keys</a></h2>
 <p><code>into</code> and <code>sync</code> are reserved for the upcoming component-sync feature and will produce a compile error if used. Use only the keys documented above.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="nodes-from-components"><a class="header" href="#nodes-from-components">Nodes from Components</a></h1>

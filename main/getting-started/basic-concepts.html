@@ -267,6 +267,32 @@ fn build_app(app: &amp;mut App) {
 <li>Integrates with Godot's lifecycle</li>
 <li>Handles all the bridging magic</li>
 </ol>
+<h3 id="shutdown-lifecycle"><a class="header" href="#shutdown-lifecycle">Shutdown lifecycle</a></h3>
+<p>A <code>BevyApp</code> disposes of its world when the node is destroyed or when you call
+<code>teardown</code>. Reinitialization, <code>TestApp::cleanup</code>, and <code>TestApp</code> Drop use the same
+teardown path. Call explicit teardown or reinitialization between frames.
+Repeated teardown calls do nothing.</p>
+<p>After hosted Startup completes, a healthy app receives <code>AppExit::Success</code> and one
+final <code>Last</code> pass before disposal. Ordinary <code>Last</code> systems also run every render
+frame. Unstarted apps are dropped without running Startup or <code>Last</code>. Frame panics
+and an existing unwind suppress the terminal pass.</p>
+<p>Destruction includes <code>free</code>, queued node or ancestor deletion, scene replacement
+for scene-local apps, and graceful engine quit. An autoload survives scene
+replacement. Detaching or reparenting does not itself shut down a hosted world;
+scene-mirrored entities still follow their normal membership rules. The caller
+must eventually free a detached node. Use <code>queue_free</code> to delete a host or its
+ancestor from a system. Synchronous destruction while its Rust instance is
+borrowed is unsupported.</p>
+<p>At destruction, the node's children are already freed. At engine quit, other
+nodes may be gone too. <code>Last</code> systems and pending signal connections must tolerate
+expired Godot handles. Call <code>teardown</code> before deletion if cleanup needs live nodes.
+A terminal panic is caught and reported, and the app is still dropped. Resource
+destructor panics are also caught and reported. Other cleanup systems may not
+finish after a panic. Hard termination and aborting or double panics cannot
+provide this cleanup guarantee. Bevy <code>AppExit</code> messages do not quit Godot.</p>
+<p>The extension's <code>on_stage_deinit</code> hook is a separate process-level lifecycle event;
+it shuts down extension-wide services such as profiling and is not a replacement for
+per-<code>BevyApp</code> shutdown.</p>
 <h3 id="configuring-core-behavior"><a class="header" href="#configuring-core-behavior">Configuring Core Behavior</a></h3>
 <p>The <code>#[bevy_app]</code> macro accepts configuration attributes to customize godot-bevy's core behavior:</p>
 <h4 id="scene-tree-relationships"><a class="header" href="#scene-tree-relationships">Scene Tree Relationships</a></h4>
