@@ -214,6 +214,16 @@ fn find_player(query: Query&lt;&amp;Player&gt;) {
 <li><strong><code>read_scene_tree_messages</code></strong> - Processes those events to create/update/remove entities</li>
 </ul>
 <p>This separation allows other systems to also react to <code>SceneTreeEvent</code>s if needed.</p>
+<p>Detaching a node with <code>remove_child()</code> preserves the node and its descendants. Once
+removal messages are processed, ordinary mirror entities are despawned.
+<code>ProtectedNodeEntity</code> entities keep their gameplay components but lose their Godot
+handles, index entries, and scene-tree relationships. The caller must eventually
+reattach or free detached nodes. Reattaching after cleanup creates fresh entities;
+it does not restore their former ECS state or reconnect protected survivors. To
+reuse a protected entity, attach its <code>GodotNodeHandle</code> before re-entry. A reparent
+completed within the mirrored tree before removal processing preserves the entity
+and its state. Explicit ECS despawn and explicit <code>GodotNodeHandle</code> removal still
+queue the node for deletion, including while detachment awaits processing.</p>
 <h2 id="what-components-are-available"><a class="header" href="#what-components-are-available">What Components Are Available?</a></h2>
 <p>When the scene tree is parsed, each Godot node becomes a Bevy entity with these components:</p>
 <ul>
