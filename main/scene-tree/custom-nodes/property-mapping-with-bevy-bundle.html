@@ -238,6 +238,16 @@ pub struct Slider {
 fn percentage_to_fraction(v: f32) -&gt; f32 { v / 100.0 }
 <span class="boring">}</span></code></pre></pre>
 <p><code>as = T</code> is optional when the field type is already Godot-compatible; add it only when the export type differs from the Rust field type.</p>
+<h3 id="tuple-fields"><a class="header" href="#tuple-fields">Tuple fields</a></h3>
+<p>Tuple structs are supported for component-first nodes. Exported fields are named <code>value0</code>, <code>value1</code>, and so on in the generated Godot class.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Component, GodotNode, Default)]
+pub struct Velocity(
+    #[gdbevy(export)] f32,
+    #[gdbevy(export)] f32,
+);
+<span class="boring">}</span></code></pre></pre>
 <h3 id="all-component-first-keys"><a class="header" href="#all-component-first-keys">All component-first keys</a></h3>
 <div class="table-wrapper"><table><thead><tr><th>Placement</th><th>Key</th><th>Required?</th><th>Meaning</th></tr></thead><tbody>
 <tr><td>struct</td><td><code>base = GodotBase</code></td><td>no (default: <code>Node</code>)</td><td>Godot class to extend</td></tr>
