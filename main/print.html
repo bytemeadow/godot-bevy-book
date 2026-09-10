@@ -4074,7 +4074,7 @@ BevyAppSingleton.send_event("damage", {"source": self, "amount": 10.0})
 <li><a href="migration/v0.11-to-v0.12.html#new-enginetime_scale-honored-automatically">Engine.time_scale honored automatically</a></li>
 <li><a href="migration/v0.11-to-v0.12.html#breaking-scenetreepaused-now-runs-update-systems-process_mode--always">SceneTree.paused now runs Update systems (process_mode = ALWAYS)</a></li>
 <li><a href="migration/v0.11-to-v0.12.html#new-physics-interpolation-support">Physics interpolation support</a></li>
-<li><a href="migration/v0.11-to-v0.12.html#dependencies-gdext-bumped-to-054">Dependencies: gdext bumped to 0.5.4</a></li>
+<li><a href="migration/v0.11-to-v0.12.html#dependencies-gdext-bumped-to-055">Dependencies: gdext bumped to 0.5.5</a></li>
 </ul>
 <hr />
 <h2 id="macro-redesign--gdbevy-unified-grammar-breaking-change"><a class="header" href="#macro-redesign--gdbevy-unified-grammar-breaking-change">Macro Redesign — <code>#[gdbevy(...)]</code> Unified Grammar (Breaking Change)</a></h2>
@@ -4370,13 +4370,14 @@ common/physics_interpolation=true
 <p>Bevy-side interpolation plugins and rollback netcode are not supported in godot-bevy's transform sync path — use Godot's built-in interpolation instead.</p>
 </blockquote>
 <hr />
-<h2 id="dependencies-gdext-bumped-to-054"><a class="header" href="#dependencies-gdext-bumped-to-054">Dependencies: gdext bumped to 0.5.4</a></h2>
-<p>godot-bevy now requires <code>godot</code> &gt;= 0.5.4. Two effects:</p>
+<h2 id="dependencies-gdext-bumped-to-055"><a class="header" href="#dependencies-gdext-bumped-to-055">Dependencies: gdext bumped to 0.5.5</a></h2>
+<p>godot-bevy now requires <code>godot</code> &gt;= 0.5.5. Three effects:</p>
 <ul>
 <li><strong>Editor hot-reload is safer.</strong> Custom signal callables connected through godot-bevy's signal bridge are now auto-removed when the extension reloads (gdext #1612), so rebuilding the Rust dylib while a game runs in the editor with connected signals no longer risks an editor crash. (This is a development-time property; exported builds never hot-reload.)</li>
+<li><strong>Reference counting no longer touches gdext internals.</strong> 0.5.5 removed the internal reference-count operations godot-bevy used, so the floor moves with it (#271).</li>
 <li><strong>No more libclang/LLVM to build from source.</strong> gdext 0.5.3+ generates its bindings from JSON and no longer depends on <code>bindgen</code>, so building godot-bevy no longer requires a system libclang/LLVM.</li>
 </ul>
-<p>You only need to act if you pin <code>godot</code> to an exact version below 0.5.4 (e.g. <code>godot = "=0.5.1"</code>) <em>and</em> also depend on godot-bevy -- bump your pin to 0.5.4. A normal caret dependency (<code>godot = "0.5"</code>) resolves to 0.5.4 automatically.</p>
+<p>You only need to act if you pin <code>godot</code> to an exact version below 0.5.5 (e.g. <code>godot = "=0.5.1"</code>) <em>and</em> also depend on godot-bevy -- bump your pin to 0.5.5. A normal caret dependency (<code>godot = "0.5"</code>) resolves to 0.5.5 automatically.</p>
 <hr />
 <h2 id="behavior-reparenting-preserves-ecs-component-state"><a class="header" href="#behavior-reparenting-preserves-ecs-component-state">Behavior: Reparenting preserves ECS component state</a></h2>
 <p>Moving a mirrored node to a new parent no longer re-runs component initializers or autosync bundle creators, so <code>Transform</code> and your <code>#[derive(GodotNode)]</code> / <code>BevyComponents</code> components keep the values your systems set. Previously a reparent silently reset them to the node's exported values. Node group membership (<code>Groups</code>) is likewise now a spawn-time snapshot rather than being re-read on reparent. If you relied on a reparent refreshing any of these, refresh the component explicitly in a system.</p>
