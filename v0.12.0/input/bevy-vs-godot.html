@@ -1,0 +1,592 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Bevy vs Godot Input - The godot-bevy Book 👾 v0.12.0</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/css/custom.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../getting-started/index.html"><strong aria-hidden="true">2.</strong> Getting Started</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../getting-started/installation.html"><strong aria-hidden="true">2.1.</strong> Installation</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../getting-started/gdenv.html"><strong aria-hidden="true">2.1.1.</strong> Cargo Run Godot</a></li></ol></li><li class="chapter-item "><a href="../getting-started/basic-concepts.html"><strong aria-hidden="true">2.2.</strong> Basic Concepts</a></li><li class="chapter-item "><a href="../getting-started/plugins.html"><strong aria-hidden="true">2.3.</strong> Plugin System</a></li><li class="chapter-item "><a href="../getting-started/examples.html"><strong aria-hidden="true">2.4.</strong> Examples</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../scene-tree/index.html"><strong aria-hidden="true">3.</strong> Scene Tree</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../scene-tree/timing.html"><strong aria-hidden="true">3.1.</strong> Initialization and Timing</a></li><li class="chapter-item "><a href="../scene-tree/querying.html"><strong aria-hidden="true">3.2.</strong> Querying with Node Type Markers</a></li><li class="chapter-item "><a href="../scene-tree/excluding-nodes.html"><strong aria-hidden="true">3.3.</strong> Excluding Nodes</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/index.html"><strong aria-hidden="true">3.4.</strong> Custom Nodes</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../scene-tree/custom-nodes/automatic-markers.html"><strong aria-hidden="true">3.4.1.</strong> Automatic Markers</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/attachable-components.html"><strong aria-hidden="true">3.4.2.</strong> Attachable Components</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/property-mapping-with-bevy-bundle.html"><strong aria-hidden="true">3.4.3.</strong> Property Mapping</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/nodes-from-components-and-bundles.html"><strong aria-hidden="true">3.4.4.</strong> Nodes from Components and Bundles</a></li></ol></li><li class="chapter-item "><a href="../scene-tree/spawning-scenes.html"><strong aria-hidden="true">3.5.</strong> Spawning Scenes</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../transforms/index.html"><strong aria-hidden="true">4.</strong> Transform System</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../transforms/sync-modes.html"><strong aria-hidden="true">4.1.</strong> Sync Modes</a></li><li class="chapter-item "><a href="../transforms/custom-sync.html"><strong aria-hidden="true">4.2.</strong> Custom Transform Sync</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../assets/index.html"><strong aria-hidden="true">5.</strong> Asset Loading</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../input/index.html"><strong aria-hidden="true">6.</strong> Input Handling</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../input/bevy-vs-godot.html" class="active"><strong aria-hidden="true">6.1.</strong> Bevy vs Godot Input</a></li><li class="chapter-item "><a href="../input/signals.html"><strong aria-hidden="true">6.2.</strong> Signal Handling</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../timing/index.html"><strong aria-hidden="true">7.</strong> Timing & Schedules</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../threading/index.html"><strong aria-hidden="true">8.</strong> Threading & Main Thread Access</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../profiling/profiling.html"><strong aria-hidden="true">9.</strong> Bevy Godot Profiling</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../profiling/debug-performance.html"><strong aria-hidden="true">9.1.</strong> Debug Build Performance</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../debugging/index.html"><strong aria-hidden="true">10.</strong> Debugging</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../testing/index.html"><strong aria-hidden="true">11.</strong> Integration Testing</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../platform-targets/index.html"><strong aria-hidden="true">12.</strong> Platform Targets</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../platform-targets/android.html"><strong aria-hidden="true">12.1.</strong> Android</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../project-transition/index.html"><strong aria-hidden="true">13.</strong> Project Transition Patterns</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../project-transition/event-bridge.html"><strong aria-hidden="true">13.1.</strong> Godot to Bevy Event Bridge</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../migration/index.html"><strong aria-hidden="true">14.</strong> Migration Guides</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../migration/v0.11-to-v0.12.html"><strong aria-hidden="true">14.1.</strong> v0.11 to v0.12</a></li><li class="chapter-item "><a href="../migration/v0.10-to-v0.11.html"><strong aria-hidden="true">14.2.</strong> v0.10 to v0.11</a></li><li class="chapter-item "><a href="../migration/v0.9-to-v0.10.html"><strong aria-hidden="true">14.3.</strong> v0.9 to v0.10</a></li><li class="chapter-item "><a href="../migration/v0.8-to-v0.9.html"><strong aria-hidden="true">14.4.</strong> v0.8 to v0.9</a></li><li class="chapter-item "><a href="../migration/v0.7-to-v0.8.html"><strong aria-hidden="true">14.5.</strong> v0.7 to v0.8</a></li><li class="chapter-item "><a href="../migration/v0.6-to-v0.7.html"><strong aria-hidden="true">14.6.</strong> v0.6 to v0.7</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">
+                        <a href=".." title="Switch to a different version">
+                            The godot-bevy Book 👾 v0.12.0
+                        </a>
+                    </h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/bytemeadow/godot-bevy" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/bytemeadow/godot-bevy/edit/main/book/src/input/bevy-vs-godot.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="bevy-vs-godot-input"><a class="header" href="#bevy-vs-godot-input">Bevy vs Godot Input</a></h1>
+<p>godot-bevy offers two distinct approaches to handling input: Bevy's built-in input system and godot-bevy's bridged Godot input system. Understanding when to use each is crucial for building the right game experience.</p>
+<h2 id="two-input-systems"><a class="header" href="#two-input-systems">Two Input Systems</a></h2>
+<h3 id="bevys-built-in-input"><a class="header" href="#bevys-built-in-input">Bevy's Built-in Input</a></h3>
+<p>Use Bevy's standard input resources for simple, direct input handling:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn movement_system(
+    keys: Res&lt;ButtonInput&lt;KeyCode&gt;&gt;,
+    mut query: Query&lt;&amp;mut Transform, With&lt;Player&gt;&gt;,
+) {
+    for mut transform in query.iter_mut() {
+        if keys.pressed(KeyCode::ArrowLeft) {
+            transform.translation.x -= 200.0;
+        }
+        if keys.pressed(KeyCode::ArrowRight) {
+            transform.translation.x += 200.0;
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="godot-bevys-bridged-input"><a class="header" href="#godot-bevys-bridged-input">godot-bevy's Bridged Input</a></h3>
+<p>Use godot-bevy's event-based system for more advanced input handling:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn movement_system(
+    mut events: MessageReader&lt;ActionInput&gt;,
+    mut query: Query&lt;&amp;mut Transform, With&lt;Player&gt;&gt;,
+) {
+    for event in events.read() {
+        if event.pressed {
+            match event.action.as_str() {
+                "move_left" =&gt; {
+                    // Handle left movement
+                }
+                "move_right" =&gt; {
+                    // Handle right movement
+                }
+                _ =&gt; {}
+            }
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="when-to-use-each-system"><a class="header" href="#when-to-use-each-system">When to Use Each System</a></h2>
+<h3 id="-use-bevy-input-for"><a class="header" href="#-use-bevy-input-for">🚀 Use Bevy Input For:</a></h3>
+<p><strong>Simple desktop games and rapid prototyping</strong></p>
+<p>✅ <strong>Advantages:</strong></p>
+<ul>
+<li><strong>Zero setup</strong> - works immediately</li>
+<li><strong>State-based queries</strong> - easy "is key held?" checks</li>
+<li><strong>Rich API</strong> - <code>just_pressed()</code>, <code>pressed()</code>, <code>just_released()</code></li>
+<li><strong>Direct and fast</strong> - no event processing overhead</li>
+<li><strong>Familiar</strong> - standard Bevy patterns</li>
+</ul>
+<p>❌ <strong>Limitations:</strong></p>
+<ul>
+<li><strong>Desktop-focused</strong> - limited mobile/console support</li>
+<li><strong>Hardcoded keys</strong> - players can't remap controls</li>
+<li><strong>No Godot integration</strong> - can't use input maps</li>
+</ul>
+<p><strong>Example use cases:</strong></p>
+<ul>
+<li>Game jams and prototypes</li>
+<li>Desktop-only games</li>
+<li>Simple control schemes</li>
+<li>Internal tools</li>
+</ul>
+<h3 id="-use-godot-bevy-input-for"><a class="header" href="#-use-godot-bevy-input-for">🎮 Use godot-bevy Input For:</a></h3>
+<p><strong>Production games and cross-platform releases</strong></p>
+<p>✅ <strong>Advantages:</strong></p>
+<ul>
+<li><strong>Cross-platform</strong> - desktop, mobile, console support</li>
+<li><strong>User remappable</strong> - integrates with Godot's input maps</li>
+<li><strong>Touch support</strong> - native mobile input handling</li>
+<li><strong>Action-based</strong> - semantic controls ("jump" vs "spacebar")</li>
+<li><strong>Flexible</strong> - supports complex input schemes</li>
+</ul>
+<p>❌ <strong>Trade-offs:</strong></p>
+<ul>
+<li><strong>Event-based</strong> - requires more complex state tracking</li>
+<li><strong>Setup required</strong> - need to define input maps in Godot</li>
+<li><strong>More complex</strong> - steeper learning curve</li>
+</ul>
+<p><strong>Example use cases:</strong></p>
+<ul>
+<li>Commercial releases</li>
+<li>Mobile games</li>
+<li>Console ports</li>
+<li>Games with complex controls</li>
+</ul>
+<h2 id="input-event-processing"><a class="header" href="#input-event-processing">Input Event Processing</a></h2>
+<p>godot-bevy processes Godot's dual input system intelligently to prevent duplicate events:</p>
+<ul>
+<li><strong>Normal Input Events</strong>: Generate <code>ActionInput</code> events for mapped keys/buttons</li>
+<li><strong>Unhandled Input Events</strong>: Generate raw <code>GodotKeyboardInput</code>, <code>GodotMouseButtonInput</code>, etc. for unmapped inputs</li>
+</ul>
+<p>This ensures:</p>
+<ul>
+<li>✅ <strong>No duplicate events</strong> - each physical input generates exactly one event</li>
+<li>✅ <strong>Proper input flow</strong> - mapped inputs become actions, unmapped inputs become raw events</li>
+<li>✅ <strong>Clean event streams</strong> - predictable, non-redundant event processing</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// For a key mapped to "jump" action in Godot's Input Map:
+// ✅ Generates ONE ActionInput { action: "jump", pressed: true }
+// ❌ Does NOT generate duplicate GodotKeyboardInput events
+
+// For an unmapped key (e.g., 'Q' with no action mapping):
+// ✅ Generates ONE GodotKeyboardInput { keycode: Q, pressed: true }
+// ❌ Does NOT generate ActionInput events
+<span class="boring">}</span></code></pre></pre>
+<h2 id="available-input-events"><a class="header" href="#available-input-events">Available Input Events</a></h2>
+<p>godot-bevy provides several input event types:</p>
+<h3 id="actioninput"><a class="header" href="#actioninput">ActionInput</a></h3>
+<p>The most important event type - maps to Godot's input actions:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn handle_actions(mut events: MessageReader&lt;ActionInput&gt;) {
+    for event in events.read() {
+        println!("Action: {}, Pressed: {}, Strength: {}", 
+                 event.action, event.pressed, event.strength);
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="godotkeyboardinput"><a class="header" href="#godotkeyboardinput">GodotKeyboardInput</a></h3>
+<p>Direct keyboard events:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn handle_keyboard(mut events: MessageReader&lt;GodotKeyboardInput&gt;) {
+    for event in events.read() {
+        if event.pressed &amp;&amp; event.keycode == Key::SPACE {
+            println!("Space pressed!");
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="godotmousebuttoninput"><a class="header" href="#godotmousebuttoninput">GodotMouseButtonInput</a></h3>
+<p>Mouse button events:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn handle_mouse(mut events: MessageReader&lt;GodotMouseButtonInput&gt;) {
+    for event in events.read() {
+        println!("Mouse button: {:?} at {:?}", 
+                 event.button, event.position);
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="godotmousemotion"><a class="header" href="#godotmousemotion">GodotMouseMotion</a></h3>
+<p>Mouse movement events:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn handle_mouse_motion(mut events: MessageReader&lt;GodotMouseMotion&gt;) {
+    for event in events.read() {
+        println!("Mouse moved by: {:?}", event.delta);
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="gamepad-input"><a class="header" href="#gamepad-input">Gamepad input</a></h2>
+<p>Three ways to read a gamepad, depending on what you want:</p>
+<ul>
+<li><strong>Gameplay (recommended)</strong> -- bind the action in Godot's Input Map and read it through <code>GodotActions</code> (<code>actions.pressed("jump")</code>, <code>actions.strength("accelerate")</code>). Works in <code>Update</code> and <code>FixedUpdate</code>, and reuses Godot's controller remapping.</li>
+<li><strong>Bevy-native <code>Query&lt;&amp;Gamepad&gt;</code></strong> -- the default <code>bevy_gamepad</code> feature pulls in Bevy's gilrs backend, which populates the <code>Gamepad</code> entity directly from the OS. No godot-bevy code involved; use it exactly as in any Bevy app.</li>
+<li><strong>Raw events + Godot device id</strong> -- the <code>GamepadButtonInput</code> / <code>GamepadAxisInput</code> messages carry the Godot device id and work on every platform, including WASM (where gilrs isn't available).</li>
+</ul>
+<p>Don't feed Godot's gamepad into Bevy's <code>Gamepad</code> entity yourself while <code>bevy_gamepad</code> is on -- you'd get two entities per controller and doubled input. gilrs already owns that path.</p>
+<h2 id="quick-reference"><a class="header" href="#quick-reference">Quick Reference</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Feature</th><th>Bevy Input</th><th>godot-bevy Input</th></tr></thead><tbody>
+<tr><td>Setup complexity</td><td>None</td><td>Moderate</td></tr>
+<tr><td>Cross-platform</td><td>Limited</td><td>Full</td></tr>
+<tr><td>User remapping</td><td>No</td><td>Yes</td></tr>
+<tr><td>Touch support</td><td>No</td><td>Yes</td></tr>
+<tr><td>State queries</td><td>Easy</td><td>Manual tracking</td></tr>
+<tr><td>Performance</td><td>Fastest</td><td>Fast</td></tr>
+<tr><td>Godot integration</td><td>None</td><td>Full</td></tr>
+</tbody></table>
+</div>
+<h2 id="choosing-your-approach"><a class="header" href="#choosing-your-approach">Choosing Your Approach</a></h2>
+<h3 id="start-with-bevy-input-if"><a class="header" href="#start-with-bevy-input-if">Start with Bevy Input if:</a></h3>
+<ul>
+<li>Building a prototype or game jam entry</li>
+<li>Targeting desktop only</li>
+<li>Using simple controls</li>
+<li>Want immediate results</li>
+</ul>
+<h3 id="use-godot-bevy-input-if"><a class="header" href="#use-godot-bevy-input-if">Use godot-bevy Input if:</a></h3>
+<ul>
+<li>Building for release</li>
+<li>Need cross-platform support</li>
+<li>Want user-configurable controls</li>
+<li>Using complex input schemes</li>
+<li>Targeting mobile/console</li>
+</ul>
+<h2 id="mixing-both-systems"><a class="header" href="#mixing-both-systems">Mixing Both Systems</a></h2>
+<p>You can use both systems in the same project:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[bevy_app]
+fn build_app(app: &amp;mut App) {
+    app.add_systems(Update, (
+        // Debug controls with Bevy input
+        debug_controls,
+        // Game controls with godot-bevy input
+        game_controls,
+    ));
+}
+
+fn debug_controls(keys: Res&lt;ButtonInput&lt;KeyCode&gt;&gt;) {
+    if keys.just_pressed(KeyCode::F1) {
+        // Toggle debug overlay
+    }
+}
+
+fn game_controls(mut events: MessageReader&lt;ActionInput&gt;) {
+    for event in events.read() {
+        // Handle game actions
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>This gives you the best of both worlds: simple debug controls and flexible game controls.</p>
+<h2 id="fixed-timestep-input-under-godot-owned-physics"><a class="header" href="#fixed-timestep-input-under-godot-owned-physics">Fixed-timestep input under Godot-owned physics</a></h2>
+<p>godot-bevy drives Bevy's <code>RunFixedMainLoop</code> schedule from Godot's <code>_physics_process</code>. Third-party input plugins that hook <code>BeforeFixedMainLoop</code> / <code>AfterFixedMainLoop</code> -- e.g. <a href="https://github.com/Leafwing-Studios/leafwing-input-manager"><code>leafwing-input-manager</code></a> -- work out of the box.</p>
+<h3 id="buttoninput-in-fixedupdate"><a class="header" href="#buttoninput-in-fixedupdate"><code>ButtonInput</code> in <code>FixedUpdate</code></a></h3>
+<p>Keyboard and mouse <code>ButtonInput</code> edges (<code>just_pressed</code>/<code>just_released</code>) work in <code>Update</code> and <code>FixedUpdate</code>. The bridge emits Bevy <code>KeyboardInput</code> events; <code>keyboard_input_system</code> in <code>PreUpdate</code> populates the resource. Because <code>PreUpdate</code> runs in the physics-process prefix -- before the fixed steps -- edges are already set by the time <code>FixedUpdate</code> runs for the frame.</p>
+<p>Two caveats, both because <code>just_pressed</code> is a one-render-frame edge (cleared each frame by <code>keyboard_input_system</code> in <code>PreUpdate</code>):</p>
+<ul>
+<li><strong>More physics than display</strong> (e.g. 60 Hz display / 120 Hz physics): when N steps fire in one render frame, <code>just_pressed</code> is <code>true</code> in every one of those N <code>FixedUpdate</code> calls.</li>
+<li><strong>More display than physics</strong> (e.g. 144 Hz display / 60 Hz physics): a render frame can run <strong>zero</strong> physics steps. If the edge lands on a step-less frame, <code>FixedUpdate</code> never sees it -- by the next frame the edge is already cleared. This is the same caveat stock Bevy has with raw <code>ButtonInput</code> in <code>FixedUpdate</code>.</li>
+</ul>
+<p><code>GodotActions</code> (below) uses Godot's per-tick edge state and has neither issue -- it is the right tool for fixed-rate gameplay input.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Visible in FixedUpdate -- but only when a physics step runs on the edge's
+// render frame (see the zero-step caveat above); use GodotActions for fixed-rate.
+app.add_systems(FixedUpdate, |keys: Res&lt;ButtonInput&lt;KeyCode&gt;&gt;| {
+    if keys.just_pressed(KeyCode::Space) { /* may be missed on a 0-step frame */ }
+});
+
+// Also works: edges in Update (once per render frame, unambiguous)
+app.add_systems(Update, |keys: Res&lt;ButtonInput&lt;KeyCode&gt;&gt;| {
+    if keys.just_pressed(KeyCode::Space) { /* correct */ }
+});
+
+// Preferred for fixed-rate gameplay: GodotActions is clock-aware and per-tick
+app.add_systems(FixedUpdate, |actions: Res&lt;GodotActions&gt;| {
+    if actions.just_pressed("jump") { /* correct, exactly once per physics tick */ }
+});
+<span class="boring">}</span></code></pre></pre>
+<p>For fixed-rate gameplay input, <code>GodotActions</code> is the preferred tool -- it tracks per-tick edges independently across the process and physics clocks.</p>
+<h3 id="godotactions"><a class="header" href="#godotactions">GodotActions</a></h3>
+<p><code>GodotActions</code> lets you read Godot's <code>InputMap</code> actions identically in <code>Update</code>, <code>FixedUpdate</code>, or a helper shared by both. The resource tracks the executing clock via an active-clock flag set by the schedule driver, so the same <code>Res&lt;GodotActions&gt;</code> read returns the correct snapshot for whichever schedule is running.</p>
+<p>Opt in per-app:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[bevy_app]
+fn build_app(app: &amp;mut App) {
+    app.add_plugins(GodotActionsPlugin);
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Same function, both schedules -- no change needed:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn jump_system(actions: Res&lt;GodotActions&gt;) {
+    if actions.just_pressed("jump") { ... }
+}
+
+app.add_systems(Update, jump_system);
+app.add_systems(FixedUpdate, jump_system); // same fn, correct in both
+<span class="boring">}</span></code></pre></pre>
+<p>For frequently-called code, use a typed <code>Action</code> handle instead of <code>&amp;str</code> -- no string hash per call, and typo-resistant:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let jump = Action::new("jump"); // construct once, store in a Resource for cross-frame reuse
+if actions.just_pressed(&amp;jump) { ... }
+<span class="boring">}</span></code></pre></pre>
+<p>The <code>&amp;str</code> overload warns once in debug if the action isn't in the <code>InputMap</code>, so typos surface instead of silently returning <code>false</code>.</p>
+<p>All accessors:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>actions.pressed("run")
+actions.just_pressed("jump")
+actions.just_released("attack")
+actions.strength("fire")            // deadzoned [0.0, 1.0]
+actions.raw_strength("fire")        // before deadzone
+actions.axis("move_left", "move_right")                              // [-1.0, 1.0]
+actions.vector("move_left", "move_right", "move_up", "move_down")   // Vec2
+<span class="boring">}</span></code></pre></pre>
+<p>The process snapshot is polled in <code>Update</code> (the <code>GodotInputSet</code> set). <code>Update</code> systems that read <code>GodotActions</code> must run after the poll:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>app.add_systems(Update, my_system.after(GodotInputSet));
+<span class="boring">}</span></code></pre></pre>
+<p><code>FixedUpdate</code> readers need no ordering -- the fixed-schedule driver refreshes the physics snapshot before <code>FixedMain</code> runs.</p>
+<p><strong>Limitations:</strong></p>
+<ul>
+<li><strong>Physics <code>just_pressed</code> lags one tick.</strong> Godot stamps physics action edges with a <code>+1</code> frame offset -- the same lag as <code>is_action_just_pressed</code> in GDScript's <code>_physics_process</code>. Intentional; matches GDScript.</li>
+<li><strong>Action set is cached on first poll.</strong> Actions added to the <code>InputMap</code> after startup aren't picked up.</li>
+<li><strong><code>axis</code>/<code>vector</code> use per-action InputMap deadzones.</strong> <code>vector()</code> does not replicate Godot's circular <code>get_vector</code> deadzone -- each action's deadzone is applied independently.</li>
+</ul>
+<h3 id="third-party-bevy_enhanced_input"><a class="header" href="#third-party-bevy_enhanced_input">Third-party: <code>bevy_enhanced_input</code></a></h3>
+<p><a href="https://github.com/projectharmonia/bevy_enhanced_input"><code>bevy_enhanced_input</code></a> supports fixed-rate input contexts natively and derives its own edge state per physics step:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>app.add_input_context_to::&lt;FixedPreUpdate, MyInputContext&gt;();
+<span class="boring">}</span></code></pre></pre>
+<p>It covers button, key, and gamepad bindings. Use it for Bevy-centric action definitions; use <code>GodotActions</code> for Godot InputMap integration.</p>
+<p><strong>Analog caveat:</strong> mouse-motion and scroll-wheel bindings consumed in <code>FixedPreUpdate</code> draw from accumulated-delta resources that are frame-scoped. When N physics steps run in one render frame, each step reads the full accumulated delta -- multiplying the effect by N. Consume analog inputs at render rate or divide by the physics step count.</p>
+<h3 id="anchor-cadence"><a class="header" href="#anchor-cadence">Anchor cadence</a></h3>
+<p><code>BeforeFixedMainLoop</code> and <code>AfterFixedMainLoop</code> run <strong>once per physics step</strong>, not once per render frame -- N times when N steps fire in a single frame. Idempotent per-step work (e.g. leafwing's input-buffer swap) is fine; systems that assume once-per-frame batch accumulation will over-apply.</p>
+<h2 id="migration"><a class="header" href="#migration">Migration</a></h2>
+<h3 id="phase-1-input-changes-keyboard-bridge--type-renames"><a class="header" href="#phase-1-input-changes-keyboard-bridge--type-renames">Phase 1 input changes (keyboard bridge + type renames)</a></h3>
+<p>Three things changed in this release; each may require a small update.</p>
+<p><strong>1. keyboard edges now work in <code>Update</code></strong></p>
+<p>The bridge previously pressed <code>ButtonInput&lt;KeyCode&gt;</code> directly, which meant <code>just_pressed</code>/<code>just_released</code> were always false -- they were cleared before <code>Update</code> ever ran. The bridge now emits Bevy <code>KeyboardInput</code> events instead, so Bevy's own <code>PreUpdate</code> systems populate the resource correctly. <code>pressed()</code>, <code>just_pressed()</code>, and <code>just_released()</code> all work in <code>Update</code>. No code change needed -- this is a fix.</p>
+<p><strong>2. third-party <code>EventReader&lt;KeyboardInput&gt;</code> consumers now receive events</strong></p>
+<p>If you have egui text fields, an accessibility plugin, a key-rebinding UI, or a hand-rolled Bevy keyboard bridge, they will start receiving <code>KeyboardInput</code> events for the first time. Dormant text widgets can activate; a hand-rolled bridge that also reads raw Godot events may double-handle. Check for anything in your dependency tree that reads <code>EventReader&lt;bevy_input::keyboard::KeyboardInput&gt;</code> and confirm the behavior is correct.</p>
+<p><strong>3. godot-bevy message types are renamed</strong></p>
+<p>The types that shadowed Bevy's same-named types are now <code>Godot</code>-prefixed. Update your imports:</p>
+<div class="table-wrapper"><table><thead><tr><th>old</th><th>new</th></tr></thead><tbody>
+<tr><td><code>KeyboardInput</code> (godot-bevy)</td><td><code>GodotKeyboardInput</code></td></tr>
+<tr><td><code>MouseButtonInput</code> (godot-bevy)</td><td><code>GodotMouseButtonInput</code></td></tr>
+<tr><td><code>MouseMotion</code> (godot-bevy)</td><td><code>GodotMouseMotion</code></td></tr>
+<tr><td><code>MouseButton</code> (godot-bevy)</td><td><code>GodotMouseButton</code></td></tr>
+</tbody></table>
+</div>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// before
+use godot_bevy::plugins::input::{KeyboardInput, MouseButtonInput, MouseMotion, MouseButton};
+
+// after
+use godot_bevy::plugins::input::{
+    GodotKeyboardInput, GodotMouseButtonInput, GodotMouseMotion, GodotMouseButton,
+};
+<span class="boring">}</span></code></pre></pre>
+<h3 id="phase-2-input-changes-godotactions"><a class="header" href="#phase-2-input-changes-godotactions">Phase 2 input changes (GodotActions)</a></h3>
+<p><code>GodotActionsPlugin</code> is additive -- nothing existing breaks. If you were accumulating <code>ActionInput</code> messages to track held state or detect first-press, replace with <code>Res&lt;GodotActions&gt;</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// before -- message-based, Update only
+fn my_system(mut reader: MessageReader&lt;ActionInput&gt;) {
+    for event in reader.read() {
+        if event.action == "jump" &amp;&amp; event.pressed { ... }
+    }
+}
+
+// after -- works in Update and FixedUpdate
+fn my_system(actions: Res&lt;GodotActions&gt;) {
+    if actions.just_pressed("jump") { ... }
+}
+<span class="boring">}</span></code></pre></pre>
+<p><code>MessageReader&lt;ActionInput&gt;</code> continues to work; removal is a future phase.</p>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="duplicate-events-fixed-in-v070"><a class="header" href="#duplicate-events-fixed-in-v070">Duplicate Events (Fixed in v0.7.0+)</a></h3>
+<p>If you're seeing duplicate <code>ActionInput</code> events for the same key press, you may be using an older version of godot-bevy. This was fixed in version 0.7.0 through improved input event processing.</p>
+<p><strong>Symptoms:</strong></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Old behavior (before v0.7.0):
+🎮 Action: 'jump' pressed    // First event
+🎮 Action: 'jump' pressed    // Duplicate event (unwanted)
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Solution:</strong> Update to godot-bevy v0.7.0 or later where input processing was improved to eliminate duplicates.</p>
+<h3 id="mouse-events-only-on-movement"><a class="header" href="#mouse-events-only-on-movement">Mouse Events Only on Movement</a></h3>
+<p><code>GodotMouseMotion</code> events are only generated when the mouse actually moves. If you need continuous mouse position tracking, consider using Godot's <code>Input.get_global_mouse_position()</code> in a system that runs every frame.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

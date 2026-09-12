@@ -1,0 +1,398 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Timing &amp; Schedules - The godot-bevy Book 👾 v0.12.0</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/css/custom.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../getting-started/index.html"><strong aria-hidden="true">2.</strong> Getting Started</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../getting-started/installation.html"><strong aria-hidden="true">2.1.</strong> Installation</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../getting-started/gdenv.html"><strong aria-hidden="true">2.1.1.</strong> Cargo Run Godot</a></li></ol></li><li class="chapter-item "><a href="../getting-started/basic-concepts.html"><strong aria-hidden="true">2.2.</strong> Basic Concepts</a></li><li class="chapter-item "><a href="../getting-started/plugins.html"><strong aria-hidden="true">2.3.</strong> Plugin System</a></li><li class="chapter-item "><a href="../getting-started/examples.html"><strong aria-hidden="true">2.4.</strong> Examples</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../scene-tree/index.html"><strong aria-hidden="true">3.</strong> Scene Tree</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../scene-tree/timing.html"><strong aria-hidden="true">3.1.</strong> Initialization and Timing</a></li><li class="chapter-item "><a href="../scene-tree/querying.html"><strong aria-hidden="true">3.2.</strong> Querying with Node Type Markers</a></li><li class="chapter-item "><a href="../scene-tree/excluding-nodes.html"><strong aria-hidden="true">3.3.</strong> Excluding Nodes</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/index.html"><strong aria-hidden="true">3.4.</strong> Custom Nodes</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../scene-tree/custom-nodes/automatic-markers.html"><strong aria-hidden="true">3.4.1.</strong> Automatic Markers</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/attachable-components.html"><strong aria-hidden="true">3.4.2.</strong> Attachable Components</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/property-mapping-with-bevy-bundle.html"><strong aria-hidden="true">3.4.3.</strong> Property Mapping</a></li><li class="chapter-item "><a href="../scene-tree/custom-nodes/nodes-from-components-and-bundles.html"><strong aria-hidden="true">3.4.4.</strong> Nodes from Components and Bundles</a></li></ol></li><li class="chapter-item "><a href="../scene-tree/spawning-scenes.html"><strong aria-hidden="true">3.5.</strong> Spawning Scenes</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../transforms/index.html"><strong aria-hidden="true">4.</strong> Transform System</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../transforms/sync-modes.html"><strong aria-hidden="true">4.1.</strong> Sync Modes</a></li><li class="chapter-item "><a href="../transforms/custom-sync.html"><strong aria-hidden="true">4.2.</strong> Custom Transform Sync</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../assets/index.html"><strong aria-hidden="true">5.</strong> Asset Loading</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../input/index.html"><strong aria-hidden="true">6.</strong> Input Handling</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../input/bevy-vs-godot.html"><strong aria-hidden="true">6.1.</strong> Bevy vs Godot Input</a></li><li class="chapter-item "><a href="../input/signals.html"><strong aria-hidden="true">6.2.</strong> Signal Handling</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../timing/index.html" class="active"><strong aria-hidden="true">7.</strong> Timing & Schedules</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../threading/index.html"><strong aria-hidden="true">8.</strong> Threading & Main Thread Access</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../profiling/profiling.html"><strong aria-hidden="true">9.</strong> Bevy Godot Profiling</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../profiling/debug-performance.html"><strong aria-hidden="true">9.1.</strong> Debug Build Performance</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../debugging/index.html"><strong aria-hidden="true">10.</strong> Debugging</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../testing/index.html"><strong aria-hidden="true">11.</strong> Integration Testing</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded "><a href="../platform-targets/index.html"><strong aria-hidden="true">12.</strong> Platform Targets</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../platform-targets/android.html"><strong aria-hidden="true">12.1.</strong> Android</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../project-transition/index.html"><strong aria-hidden="true">13.</strong> Project Transition Patterns</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../project-transition/event-bridge.html"><strong aria-hidden="true">13.1.</strong> Godot to Bevy Event Bridge</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded "><a href="../migration/index.html"><strong aria-hidden="true">14.</strong> Migration Guides</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../migration/v0.11-to-v0.12.html"><strong aria-hidden="true">14.1.</strong> v0.11 to v0.12</a></li><li class="chapter-item "><a href="../migration/v0.10-to-v0.11.html"><strong aria-hidden="true">14.2.</strong> v0.10 to v0.11</a></li><li class="chapter-item "><a href="../migration/v0.9-to-v0.10.html"><strong aria-hidden="true">14.3.</strong> v0.9 to v0.10</a></li><li class="chapter-item "><a href="../migration/v0.8-to-v0.9.html"><strong aria-hidden="true">14.4.</strong> v0.8 to v0.9</a></li><li class="chapter-item "><a href="../migration/v0.7-to-v0.8.html"><strong aria-hidden="true">14.5.</strong> v0.7 to v0.8</a></li><li class="chapter-item "><a href="../migration/v0.6-to-v0.7.html"><strong aria-hidden="true">14.6.</strong> v0.6 to v0.7</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">
+                        <a href=".." title="Switch to a different version">
+                            The godot-bevy Book 👾 v0.12.0
+                        </a>
+                    </h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/bytemeadow/godot-bevy" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/bytemeadow/godot-bevy/edit/main/book/src/timing/index.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="frame-execution-model"><a class="header" href="#frame-execution-model">Frame Execution Model</a></h1>
+<p>Understanding how godot-bevy integrates with Godot's frame timing is crucial for building performant games.</p>
+<h2 id="two-godot-callbacks-one-bevy-frame"><a class="header" href="#two-godot-callbacks-one-bevy-frame">Two Godot Callbacks, One Bevy Frame</a></h2>
+<p>godot-bevy splits Bevy's standard <code>Main</code> schedule across Godot's two frame callbacks at the fixed-loop boundary. <code>app.update()</code> is never called in production: the prefix and the fixed loop run in <code>_physics_process</code>, and the suffix runs in <code>_process</code>.</p>
+<h3 id="physics-frames-_physics_process"><a class="header" href="#physics-frames-_physics_process">Physics Frames (<code>_physics_process</code>)</a></h3>
+<p>The <strong>prefix</strong> of the main schedule plus the fixed loop run here, on Godot's physics clock.</p>
+<p>The <code>TwoWay</code> notes below refer to <a href="../transforms/sync-modes.html"><code>TransformSyncMode::TwoWay</code></a> (bidirectional Godot↔ECS transform sync); they only affect <em>where</em> the Godot→ECS read runs.</p>
+<p><strong>What runs:</strong></p>
+<ul>
+<li><code>First</code></li>
+<li><code>PreUpdate</code> (TwoWay: reads Godot → ECS transforms only on 0-physics-step frames)</li>
+<li><code>StateTransition</code></li>
+<li><code>FixedMain</code> (zero or more times per render frame)
+<ul>
+<li><code>FixedFirst</code> (TwoWay: reads Godot → ECS every physics step)</li>
+<li><code>FixedPreUpdate</code></li>
+<li><code>FixedUpdate</code> (your physics logic)</li>
+<li><code>FixedPostUpdate</code></li>
+<li><code>FixedLast</code> (writes ECS → Godot transforms at physics rate)</li>
+</ul>
+</li>
+</ul>
+<p>The prefix (<code>First</code> → <code>StateTransition</code>) runs once per render frame, on the first physics step; <code>FixedMain</code> runs once per physics step.</p>
+<p><strong>Frequency:</strong> Godot's physics tick rate (default 60 Hz)</p>
+<p><strong>Use for:</strong></p>
+<ul>
+<li>Physics calculations</li>
+<li>Movement that needs to sync with Godot physics</li>
+<li>Collision detection</li>
+<li>Anything that must run at a fixed, deterministic rate</li>
+</ul>
+<h3 id="visual-frames-_process"><a class="header" href="#visual-frames-_process">Visual Frames (<code>_process</code>)</a></h3>
+<p>The <strong>suffix</strong> of the main schedule runs here, then <code>clear_trackers</code> fires once for the whole render frame.</p>
+<p><strong>What runs:</strong></p>
+<ul>
+<li><code>Update</code></li>
+<li><code>PostUpdate</code></li>
+<li><code>Last</code></li>
+</ul>
+<p><strong>Frequency:</strong> Matches Godot's visual framerate (typically 60–144 FPS)</p>
+<p><strong>Use for:</strong></p>
+<ul>
+<li>Game logic</li>
+<li>UI updates</li>
+<li>Rendering-related systems</li>
+<li>Most gameplay code</li>
+</ul>
+<p>On a render frame with no physics step, the prefix runs in <code>_process</code> before the suffix, so a frame is never skipped.</p>
+<h2 id="schedule-execution-order"><a class="header" href="#schedule-execution-order">Schedule Execution Order</a></h2>
+<h3 id="physics-frame-_physics_process"><a class="header" href="#physics-frame-_physics_process">Physics Frame (<code>_physics_process</code>)</a></h3>
+<pre><code>Physics Frame Start
+    ├── First           ┐
+    ├── PreUpdate       │ prefix: once per render frame (TwoWay read only on 0-step frames)
+    ├── StateTransition ┘
+    └── FixedMain       (once per physics step)
+        ├── FixedFirst      (TwoWay: reads Godot → ECS every physics step)
+        ├── FixedPreUpdate
+        ├── FixedUpdate     (your physics/fixed logic)
+        ├── FixedPostUpdate
+        └── FixedLast       (writes ECS → Godot transforms)
+Physics Frame End
+</code></pre>
+<h3 id="visual-frame-_process"><a class="header" href="#visual-frame-_process">Visual Frame (<code>_process</code>)</a></h3>
+<pre><code>Visual Frame Start
+    ├── Update     (your visual-rate logic)
+    ├── PostUpdate
+    ├── Last
+    └── clear_trackers (once per render frame)
+Visual Frame End
+</code></pre>
+<p>Physics steps run on Godot's authoritative clock: each render frame drives the prefix and 0, 1, or N <code>FixedMain</code> steps in <code>_physics_process</code> before the suffix runs in <code>_process</code> — a deterministic order, not independent schedules.</p>
+<h3 id="beforefixedmainloop--afterfixedmainloop-anchors"><a class="header" href="#beforefixedmainloop--afterfixedmainloop-anchors"><code>BeforeFixedMainLoop</code> / <code>AfterFixedMainLoop</code> anchors</a></h3>
+<p>godot-bevy runs the whole <code>RunFixedMainLoop</code> schedule once per physics step, so the <code>BeforeFixedMainLoop</code> and <code>AfterFixedMainLoop</code> anchor sets fire <strong>once per step</strong> — 0, 1, or N times per render frame — not Bevy's stock once per frame. Order ecosystem systems (e.g. leafwing's input-buffer swap) against them with that cadence in mind.</p>
+<p>A <code>GodotActions</code> read inside either anchor sees the <strong>process-clock</strong> snapshot: the active clock is flipped to physics only around <code>FixedMain</code> itself. Read actions in <code>FixedUpdate</code> (physics snapshot) or <code>Update</code> (process snapshot), not in the anchors.</p>
+<h2 id="frame-rate-relationships"><a class="header" href="#frame-rate-relationships">Frame Rate Relationships</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Schedule</th><th>Rate</th><th>Use case</th></tr></thead><tbody>
+<tr><td>Visual schedules (<code>Update</code>, etc.)</td><td>Display refresh (60–144 Hz)</td><td>Rendering, UI, general logic</td></tr>
+<tr><td><code>FixedUpdate</code> / <code>FixedMain</code></td><td>Godot's physics rate (default 60 Hz)</td><td>Physics, deterministic simulation</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p><strong>Note:</strong> Bevy's default <code>FixedUpdate</code> rate (64 Hz) is <strong>not used</strong>. godot-bevy drives <code>FixedMain</code> directly from <code>_physics_process</code>, so the rate is always Godot's physics rate — whatever is set in Project Settings → Physics → Common → Physics Ticks Per Second.</p>
+</blockquote>
+<h2 id="practical-example"><a class="header" href="#practical-example">Practical Example</a></h2>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[bevy_app]
+fn build_app(app: &amp;mut App) {
+    // Visual-rate systems
+    app.add_systems(Update, (
+        ui_system,
+        camera_follow,
+        animation_system,
+    ));
+
+    // Fixed-rate physics systems (runs at Godot's physics rate, default 60 Hz)
+    app.add_systems(FixedUpdate, (
+        character_movement,
+        collision_response,
+        ai_behavior,
+    ));
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="delta-time"><a class="header" href="#delta-time">Delta Time</a></h2>
+<h3 id="in-update-systems"><a class="header" href="#in-update-systems">In <code>Update</code> Systems</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn movement_system(
+    time: Res&lt;Time&gt;,
+    mut query: Query&lt;&amp;mut Transform&gt;,
+) {
+    let delta = time.delta_secs();
+    // Visual-frame delta — varies with framerate
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="in-fixedupdate-systems"><a class="header" href="#in-fixedupdate-systems">In <code>FixedUpdate</code> Systems</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn physics_movement(
+    time: Res&lt;Time&gt;,
+    mut query: Query&lt;&amp;mut Transform&gt;,
+) {
+    let delta = time.delta_secs();
+    // Fixed delta — always equals Godot's physics delta (e.g. 1/60 s at 60 Hz)
+    // Engine.time_scale is baked in, so slow-motion works automatically
+}
+<span class="boring">}</span></code></pre></pre>
+<p><code>Res&lt;Time&gt;</code> works correctly in both schedules — in <code>FixedUpdate</code> it reports the fixed physics delta automatically. Do <strong>not</strong> hardcode <code>1.0 / 60.0</code>; read <code>time.delta_secs()</code> instead.</p>
+<h2 id="physics-interpolation"><a class="header" href="#physics-interpolation">Physics Interpolation</a></h2>
+<p>godot-bevy writes transforms at physics rate (<code>FixedLast</code>). To get visually smooth movement between physics ticks, enable Godot's built-in physics interpolation:</p>
+<p><strong>Project Settings → Physics → Common → Physics Interpolation</strong> = <code>true</code></p>
+<p>or in <code>project.godot</code>:</p>
+<pre><code class="language-ini">[physics]
+common/physics_interpolation=true
+</code></pre>
+<p>When a node teleports (respawn, warp), call <code>reset_physics_interpolation()</code> on it immediately after moving so Godot doesn't interpolate through the jump.</p>
+<blockquote>
+<p><strong>Note:</strong> Bevy-side interpolation plugins (e.g. avian's <code>PhysicsInterpolationPlugin</code>, <code>bevy_transform_interpolation</code>) and rollback netcode (<code>bevy_ggrs</code>) are not supported in godot-bevy's transform sync path — use Godot's built-in interpolation instead.</p>
+</blockquote>
+<h2 id="common-pitfalls"><a class="header" href="#common-pitfalls">Common Pitfalls</a></h2>
+<h3 id="dont-put-physics-logic-in-update"><a class="header" href="#dont-put-physics-logic-in-update">Don't put physics logic in <code>Update</code></a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// BAD: Update runs at variable framerate; physics won't be deterministic
+app.add_systems(Update, character_movement);
+
+// GOOD: FixedUpdate runs at physics rate
+app.add_systems(FixedUpdate, character_movement);
+<span class="boring">}</span></code></pre></pre>
+<h3 id="dont-hardcode-the-physics-timestep"><a class="header" href="#dont-hardcode-the-physics-timestep">Don't hardcode the physics timestep</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// BAD: breaks if physics rate changes in Project Settings
+let delta = 1.0 / 60.0;
+
+// GOOD: always correct, honors time_scale
+fn physics_system(time: Res&lt;Time&gt;) {
+    let delta = time.delta_secs();
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="dont-expect-immediate-cross-schedule-visibility"><a class="header" href="#dont-expect-immediate-cross-schedule-visibility">Don't expect immediate cross-schedule visibility</a></h3>
+<p>Godot transforms written in <code>FixedLast</code> aren't read back into ECS until the next physics step's <code>FixedFirst</code> (TwoWay), or — on a render frame with no physics step — that frame's <code>PreUpdate</code> fallback.</p>
+<p>Because the TwoWay read occurs in <code>FixedFirst</code>, any <em>prefix</em> schedule (<code>First</code>, <code>PreUpdate</code>, <code>StateTransition</code>) on a frame with one or more physics steps sees <strong>last frame's</strong> synced <code>Transform</code> — the fresh Godot value isn't merged until <code>FixedFirst</code> runs. Read this frame's Godot value in <code>FixedUpdate</code> onward (after <code>FixedFirst</code>) or in the <code>Update</code> suffix (after the last step's read), not in a prefix schedule.</p>
+<h2 id="performance-considerations"><a class="header" href="#performance-considerations">Performance Considerations</a></h2>
+<ol>
+<li><strong>Visual frames</strong> vary widely (30–144+ FPS)</li>
+<li><strong>FixedUpdate</strong> runs at a constant rate driven by Godot's physics clock</li>
+<li>Transform syncing from ECS → Godot happens in <code>FixedLast</code>; Godot → ECS happens every physics step in <code>FixedFirst</code> (TwoWay), and in <code>PreUpdate</code> on 0-step frames</li>
+</ol>
+<blockquote>
+<p><strong>Note:</strong> Scene tree entities are initialized during <code>PreStartup</code>, before any <code>Startup</code> systems run. You can safely query Godot scene entities in <code>Startup</code> systems. See <a href="../scene-tree/timing.html">Scene Tree Initialization and Timing</a> for details.</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
