@@ -263,7 +263,7 @@
 <li>Configure your project settings:
 <ul>
 <li><strong>Project name</strong>: Used for the Rust crate name</li>
-<li><strong>godot-bevy version</strong>: Library version (default: 0.11.0)</li>
+<li><strong>godot-bevy version</strong>: Library version (default: 0.12.0)</li>
 <li><strong>Release build</strong>: Whether to build in release mode initially</li>
 </ul>
 </li>
@@ -317,9 +317,9 @@ edition = "2024"
 crate-type = ["cdylib"]
 
 [dependencies]
-godot-bevy = "0.11.0"
-bevy = { version = "0.18", default-features = false }
-godot = "0.4"
+godot-bevy = "0.12"
+bevy = { version = "0.19", default-features = false }
+godot = "0.5"
 </code></pre>
 <p>godot-bevy supports Godot API levels 4.2 through 4.6 via the mutually exclusive Cargo features <code>api-4-2</code>, <code>api-4-3</code>, <code>api-4-4</code>, <code>api-4-5</code>, and <code>api-4-6</code>, with or without default features. Set <code>compatibility_minimum</code> in your <code>.gdextension</code> file to the level you build against; the example below assumes 4.3.</p>
 <h2 id="configure-godot-integration"><a class="header" href="#configure-godot-integration">Configure Godot Integration</a></h2>
@@ -443,7 +443,7 @@ path = "run_godot.rs"
 [dependencies]
 gdenv-lib = { git = "https://github.com/bytemeadow/gdenv.git", tag = "v1.0.0" }
 # Add godot-bevy-test if you want to also set up integration tests
-godot-bevy-test = { version = "0.11", optional = true }
+godot-bevy-test = { version = "0.12", optional = true }
 
 # Update or add your features section with:
 [features]
@@ -1563,7 +1563,7 @@ an explicit description. <code>hint</code> names a bare Godot <code>PropertyHint
 <code>hint_string</code> takes an expression. A hint string requires a hint.</p>
 <p>Enable the <code>register-docs</code> feature on your <code>godot-bevy</code> dependency to register
 property descriptions in Godot's editor:</p>
-<pre><code class="language-toml">godot-bevy = { version = "0.11", features = ["register-docs"] }
+<pre><code class="language-toml">godot-bevy = { version = "0.12", features = ["register-docs"] }
 </code></pre>
 <p>This feature is off by default and requires Godot API 4.3 or later. With it off,
 hints still work and descriptions remain Rust docs. API 4.2 consumers must leave
@@ -3763,7 +3763,7 @@ built-in <code>ChildOf</code>/<code>Children</code>. If an entity appears at the
 <p>Install or symlink the addon into <code>godot/addons/godot-bevy</code>, and configure its <code>BevyAppSingleton</code> autoload. The generated GDExtension must be imported once so Godot records it in <code>.godot/extension_list.cfg</code>.</p>
 <h2 id="setup"><a class="header" href="#setup">Setup</a></h2>
 <p>Add the optional test dependency and enable the frame signal used by the harness:</p>
-<pre><code class="language-toml">godot-bevy-test = { version = "0.11", optional = true }
+<pre><code class="language-toml">godot-bevy-test = { version = "0.12", optional = true }
 </code></pre>
 <pre><code class="language-toml">itest = ["dep:godot-bevy-test", "godot-bevy-test/test-frame-signal"]
 </code></pre>
@@ -4058,7 +4058,16 @@ BevyAppSingleton.send_event("damage", {"source": self, "amount": 10.0})
 <p>This guide covers breaking changes when upgrading from godot-bevy 0.11.x to 0.12.0.</p>
 <h2 id="table-of-contents"><a class="header" href="#table-of-contents">Table of Contents</a></h2>
 <ul>
-<li><a href="migration/v0.11-to-v0.12.html#macro-redesign--gdbevy-unified-grammar-breaking-change">Macro redesign — <code>#[gdbevy(...)]</code> unified grammar (breaking change)</a></li>
+<li><a href="migration/v0.11-to-v0.12.html#breaking-detached-nodes-remain-alive">Breaking: Detached nodes remain alive</a></li>
+<li><a href="migration/v0.11-to-v0.12.html#behavior-shutdown-runs-on-destruction">Behavior: Shutdown runs on destruction</a></li>
+<li><a href="migration/v0.11-to-v0.12.html#dependencies-bevy-019-and-godot-05">Dependencies: Bevy 0.19 and godot 0.5</a></li>
+<li><a href="migration/v0.11-to-v0.12.html#new-event-bridge">New: Event bridge</a></li>
+<li><a href="migration/v0.11-to-v0.12.html#breaking-integration-tests-live-in-the-game-crate">Breaking: Integration tests live in the game crate</a></li>
+<li><a href="migration/v0.11-to-v0.12.html#new-godotnode-on-tuple-structs">New: GodotNode on tuple structs</a></li>
+<li><a href="migration/v0.11-to-v0.12.html#new-inspector-metadata-on-generated-exports">New: Inspector metadata on generated exports</a></li>
+<li><a href="migration/v0.11-to-v0.12.html#new-attachablecomponent">New: AttachableComponent</a></li>
+<li><a href="migration/v0.11-to-v0.12.html#known-limitations-web-builds">Known limitations: Web builds</a></li>
+<li><a href="migration/v0.11-to-v0.12.html#macro-redesign--gdbevy-unified-grammar-breaking-change">Macro redesign -- <code>#[gdbevy(...)]</code> unified grammar (breaking change)</a></li>
 <li><a href="migration/v0.11-to-v0.12.html#behavior-native-schedule-ordering">Native schedule ordering</a></li>
 <li><a href="migration/v0.11-to-v0.12.html#behavior-buttoninput-now-works-in-fixedupdate">ButtonInput now works in FixedUpdate</a></li>
 <li><a href="migration/v0.11-to-v0.12.html#behavior-twoway-transform-sync--now-per-axis-co-authorship">TwoWay transform sync -- now per-axis co-authorship</a></li>
@@ -4070,22 +4079,62 @@ BevyAppSingleton.send_event("damage", {"source": self, "amount": 10.0})
 <li><a href="migration/v0.11-to-v0.12.html#breaking-runfixedmainloop-removed-from-mainscheduleorder">RunFixedMainLoop removed from MainScheduleOrder</a></li>
 <li><a href="migration/v0.11-to-v0.12.html#breaking-physicsupdate-and-related-apis-removed">PhysicsUpdate and related APIs removed</a></li>
 <li><a href="migration/v0.11-to-v0.12.html#breaking-fixedupdate-now-runs-at-godots-physics-rate">FixedUpdate now runs at Godot's physics rate</a></li>
-<li><a href="migration/v0.11-to-v0.12.html#breaking-delta-time-use-restime-everywhere">Delta time: use Res&lt;Time&gt; everywhere</a></li>
+<li><a href="migration/v0.11-to-v0.12.html#replace-physicsdelta-with-restime">Delta time: use Res&lt;Time&gt; everywhere</a></li>
 <li><a href="migration/v0.11-to-v0.12.html#new-enginetime_scale-honored-automatically">Engine.time_scale honored automatically</a></li>
 <li><a href="migration/v0.11-to-v0.12.html#breaking-scenetreepaused-now-runs-update-systems-process_mode--always">SceneTree.paused now runs Update systems (process_mode = ALWAYS)</a></li>
 <li><a href="migration/v0.11-to-v0.12.html#new-physics-interpolation-support">Physics interpolation support</a></li>
 <li><a href="migration/v0.11-to-v0.12.html#dependencies-gdext-bumped-to-055">Dependencies: gdext bumped to 0.5.5</a></li>
 </ul>
 <hr />
-<h2 id="macro-redesign--gdbevy-unified-grammar-breaking-change"><a class="header" href="#macro-redesign--gdbevy-unified-grammar-breaking-change">Macro Redesign — <code>#[gdbevy(...)]</code> Unified Grammar (Breaking Change)</a></h2>
+<h2 id="breaking-detached-nodes-remain-alive"><a class="header" href="#breaking-detached-nodes-remain-alive">Breaking: Detached nodes remain alive</a></h2>
+<p>A node removed with <code>remove_child</code> is no longer freed by godot-bevy (#263). Its mirrored entity still despawns when the removal is processed. Re-adding the surviving node creates a fresh entity. This differs from an in-tree reparent, which preserves the existing entity and its components.</p>
+<p>This is the change most likely to affect code that relied on the old behavior. If detaching meant deleting in your game, call <code>queue_free()</code> explicitly. If you keep nodes for reuse, keep their handles and restore any runtime ECS state after re-entry.</p>
+<p><code>ProtectedNodeEntity</code> keeps the entity and its gameplay components. Cleanup removes its Godot components, index entry, and scene-tree relationships. To reuse that entity, insert the surviving node's <code>GodotNodeHandle</code> before re-entry. Re-entry alone creates a fresh entity.</p>
+<hr />
+<h2 id="behavior-shutdown-runs-on-destruction"><a class="header" href="#behavior-shutdown-runs-on-destruction">Behavior: Shutdown runs on destruction</a></h2>
+<p>A started <code>BevyApp</code> writes <code>AppExit::Success</code> and runs one final <code>Last</code> pass on real destruction or an explicit <code>teardown()</code> (#262). Detaching or reparenting the app node no longer tears down its world. <code>teardown()</code> is idempotent, so a later call or destruction does not run shutdown again.</p>
+<p>If your cleanup reads <code>AppExit</code>, handle it in <code>Last</code>. If you previously detached the app node to dispose of the world, call <code>teardown()</code> between frames instead. On destruction, Godot children may already be gone, so shutdown systems must not assume their nodes are still valid.</p>
+<hr />
+<h2 id="dependencies-bevy-019-and-godot-05"><a class="header" href="#dependencies-bevy-019-and-godot-05">Dependencies: Bevy 0.19 and godot 0.5</a></h2>
+<p>All projects upgrading from 0.11 need to move Bevy from 0.18 to 0.19 and <code>godot</code> from 0.4 to 0.5 (#225, #238). These are breaking dependency upgrades. Update your manifest:</p>
+<pre><code class="language-toml">godot-bevy = "0.12"
+bevy = { version = "0.19", default-features = false }
+godot = "0.5"
+</code></pre>
+<p>Follow <a href="https://bevy.org/learn/migration-guides/0-18-to-0-19/">Bevy's 0.18 to 0.19 migration guide</a> and <a href="https://godot-rust.github.io/book/migrate/v0.5.html">gdext's migration to 0.5</a> for changes in your own systems and Godot classes. The minimum gdext patch is 0.5.5, as described below.</p>
+<p>The Godot API selectors <code>api-4-2</code>, <code>api-4-3</code>, <code>api-4-4</code>, <code>api-4-5</code>, and <code>api-4-6</code> all build (#252, #264). Projects targeting an older Godot runtime can select its API level. Enable only one selector and keep the GDExtension descriptor's <code>compatibility_minimum</code> consistent with it. Without a selector, the default API is 4.6.</p>
+<hr />
+<h2 id="new-event-bridge"><a class="header" href="#new-event-bridge">New: Event bridge</a></h2>
+<p>The event bridge delivers typed Bevy events from GDScript and Rust (#242). Register a GDScript name and payload decoder with <code>app.add_godot_event::&lt;T&gt;(...)</code>, then call <code>BevyAppSingleton.send_event("name", payload)</code> from GDScript. Rust callers can use <code>send_event</code> or clone <code>GodotEventSender</code> for channel sends, including from other threads. Events are queued and delivered to <code>On&lt;T&gt;</code> observers at the next <code>First</code> drain, once per render frame.</p>
+<p>If you used <code>GodotMailboxPlugin</code>, replace its field polling with event registration and explicit sends. Replace <code>MessageReader&lt;T&gt;</code> consumers with observers, or accumulate events in a resource when you need fixed-step batches. See <a href="migration/../project-transition/event-bridge.html">The Event Bridge</a> for the migration table and callback timing restrictions.</p>
+<hr />
+<h2 id="breaking-integration-tests-live-in-the-game-crate"><a class="header" href="#breaking-integration-tests-live-in-the-game-crate">Breaking: Integration tests live in the game crate</a></h2>
+<p>The documented test setup uses one crate with an optional <code>godot-bevy-test</code> dependency behind an <code>itest</code> feature (#260). The old multi-crate layout is no longer documented or supported when it links the game as an rlib, because that creates duplicate GDExtension entry symbols.</p>
+<p>Move integration tests into a feature-gated module in the game crate. Keep its existing <code>cdylib</code> and <code>#[bevy_app]</code> entry point, and call <code>godot_bevy_test::declare_test_runner!()</code> there under the same feature. The usual test signature is <code>#[itest] async fn test(ctx: TestContext)</code>. The context is owned so it can outlive the spawned task; the explicit <code>#[itest(async)]</code> form remains available.</p>
+<p>Configure the game runner and use <code>cargo run --features itest</code>. Direct Godot launches must set <code>GODOT_BEVY_ITEST=1</code> so the game autoload waits for the test runner. See <a href="migration/../testing/index.html">Testing</a> for dependencies, runner setup, and frame control.</p>
+<hr />
+<h2 id="new-godotnode-on-tuple-structs"><a class="header" href="#new-godotnode-on-tuple-structs">New: GodotNode on tuple structs</a></h2>
+<p><code>GodotNode</code> now supports tuple structs (#261). Exported fields use <code>value0</code>, <code>value1</code>, and so on, based on their tuple index. This lets component-first newtypes and tuples use the same <code>#[gdbevy(export, ...)]</code> attributes as named fields. Existing named structs need no changes. If you convert one to a tuple, update saved property names and any scripts that access those exports.</p>
+<hr />
+<h2 id="new-inspector-metadata-on-generated-exports"><a class="header" href="#new-inspector-metadata-on-generated-exports">New: Inspector metadata on generated exports</a></h2>
+<p>Generated exports accept <code>description</code>, <code>hint</code>, and <code>hint_string</code> metadata (#262). These work on primary fields and required-component exports. <code>description</code> is a string literal, <code>hint</code> names a Godot <code>PropertyHint</code> variant, and <code>hint_string</code> requires a hint. Existing exports need no changes; add metadata where designers need help text or a specific Inspector control.</p>
+<p>Enable the opt-in <code>register-docs</code> feature to show descriptions in Godot's editor help. It requires Godot API 4.3 or later. On API 4.2, leave it disabled. Hints work without it, and descriptions remain Rust docs. See <a href="migration/../scene-tree/custom-nodes/property-mapping-with-bevy-bundle.html#inspector-metadata-for-generated-exports">Inspector metadata</a> for the attribute syntax.</p>
+<hr />
+<h2 id="new-attachablecomponent"><a class="header" href="#new-attachablecomponent">New: AttachableComponent</a></h2>
+<p><code>AttachableComponent</code> turns an editor-authored child node into a component on its parent's Bevy entity (#265). Use it for configuration authored as child nodes. The carrier is consumed after successful attachment and never gets its own entity, so do not keep references to it or expect live Inspector synchronization. Existing components need no migration. See <a href="migration/../scene-tree/custom-nodes/attachable-components.html">Attachable Components</a> for conversion, placement, and lifetime rules.</p>
+<hr />
+<h2 id="known-limitations-web-builds"><a class="header" href="#known-limitations-web-builds">Known limitations: Web builds</a></h2>
+<p>The web/wasm example does not build on current nightly (#268). The library's web features compile, but web execution remains unverified for 0.12. If you ship to browsers, keep this upgrade blocked on your own end-to-end validation and follow <a href="https://github.com/bytemeadow/godot-bevy/issues/268">#268</a> for the build failure.</p>
+<hr />
+<h2 id="macro-redesign----gdbevy-unified-grammar-breaking-change"><a class="header" href="#macro-redesign----gdbevy-unified-grammar-breaking-change">Macro Redesign -- <code>#[gdbevy(...)]</code> Unified Grammar (Breaking Change)</a></h2>
 <p>The four old bridging macros (<code>BevyBundle</code>, <code>#[bevy_bundle(...)]</code>, <code>#[godot_node(...)]</code>,
 <code>#[godot_export(...)]</code>, <code>#[export_fields(...)]</code>) are <strong>removed</strong>. They are replaced by two derives
 that share one <code>#[gdbevy(...)]</code> grammar:</p>
 <ul>
-<li><strong><code>GodotNode</code></strong> — component-first. Derive alongside <code>Component</code>; the macro generates the Godot class.</li>
-<li><strong><code>BevyComponents</code></strong> — Godot-first. Derive alongside <code>GodotClass</code>; you own the class.</li>
+<li><strong><code>GodotNode</code></strong> -- component-first. Derive alongside <code>Component</code>; the macro generates the Godot class.</li>
+<li><strong><code>BevyComponents</code></strong> -- Godot-first. Derive alongside <code>GodotClass</code>; you own the class.</li>
 </ul>
-<p>There are no deprecation aliases — the old names are gone and will fail to compile.</p>
+<p>There are no deprecation aliases -- the old names are gone and will fail to compile.</p>
 <h3 id="godot-first-bevybundle--bevycomponents"><a class="header" href="#godot-first-bevybundle--bevycomponents">Godot-first: <code>BevyBundle</code> → <code>BevyComponents</code></a></h3>
 <p><strong>Before:</strong></p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -4224,7 +4273,7 @@ Remove any <code>into</code> / <code>sync</code> keys.</li>
 <p>The main schedule now runs in <strong>stock Bevy order</strong>:</p>
 <pre><code>First → PreUpdate → StateTransition → [FixedMain ×N] → Update → PostUpdate → Last
 </code></pre>
-<p>The prefix (<code>First</code> through <code>StateTransition</code>) runs in Godot's <code>_physics_process</code>; the suffix (<code>Update</code> through <code>Last</code>) runs in <code>_process</code>. <code>clear_trackers</code> fires once at the end of <code>_process</code>, covering the full render frame.</p>
+<p>The prefix (<code>First</code> through <code>StateTransition</code>) runs once per render frame. It runs in the first <code>_physics_process</code>, or in <code>_process</code> if the frame has no physics step. Further physics steps run only <code>FixedMain</code>. The suffix (<code>Update</code> through <code>Last</code>) runs in <code>_process</code>. <code>clear_trackers</code> fires once at the end of <code>_process</code>, covering the full render frame.</p>
 <p><strong>What changed from v0.11:</strong> In v0.11 the prefix ran in <code>_process</code> <em>after</em> the fixed steps. That meant <code>PreUpdate</code> and <code>StateTransition</code> came after the fixed loop instead of before it. The new ordering matches what you'd see in a plain Bevy desktop app.</p>
 <p><strong>Practical effects:</strong></p>
 <ul>
@@ -4232,6 +4281,7 @@ Remove any <code>into</code> / <code>sync</code> keys.</li>
 <li><code>OnEnter</code> / <code>OnExit</code> state transitions (fired by <code>StateTransition</code>) are visible to <code>FixedUpdate</code> in the same frame.</li>
 <li>Systems that do clock-sensitive Godot FFI (e.g. reading physics state) and were previously safe in <code>First</code>/<code>PreUpdate</code> may now run under the physics clock. Move such work to <code>Update</code> or later if it must run after Godot's physics integration for the current frame.</li>
 </ul>
+<p>Secondary Bevy <code>SubApp</code>s are rejected when the app is built. The driver runs <code>Main</code> directly and cannot extract or update a secondary app. If a plugin creates one, remove that plugin or move its logic into the main app.</p>
 <hr />
 <h2 id="behavior-buttoninput-now-works-in-fixedupdate"><a class="header" href="#behavior-buttoninput-now-works-in-fixedupdate">Behavior: ButtonInput now works in FixedUpdate</a></h2>
 <p><code>ButtonInput&lt;KeyCode&gt;::just_pressed</code> and <code>just_released</code> are now visible in <code>FixedUpdate</code>. Previously they were always false there because <code>PreUpdate</code> (where <code>keyboard_input_system</code> populates the resource) ran after the fixed steps. With native ordering, <code>PreUpdate</code> runs before the fixed steps -- so when a physics step runs, edges are already set by the time <code>FixedUpdate</code> runs.</p>
@@ -4250,9 +4300,10 @@ app.add_systems(FixedUpdate, |keys: Res&lt;ButtonInput&lt;KeyCode&gt;&gt;| {
 <p><code>GodotActions</code> uses Godot's per-tick edge state and has neither issue -- prefer it for fixed-rate gameplay input.</p>
 <p>No code change is required -- this is a fix. If you were working around the limitation (e.g. by reading input only in <code>Update</code> and storing state in a resource), the workaround is no longer necessary.</p>
 <hr />
-<h2 id="behavior-twoway-transform-sync--now-per-axis-co-authorship"><a class="header" href="#behavior-twoway-transform-sync--now-per-axis-co-authorship">Behavior: TwoWay transform sync — now per-axis co-authorship</a></h2>
-<p><code>TwoWay</code> transform sync is improved. The Godot→Bevy read runs in <code>PreUpdate</code> (before your systems), so Bevy systems see the latest Godot-authored transform the same frame -- the brownfield/hybrid guarantee. The echo guard is a per-entity value shadow, so a node can be <strong>co-authored per axis</strong>: Godot drives some translation/scale components while Bevy drives others, on the same node, every frame, and neither clobbers the other. Rotation is whole (quaternion components aren't independently meaningful); if both sides change the same axis in one frame, Bevy wins.</p>
-<p>No action required.</p>
+<h2 id="behavior-twoway-transform-sync----now-per-axis-co-authorship"><a class="header" href="#behavior-twoway-transform-sync----now-per-axis-co-authorship">Behavior: TwoWay transform sync -- now per-axis co-authorship</a></h2>
+<p><code>TwoWay</code> transform sync is improved. The Godot→Bevy read runs in <code>FixedFirst</code> on every physics step. On frames with zero physics steps, a <code>PreUpdate</code> fallback reads transforms unless virtual time is paused. <code>FixedUpdate</code> systems see the current step's Godot-authored transform, and <code>Update</code> sees the last read for that frame. If you read synced transforms in <code>PreUpdate</code>, move that work to <code>FixedUpdate</code> or <code>Update</code>.</p>
+<p>The echo guard is a per-entity value shadow, so a node can be <strong>co-authored per axis</strong>: Godot drives some translation/scale components while Bevy drives others, on the same node, every frame, and neither clobbers the other. Rotation is whole (quaternion components aren't independently meaningful); if both sides change the same axis in one frame, Bevy wins.</p>
+<p>No changes to the co-authorship setup are required.</p>
 <hr />
 <h2 id="breaking-godotactions-update-readers-need-aftergodotinputset"><a class="header" href="#breaking-godotactions-update-readers-need-aftergodotinputset">Breaking: GodotActions Update readers need <code>.after(GodotInputSet)</code></a></h2>
 <p><code>GodotActionsPlugin</code> previously polled the process snapshot in <code>First</code>. It now polls in <code>Update</code> (to stay in the suffix, where the process clock is correct). If you have <code>Update</code> systems that read <code>Res&lt;GodotActions&gt;</code>, they must run after the poll:</p>
@@ -4329,7 +4380,7 @@ app.add_systems(FixedPreUpdate, read_input);</code></pre>
         t.translation.x += 100.0 * delta;
     }
 }</code></pre>
-<p><code>Res&lt;Time&gt;</code> in a <code>FixedUpdate</code> system automatically reports the fixed physics delta — no special type needed.</p>
+<p><code>Res&lt;Time&gt;</code> in a <code>FixedUpdate</code> system automatically reports the fixed physics delta -- no special type needed.</p>
 <h3 id="systemdeltatimer-removed"><a class="header" href="#systemdeltatimer-removed">SystemDeltaTimer removed</a></h3>
 <p><code>SystemDeltaTimer</code> is removed. For cooldowns and accumulators inside fixed systems, use Bevy's standard timer types (<code>Timer</code>, <code>Stopwatch</code>) or accumulate <code>time.delta_secs()</code> directly.</p>
 <hr />
@@ -4346,7 +4397,7 @@ fn my_system(time: Res&lt;Time&gt;) {
 }</code></pre>
 <hr />
 <h2 id="new-enginetime_scale-honored-automatically"><a class="header" href="#new-enginetime_scale-honored-automatically">New: Engine.time_scale honored automatically</a></h2>
-<p><code>Engine.time_scale</code> (slow-motion, fast-forward, freeze) now scales <strong>both</strong> schedules. Godot's physics delta already incorporates the scale, so <code>FixedUpdate</code> systems reading <code>Res&lt;Time&gt;</code> slow down for free. The <code>Update</code> schedule scales too: godot-bevy mirrors <code>time_scale</code> onto <code>Time&lt;Virtual&gt;</code>, so timers, tweens, and camera lerps in <code>Update</code> honor it as well. <code>Time&lt;Real&gt;</code> stays truthful — read it for anything that must ignore time scaling (diagnostics, real-time UI).</p>
+<p><code>Engine.time_scale</code> (slow-motion, fast-forward, freeze) now scales <strong>both</strong> schedules. Godot's physics delta already incorporates the scale, so <code>FixedUpdate</code> systems reading <code>Res&lt;Time&gt;</code> slow down for free. The <code>Update</code> schedule scales too: godot-bevy mirrors <code>time_scale</code> onto <code>Time&lt;Virtual&gt;</code>, so timers, tweens, and camera lerps in <code>Update</code> honor it as well. <code>Time&lt;Real&gt;</code> stays truthful -- read it for anything that must ignore time scaling (diagnostics, real-time UI).</p>
 <hr />
 <h2 id="breaking-scenetreepaused-now-runs-update-systems-process_mode--always"><a class="header" href="#breaking-scenetreepaused-now-runs-update-systems-process_mode--always">Breaking: SceneTree.paused now runs Update systems (process_mode = ALWAYS)</a></h2>
 <p><code>BevyApp</code> now sets its <code>process_mode</code> to <code>ALWAYS</code>, so <code>_process</code> and <code>_physics_process</code> keep firing while <code>SceneTree.paused</code> is <code>true</code>. Previously an INHERIT/PAUSABLE <code>BevyApp</code> froze both callbacks, so a tree-pause stopped the entire ECS -- including any Bevy-authored pause menu. Now the ECS keeps ticking through a pause, which is what makes a pause menu in Bevy possible.</p>
@@ -4367,7 +4418,7 @@ common/physics_interpolation=true
 </code></pre>
 <p>When a node teleports (respawn, warp), call <code>reset_physics_interpolation()</code> on it immediately after moving so Godot doesn't interpolate across the jump.</p>
 <blockquote>
-<p>Bevy-side interpolation plugins and rollback netcode are not supported in godot-bevy's transform sync path — use Godot's built-in interpolation instead.</p>
+<p>Bevy-side interpolation plugins and rollback netcode are not supported in godot-bevy's transform sync path -- use Godot's built-in interpolation instead.</p>
 </blockquote>
 <hr />
 <h2 id="dependencies-gdext-bumped-to-055"><a class="header" href="#dependencies-gdext-bumped-to-055">Dependencies: gdext bumped to 0.5.5</a></h2>

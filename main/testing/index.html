@@ -203,7 +203,7 @@
 <p>Install or symlink the addon into <code>godot/addons/godot-bevy</code>, and configure its <code>BevyAppSingleton</code> autoload. The generated GDExtension must be imported once so Godot records it in <code>.godot/extension_list.cfg</code>.</p>
 <h2 id="setup"><a class="header" href="#setup">Setup</a></h2>
 <p>Add the optional test dependency and enable the frame signal used by the harness:</p>
-<pre><code class="language-toml">godot-bevy-test = { version = "0.11", optional = true }
+<pre><code class="language-toml">godot-bevy-test = { version = "0.12", optional = true }
 </code></pre>
 <pre><code class="language-toml">itest = ["dep:godot-bevy-test", "godot-bevy-test/test-frame-signal"]
 </code></pre>
