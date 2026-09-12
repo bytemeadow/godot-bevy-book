@@ -267,6 +267,17 @@ Visual Frame End
 <blockquote>
 <p><strong>Note:</strong> Bevy's default <code>FixedUpdate</code> rate (64 Hz) is <strong>not used</strong>. godot-bevy drives <code>FixedMain</code> directly from <code>_physics_process</code>, so the rate is always Godot's physics rate — whatever is set in Project Settings → Physics → Common → Physics Ticks Per Second.</p>
 </blockquote>
+<h3 id="reading-schedule-counters"><a class="header" href="#reading-schedule-counters">Reading schedule counters</a></h3>
+<p>To inspect the cadence, count calls to <code>First</code>, <code>Update</code>, and <code>FixedUpdate</code>, then read the counters in <code>Last</code>. <code>First</code> counts the prefix and <code>Update</code> counts the suffix. Both advance once per render frame. <code>PreUpdate</code>, <code>PostUpdate</code>, and <code>Last</code> also run once per render frame.</p>
+<p>The counter increments for one render frame depend on how many physics steps it contains:</p>
+<div class="table-wrapper"><table><thead><tr><th>Physics steps</th><th><code>First</code></th><th><code>Update</code></th><th><code>FixedUpdate</code></th></tr></thead><tbody>
+<tr><td>0</td><td>+1</td><td>+1</td><td>0</td></tr>
+<tr><td>1</td><td>+1</td><td>+1</td><td>+1</td></tr>
+<tr><td>2</td><td>+1</td><td>+1</td><td>+2</td></tr>
+</tbody></table>
+</div>
+<p>At a higher display rate than physics rate, some render frames have no fixed step. A slower display can have several fixed steps in one frame. Equal counters at 60 FPS and 60 physics ticks per second do not mean the schedules share a callback.</p>
+<p>Use <code>Update</code> for UI and visual-rate game logic. Use <code>FixedUpdate</code> for physics logic and read <code>Res&lt;Time&gt;::delta_secs()</code> there for Godot's physics delta. Schedule counters describe cadence; they do not measure rendering performance. The integration suite checks the ordering and once-per-render-frame prefix in <a href="https://github.com/bytemeadow/godot-bevy/blob/main/itest/rust/src/real_frame_tests.rs"><code>real_frame_tests.rs</code></a>.</p>
 <h2 id="practical-example"><a class="header" href="#practical-example">Practical Example</a></h2>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {

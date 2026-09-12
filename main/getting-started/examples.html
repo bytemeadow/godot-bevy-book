@@ -185,18 +185,22 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="examples"><a class="header" href="#examples">Examples</a></h1>
-<p>Many additional godot-bevy examples are available in the <a href="https://github.com/bytemeadow/godot-bevy/tree/main/examples">examples</a> directory. Examples are set up as executable binaries. An example can then be executed using the following cargo command line in the root of the godot-bevy repository:</p>
-<pre><code>cargo build -p platformer-2d-example
-cargo run --bin platformer_2d_example
+<p>The <a href="https://github.com/bytemeadow/godot-bevy/tree/main/examples">examples directory</a> contains four learning projects and a performance diagnostic. Run an example from the repository root:</p>
+<pre><code class="language-bash">cargo run --manifest-path examples/simple-node2d-movement/rust/Cargo.toml
 </code></pre>
-<p>The following additional examples are currently available if you want to check them out:</p>
-<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Example</th><th>Description</th></tr></thead><tbody>
-<tr><td style="text-align: left"><a href="https://github.com/bytemeadow/godot-bevy/tree/main/examples/dodge-the-creeps-2d">Dodge the Creeps</a></td><td>Ported example from Godot's tutorial on making a 2D game.</td></tr>
-<tr><td style="text-align: left"><a href="https://github.com/bytemeadow/godot-bevy/tree/main/examples/platformer-2d">Platformer 2D</a></td><td>A more complete example showing how to tag Godot nodes for an editor heavy.</td></tr>
-<tr><td style="text-align: left"><a href="https://github.com/bytemeadow/godot-bevy/tree/main/examples/simple-node2d-movement">Simple Node2D Movement</a></td><td>A minimal example with basic movement.</td></tr>
-<tr><td style="text-align: left"><a href="https://github.com/bytemeadow/godot-bevy/tree/main/examples/timing-test">Timing Test</a></td><td>Internal test to measure frames.</td></tr>
+<p>Replace <code>simple-node2d-movement</code> with the directory name below. The launcher builds the Rust library, generates its GDExtension descriptor, and opens Godot. Put the Godot binary on your <code>PATH</code>.</p>
+<h2 id="learning-projects"><a class="header" href="#learning-projects">Learning projects</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Project</th><th>Lesson</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/bytemeadow/godot-bevy/tree/main/examples/simple-node2d-movement">simple-node2d-movement</a></td><td>Move a sprite with Bevy systems and transform sync.</td></tr>
+<tr><td><a href="https://github.com/bytemeadow/godot-bevy/tree/main/examples/two-way-sync-demo">two-way-sync-demo</a></td><td>Let GDScript and Bevy write different axes of the same transform.</td></tr>
+<tr><td><a href="https://github.com/bytemeadow/godot-bevy/tree/main/examples/dodge-the-creeps-2d">dodge-the-creeps-2d</a></td><td>Organize a game with states, signals, and a menu setting sent through the event bridge.</td></tr>
+<tr><td><a href="https://github.com/bytemeadow/godot-bevy/tree/main/examples/platformer-2d">platformer-2d</a></td><td>Build gameplay around editor-authored nodes, exported components, collisions, and audio.</td></tr>
 </tbody></table>
 </div>
+<p>These projects run natively. The platformer enables editor property documentation, which requires Godot 4.3 or later. The simple movement web build is blocked on <a href="https://github.com/bytemeadow/godot-bevy/issues/268">#268</a>; its CI job remains disabled.</p>
+<h2 id="diagnostic-tool"><a class="header" href="#diagnostic-tool">Diagnostic tool</a></h2>
+<p><a href="https://github.com/bytemeadow/godot-bevy/tree/main/examples/perf-test">perf-test</a> compares rendered particle load in GDScript and godot-bevy. Use it to investigate performance on your machine. It is separate from the learning sequence, and its FPS readings are diagnostic.</p>
+
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
