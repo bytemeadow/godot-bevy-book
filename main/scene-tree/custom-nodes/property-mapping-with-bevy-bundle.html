@@ -327,7 +327,7 @@ pub struct EnemyNode {
     speed: f32,
 }
 <span class="boring">}</span></code></pre></pre>
-<p><code>component = Comp</code> is required. <code>with = fn</code> is optional. <code>as</code> and <code>default</code> are <strong>not</strong> allowed — gdext's <code>#[init(val = …)]</code> owns defaults on this path.</p>
+<p><code>component = Comp</code> is required for a newtype binding. <code>with = fn</code> is optional. <code>as</code> and <code>default</code> are <strong>not</strong> allowed — gdext's <code>#[init(val = …)]</code> owns defaults on this path.</p>
 <h3 id="marker-at-the-struct-level"><a class="header" href="#marker-at-the-struct-level">Marker at the struct level</a></h3>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -352,11 +352,42 @@ pub struct PlayerNode {
     #[export] max_mana: f32,
 }
 <span class="boring">}</span></code></pre></pre>
+<p>Add <code>#[gdbevy(with = converter)]</code> to a source field to convert its value before
+assigning it to each N→1 component field that reads it. No <code>component</code> key is
+needed on that field; for example, exported <code>GString</code> paths can populate <code>String</code>
+fields:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bevy::prelude::Component;
+use godot::prelude::*;
+use godot_bevy::prelude::BevyComponents;
+
+#[derive(Component, Default)]
+pub struct ChallengeSelect {
+    pub back_scene_path: String,
+    pub accept_scene_path: String,
+}
+
+#[derive(GodotClass, BevyComponents)]
+#[class(init, base = CanvasLayer)]
+#[gdbevy(require(ChallengeSelect {
+    back_scene_path: back_scene_path,
+    accept_scene_path: accept_scene_path,
+}))]
+pub struct ChallengeSelectUI {
+    #[export(file = "*.tscn")]
+    #[gdbevy(with = String::from)]
+    pub back_scene_path: GString,
+    #[export(file = "*.tscn")]
+    #[gdbevy(with = String::from)]
+    pub accept_scene_path: GString,
+}
+<span class="boring">}</span></code></pre></pre>
 <h3 id="all-godot-first-keys"><a class="header" href="#all-godot-first-keys">All Godot-first keys</a></h3>
 <div class="table-wrapper"><table><thead><tr><th>Placement</th><th>Key</th><th>Required?</th><th>Meaning</th></tr></thead><tbody>
 <tr><td>struct</td><td><code>require(Marker)</code></td><td>no</td><td>Insert <code>Marker::default()</code></td></tr>
 <tr><td>struct</td><td><code>require(Comp { bevy_field: godot_field, … })</code></td><td>no</td><td>Build struct component from existing exports</td></tr>
-<tr><td>field</td><td><code>component = Comp</code></td><td><strong>yes</strong></td><td>Bevy component type (<code>Comp(value)</code>)</td></tr>
+<tr><td>field</td><td><code>component = Comp</code></td><td>for newtype bindings</td><td>Bevy component type (<code>Comp(value)</code>)</td></tr>
 <tr><td>field</td><td><code>with = fn</code></td><td>no</td><td>Godot-value → component-value conversion</td></tr>
 </tbody></table>
 </div>

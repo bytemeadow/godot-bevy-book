@@ -249,8 +249,84 @@ fn spawn_character(mut commands: Commands, assets: Res&lt;CharacterAssets&gt;) {
             // `with_signal_connection` builder method discussed below. 
         );
 }</code></pre>
-<p>At this point, the Bevy entity is linked to the Godot scene instance.<br />
-Now we would like to access nodes inside that scene.</p>
+<p>Scene instantiation happens later in <code>PostUpdate</code>, once the asset is loaded.
+<code>from_handle</code> retries each frame while the handle is loading, preserving setups
+and signal connections until then. Failed loads and missing assets return a spawn error.
+<code>GodotNodeHandle</code> is added to the entity after instantiation, so trying to modify
+it immediately after <code>commands.spawn(...)</code> will find no handle.</p>
+<h3 id="configure-the-scene-root-with-with_setup"><a class="header" href="#configure-the-scene-root-with-with_setup">Configure the scene root with <code>with_setup</code></a></h3>
+<p>Use <code>with_setup</code> to configure the root before it enters the scene tree. With
+<code>GodotAssetsPlugin</code> and <code>GodotPackedScenePlugin</code> enabled, register this plugin
+on your app; it spawns a scene whose root is an <code>Area2D</code> and sets its collision
+mask to layer 3 (<code>4</code>):</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bevy::prelude::*;
+use godot::classes::Area2D;
+use godot_bevy::prelude::*;
+
+pub fn bullet_plugin(app: &amp;mut App) {
+    app.add_systems(Startup, spawn_bullet);
+}
+
+fn spawn_bullet(mut commands: Commands, assets: Res&lt;AssetServer&gt;) {
+    commands.spawn(
+        GodotScene::from_handle(assets.load("scenes/bullet.tscn")).with_setup::&lt;Area2D, _&gt;(
+            |root| {
+                root.set_collision_mask(4);
+            },
+        ),
+    );
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The closure runs once after the entity's <code>Transform</code> is applied and before the
+root enters the tree via <code>add_child</code>, so <code>_ready</code> and scene-tree mirroring see
+the configured values. Chained setups run in the order added. The root must
+inherit the class you specify; a mismatch returns a spawn error naming the
+scene, entity, expected class, and actual class, and removes
+<code>GodotScene</code> to cancel the spawn.</p>
+<h3 id="configure-nodes-with-ecs-data"><a class="header" href="#configure-nodes-with-ecs-data">Configure nodes with ECS data</a></h3>
+<p>Use an <code>On&lt;Add&lt;GodotNodeHandle&gt;&gt;</code> observer when setup needs ECS queries or
+resources, or when configuring nodes other than the root. The observer runs
+after the root has entered the tree and <code>_ready</code> has run. This example reads
+the collision mask from a component:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bevy::prelude::*;
+use godot::classes::Area2D;
+use godot_bevy::prelude::*;
+
+#[derive(Component)]
+pub struct Bullet {
+    pub collision_mask: u32,
+}
+
+pub fn bullet_plugin(app: &amp;mut App) {
+    app.add_observer(configure_bullet)
+        .add_systems(Startup, spawn_bullet);
+}
+
+fn spawn_bullet(mut commands: Commands, assets: Res&lt;AssetServer&gt;) {
+    commands.spawn((
+        Bullet { collision_mask: 4 },
+        GodotScene::from_handle(assets.load("scenes/bullet.tscn")),
+    ));
+}
+
+fn configure_bullet(
+    event: On&lt;Add&lt;GodotNodeHandle&gt;&gt;,
+    bullets: Query&lt;(&amp;Bullet, &amp;GodotNodeHandle)&gt;,
+    mut godot: GodotAccess,
+) {
+    if let Ok((bullet, handle)) = bullets.get(event.entity) {
+        let mut root = godot.get::&lt;Area2D&gt;(*handle);
+        root.set_collision_mask(bullet.collision_mask);
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The <code>Bullet</code> query limits the observer to entities with that component.
+<code>GodotAccess</code> resolves the handle to the scene's root node; use <code>NodeTreeView</code>
+below to reach its children.</p>
 <h2 id="2-access-scene-children-with-nodetreeview"><a class="header" href="#2-access-scene-children-with-nodetreeview">2. Access scene children with <code>NodeTreeView</code></a></h2>
 <p>Let's assume we have a Godot scene with the following node structure:</p>
 <ul>

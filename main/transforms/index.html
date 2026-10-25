@@ -214,6 +214,23 @@ fn move_entity(mut query: Query&lt;&amp;mut Transform&gt;) {
 <span class="boring">}</span></code></pre></pre>
 <h3 id="3-hybrid-approach"><a class="header" href="#3-hybrid-approach">3. Hybrid Approach</a></h3>
 <p>Allows for modifying transforms both from Godot's side and from ECS side. Useful during migration from a GDScript project to godot-bevy or when you're using Godot's physics methods but still want transforms to be updated for reading on the ECS side.</p>
+<h2 id="converting-math-types"><a class="header" href="#converting-math-types">Converting math types</a></h2>
+<p>The prelude exports <code>IntoVector3</code> and <code>IntoVec3</code> for converting between Bevy's
+<code>Vec3</code> and Godot's <code>Vector3</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bevy::prelude::Vec3;
+use godot_bevy::prelude::*;
+
+pub fn convert_position() {
+    let position = Vec3::new(1.0, 2.0, 3.0);
+    let godot_position = position.to_vector3();
+    let bevy_position = godot_position.to_vec3();
+    assert_eq!(bevy_position, position);
+}
+<span class="boring">}</span></code></pre></pre>
+<p>It also exports <code>IntoQuaternion</code> / <code>IntoQuat</code> for rotations and
+<code>IntoGodotTransform</code>, <code>IntoGodotTransform2D</code>, and <code>IntoBevyTransform</code> for transforms.</p>
 <h2 id="default-behavior"><a class="header" href="#default-behavior">Default Behavior</a></h2>
 <p>By default, godot-bevy operates in <strong>one-way sync mode</strong>:</p>
 <ul>

@@ -193,6 +193,7 @@
 <li><a href="#behavior-panic-diagnostics-and-error-handling">Behavior: Panic diagnostics and error handling</a></li>
 <li><a href="#behavior-high-time-scales-are-capped">Behavior: High time scales are capped</a></li>
 <li><a href="#behavior-event-observers-see-the-current-scene-tree-and-time">Behavior: Event observers see the current scene tree and time</a></li>
+<li><a href="#new-godotscenewith_setup">New: GodotScene::with_setup</a></li>
 <li><a href="#new-resource-accessors-take-shared-references">New: Resource accessors take shared references</a></li>
 <li><a href="#new-reproducible-schedule-shuffling-in-tests">New: Reproducible schedule shuffling in tests</a></li>
 <li><a href="#dependencies-two-glam-versions-and-tracy-clients">Dependencies: Two glam versions and Tracy clients</a></li>
@@ -225,6 +226,14 @@ Raise <code>max_delta</code> if your game needs to fast-forward further:</p>
 <h2 id="behavior-event-observers-see-the-current-scene-tree-and-time"><a class="header" href="#behavior-event-observers-see-the-current-scene-tree-and-time">Behavior: Event observers see the current scene tree and time</a></h2>
 <p>Godot event-bridge and signal observers run after scene-tree mirroring and the time update in <code>First</code>,
 so they see current-frame nodes and time; this ordering was previously unspecified.</p>
+<h2 id="new-godotscenewith_setup"><a class="header" href="#new-godotscenewith_setup">New: GodotScene::with_setup</a></h2>
+<p>Use <code>GodotScene::with_setup::&lt;T, _&gt;(|root| { ... })</code> to configure a spawned
+scene's root after the entity's <code>Transform</code> is applied and before it enters the
+tree and runs <code>_ready</code>. Chained setups run once in the order added. A root that
+cannot be cast to <code>T</code> returns a spawn error.
+<code>GodotScene::from_handle</code> waits for a loading asset before spawning and running setups; failed loads and missing assets still return an error.
+See <a href="../scene-tree/spawning-scenes.html#configure-the-scene-root-with-with_setup">Spawning Godot scenes</a>
+for the builder recipe and the observer fallback for setup that needs ECS data.</p>
 <h2 id="new-resource-accessors-take-shared-references"><a class="header" href="#new-resource-accessors-take-shared-references">New: Resource accessors take shared references</a></h2>
 <p><code>GodotResource::get</code> and <code>try_cast</code>, and <code>GodotResourceHandle::get</code> and <code>try_get</code>,
 take <code>&amp;self</code>. Systems that only read resources can use <code>Res&lt;Assets&lt;GodotResource&gt;&gt;</code>

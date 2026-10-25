@@ -1644,7 +1644,7 @@ pub struct EnemyNode {
     speed: f32,
 }
 <span class="boring">}</span></code></pre></pre>
-<p><code>component = Comp</code> is required. <code>with = fn</code> is optional. <code>as</code> and <code>default</code> are <strong>not</strong> allowed — gdext's <code>#[init(val = …)]</code> owns defaults on this path.</p>
+<p><code>component = Comp</code> is required for a newtype binding. <code>with = fn</code> is optional. <code>as</code> and <code>default</code> are <strong>not</strong> allowed — gdext's <code>#[init(val = …)]</code> owns defaults on this path.</p>
 <h3 id="marker-at-the-struct-level"><a class="header" href="#marker-at-the-struct-level">Marker at the struct level</a></h3>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1669,11 +1669,42 @@ pub struct PlayerNode {
     #[export] max_mana: f32,
 }
 <span class="boring">}</span></code></pre></pre>
+<p>Add <code>#[gdbevy(with = converter)]</code> to a source field to convert its value before
+assigning it to each N→1 component field that reads it. No <code>component</code> key is
+needed on that field; for example, exported <code>GString</code> paths can populate <code>String</code>
+fields:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bevy::prelude::Component;
+use godot::prelude::*;
+use godot_bevy::prelude::BevyComponents;
+
+#[derive(Component, Default)]
+pub struct ChallengeSelect {
+    pub back_scene_path: String,
+    pub accept_scene_path: String,
+}
+
+#[derive(GodotClass, BevyComponents)]
+#[class(init, base = CanvasLayer)]
+#[gdbevy(require(ChallengeSelect {
+    back_scene_path: back_scene_path,
+    accept_scene_path: accept_scene_path,
+}))]
+pub struct ChallengeSelectUI {
+    #[export(file = "*.tscn")]
+    #[gdbevy(with = String::from)]
+    pub back_scene_path: GString,
+    #[export(file = "*.tscn")]
+    #[gdbevy(with = String::from)]
+    pub accept_scene_path: GString,
+}
+<span class="boring">}</span></code></pre></pre>
 <h3 id="all-godot-first-keys"><a class="header" href="#all-godot-first-keys">All Godot-first keys</a></h3>
 <div class="table-wrapper"><table><thead><tr><th>Placement</th><th>Key</th><th>Required?</th><th>Meaning</th></tr></thead><tbody>
 <tr><td>struct</td><td><code>require(Marker)</code></td><td>no</td><td>Insert <code>Marker::default()</code></td></tr>
 <tr><td>struct</td><td><code>require(Comp { bevy_field: godot_field, … })</code></td><td>no</td><td>Build struct component from existing exports</td></tr>
-<tr><td>field</td><td><code>component = Comp</code></td><td><strong>yes</strong></td><td>Bevy component type (<code>Comp(value)</code>)</td></tr>
+<tr><td>field</td><td><code>component = Comp</code></td><td>for newtype bindings</td><td>Bevy component type (<code>Comp(value)</code>)</td></tr>
 <tr><td>field</td><td><code>with = fn</code></td><td>no</td><td>Godot-value → component-value conversion</td></tr>
 </tbody></table>
 </div>
@@ -1851,8 +1882,84 @@ fn spawn_character(mut commands: Commands, assets: Res&lt;CharacterAssets&gt;) {
             // `with_signal_connection` builder method discussed below. 
         );
 }</code></pre>
-<p>At this point, the Bevy entity is linked to the Godot scene instance.<br />
-Now we would like to access nodes inside that scene.</p>
+<p>Scene instantiation happens later in <code>PostUpdate</code>, once the asset is loaded.
+<code>from_handle</code> retries each frame while the handle is loading, preserving setups
+and signal connections until then. Failed loads and missing assets return a spawn error.
+<code>GodotNodeHandle</code> is added to the entity after instantiation, so trying to modify
+it immediately after <code>commands.spawn(...)</code> will find no handle.</p>
+<h3 id="configure-the-scene-root-with-with_setup"><a class="header" href="#configure-the-scene-root-with-with_setup">Configure the scene root with <code>with_setup</code></a></h3>
+<p>Use <code>with_setup</code> to configure the root before it enters the scene tree. With
+<code>GodotAssetsPlugin</code> and <code>GodotPackedScenePlugin</code> enabled, register this plugin
+on your app; it spawns a scene whose root is an <code>Area2D</code> and sets its collision
+mask to layer 3 (<code>4</code>):</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bevy::prelude::*;
+use godot::classes::Area2D;
+use godot_bevy::prelude::*;
+
+pub fn bullet_plugin(app: &amp;mut App) {
+    app.add_systems(Startup, spawn_bullet);
+}
+
+fn spawn_bullet(mut commands: Commands, assets: Res&lt;AssetServer&gt;) {
+    commands.spawn(
+        GodotScene::from_handle(assets.load("scenes/bullet.tscn")).with_setup::&lt;Area2D, _&gt;(
+            |root| {
+                root.set_collision_mask(4);
+            },
+        ),
+    );
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The closure runs once after the entity's <code>Transform</code> is applied and before the
+root enters the tree via <code>add_child</code>, so <code>_ready</code> and scene-tree mirroring see
+the configured values. Chained setups run in the order added. The root must
+inherit the class you specify; a mismatch returns a spawn error naming the
+scene, entity, expected class, and actual class, and removes
+<code>GodotScene</code> to cancel the spawn.</p>
+<h3 id="configure-nodes-with-ecs-data"><a class="header" href="#configure-nodes-with-ecs-data">Configure nodes with ECS data</a></h3>
+<p>Use an <code>On&lt;Add&lt;GodotNodeHandle&gt;&gt;</code> observer when setup needs ECS queries or
+resources, or when configuring nodes other than the root. The observer runs
+after the root has entered the tree and <code>_ready</code> has run. This example reads
+the collision mask from a component:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bevy::prelude::*;
+use godot::classes::Area2D;
+use godot_bevy::prelude::*;
+
+#[derive(Component)]
+pub struct Bullet {
+    pub collision_mask: u32,
+}
+
+pub fn bullet_plugin(app: &amp;mut App) {
+    app.add_observer(configure_bullet)
+        .add_systems(Startup, spawn_bullet);
+}
+
+fn spawn_bullet(mut commands: Commands, assets: Res&lt;AssetServer&gt;) {
+    commands.spawn((
+        Bullet { collision_mask: 4 },
+        GodotScene::from_handle(assets.load("scenes/bullet.tscn")),
+    ));
+}
+
+fn configure_bullet(
+    event: On&lt;Add&lt;GodotNodeHandle&gt;&gt;,
+    bullets: Query&lt;(&amp;Bullet, &amp;GodotNodeHandle)&gt;,
+    mut godot: GodotAccess,
+) {
+    if let Ok((bullet, handle)) = bullets.get(event.entity) {
+        let mut root = godot.get::&lt;Area2D&gt;(*handle);
+        root.set_collision_mask(bullet.collision_mask);
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The <code>Bullet</code> query limits the observer to entities with that component.
+<code>GodotAccess</code> resolves the handle to the scene's root node; use <code>NodeTreeView</code>
+below to reach its children.</p>
 <h2 id="2-access-scene-children-with-nodetreeview"><a class="header" href="#2-access-scene-children-with-nodetreeview">2. Access scene children with <code>NodeTreeView</code></a></h2>
 <p>Let's assume we have a Godot scene with the following node structure:</p>
 <ul>
@@ -1979,6 +2086,23 @@ fn move_entity(mut query: Query&lt;&amp;mut Transform&gt;) {
 <span class="boring">}</span></code></pre></pre>
 <h3 id="3-hybrid-approach"><a class="header" href="#3-hybrid-approach">3. Hybrid Approach</a></h3>
 <p>Allows for modifying transforms both from Godot's side and from ECS side. Useful during migration from a GDScript project to godot-bevy or when you're using Godot's physics methods but still want transforms to be updated for reading on the ECS side.</p>
+<h2 id="converting-math-types"><a class="header" href="#converting-math-types">Converting math types</a></h2>
+<p>The prelude exports <code>IntoVector3</code> and <code>IntoVec3</code> for converting between Bevy's
+<code>Vec3</code> and Godot's <code>Vector3</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bevy::prelude::Vec3;
+use godot_bevy::prelude::*;
+
+pub fn convert_position() {
+    let position = Vec3::new(1.0, 2.0, 3.0);
+    let godot_position = position.to_vector3();
+    let bevy_position = godot_position.to_vec3();
+    assert_eq!(bevy_position, position);
+}
+<span class="boring">}</span></code></pre></pre>
+<p>It also exports <code>IntoQuaternion</code> / <code>IntoQuat</code> for rotations and
+<code>IntoGodotTransform</code>, <code>IntoGodotTransform2D</code>, and <code>IntoBevyTransform</code> for transforms.</p>
 <h2 id="default-behavior-1"><a class="header" href="#default-behavior-1">Default Behavior</a></h2>
 <p>By default, godot-bevy operates in <strong>one-way sync mode</strong>:</p>
 <ul>
@@ -4087,6 +4211,7 @@ BevyAppSingleton.send_event("damage", {"source": self, "amount": 10.0})
 <li><a href="migration/v0.12-to-v0.13.html#behavior-panic-diagnostics-and-error-handling">Behavior: Panic diagnostics and error handling</a></li>
 <li><a href="migration/v0.12-to-v0.13.html#behavior-high-time-scales-are-capped">Behavior: High time scales are capped</a></li>
 <li><a href="migration/v0.12-to-v0.13.html#behavior-event-observers-see-the-current-scene-tree-and-time">Behavior: Event observers see the current scene tree and time</a></li>
+<li><a href="migration/v0.12-to-v0.13.html#new-godotscenewith_setup">New: GodotScene::with_setup</a></li>
 <li><a href="migration/v0.12-to-v0.13.html#new-resource-accessors-take-shared-references">New: Resource accessors take shared references</a></li>
 <li><a href="migration/v0.12-to-v0.13.html#new-reproducible-schedule-shuffling-in-tests">New: Reproducible schedule shuffling in tests</a></li>
 <li><a href="migration/v0.12-to-v0.13.html#dependencies-two-glam-versions-and-tracy-clients">Dependencies: Two glam versions and Tracy clients</a></li>
@@ -4119,6 +4244,14 @@ Raise <code>max_delta</code> if your game needs to fast-forward further:</p>
 <h2 id="behavior-event-observers-see-the-current-scene-tree-and-time"><a class="header" href="#behavior-event-observers-see-the-current-scene-tree-and-time">Behavior: Event observers see the current scene tree and time</a></h2>
 <p>Godot event-bridge and signal observers run after scene-tree mirroring and the time update in <code>First</code>,
 so they see current-frame nodes and time; this ordering was previously unspecified.</p>
+<h2 id="new-godotscenewith_setup"><a class="header" href="#new-godotscenewith_setup">New: GodotScene::with_setup</a></h2>
+<p>Use <code>GodotScene::with_setup::&lt;T, _&gt;(|root| { ... })</code> to configure a spawned
+scene's root after the entity's <code>Transform</code> is applied and before it enters the
+tree and runs <code>_ready</code>. Chained setups run once in the order added. A root that
+cannot be cast to <code>T</code> returns a spawn error.
+<code>GodotScene::from_handle</code> waits for a loading asset before spawning and running setups; failed loads and missing assets still return an error.
+See <a href="migration/../scene-tree/spawning-scenes.html#configure-the-scene-root-with-with_setup">Spawning Godot scenes</a>
+for the builder recipe and the observer fallback for setup that needs ECS data.</p>
 <h2 id="new-resource-accessors-take-shared-references"><a class="header" href="#new-resource-accessors-take-shared-references">New: Resource accessors take shared references</a></h2>
 <p><code>GodotResource::get</code> and <code>try_cast</code>, and <code>GodotResourceHandle::get</code> and <code>try_get</code>,
 take <code>&amp;self</code>. Systems that only read resources can use <code>Res&lt;Assets&lt;GodotResource&gt;&gt;</code>
