@@ -1100,7 +1100,10 @@ fn find_player(query: Query&lt;&amp;Player&gt;) {
 <li><strong><code>write_scene_tree_messages</code></strong> - Receives events from Godot (via an mpsc channel) and writes them to Bevy's event system</li>
 <li><strong><code>read_scene_tree_messages</code></strong> - Processes those events to create/update/remove entities</li>
 </ul>
-<p>This separation allows other systems to also react to <code>SceneTreeEvent</code>s if needed.</p>
+<p><code>write_scene_tree_messages</code> runs before the reader. The reader belongs to
+<code>SceneTreeSet::Apply</code>; order systems after that set to see its deferred entity changes.
+Event-bridge, signal, and inspector request drains run after <code>SceneTreeSet::Apply</code>
+and <code>TimeSystems</code>, so they observe the current scene tree and time.</p>
 <p>Detaching a node with <code>remove_child()</code> preserves the node and its descendants. Once
 removal messages are processed, ordinary mirror entities are despawned.
 <code>ProtectedNodeEntity</code> entities keep their gameplay components but lose their Godot
@@ -1930,8 +1933,9 @@ fn read_health(health: Query&lt;&amp;Health&gt;) {
 <p>Before importing each field, the bridge checks whether Bevy changed it since
 its last snapshot. A pending Bevy edit prevents an import and is published at
 <code>Write</code>. This includes edits in <code>Startup</code>, <code>First</code>, signal observers, and the
-ECS inspector, as well as gameplay systems. An edit later in <code>FixedUpdate</code> or
-<code>Update</code> also publishes at <code>Write</code>. Normal Bevy system ordering decides the
+ECS inspector, as well as gameplay systems. Inspector requests drain in <code>First</code>,
+after <code>SceneTreeSet::Apply</code> and <code>TimeSystems</code>, before the property read. An edit
+later in <code>FixedUpdate</code> or <code>Update</code> also publishes at <code>Write</code>. Normal Bevy system ordering decides the
 final value when several Bevy systems write the same field.</p>
 <p>Conflicts are per field. If Godot changes speed and Bevy changes health on the
 same component, both changes survive. A Godot-only import does not cause an
@@ -4088,25 +4092,32 @@ opt-level = 3
 </code></pre>
 <p>There is a matching <code>safeguards-release-disengaged</code> for shipping builds, but only reach for it after testing thoroughly on a higher level. See gdext's <a href="https://godot-rust.github.io/docs/gdext/master/godot/index.html#safeguard-levels">safeguard levels</a> documentation for details.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="debugging"><a class="header" href="#debugging">Debugging</a></h1>
-<p>Godot-bevy includes a built-in entity inspector that displays your Bevy ECS state directly in the Godot editor. When running your game, you can see all entities, their components, and parent-child relationships in real time.</p>
-<h2 id="entity-inspector"><a class="header" href="#entity-inspector">Entity Inspector</a></h2>
-<p>The inspector appears as a "Entities" tab next to the Scene tab in the editor's left dock. It shows:</p>
-<ul>
-<li>All Bevy entities with their names and appropriate icons</li>
-<li>Entity hierarchy (scene tree via <code>GodotChildOf</code>/<code>GodotChildren</code>)</li>
-<li>Components attached to each entity with type-specific icons</li>
-<li>Entities with Godot nodes show their node type icon (e.g., Node2D, Sprite2D)</li>
-</ul>
-<h3 id="enabling-the-inspector"><a class="header" href="#enabling-the-inspector">Enabling the Inspector</a></h3>
-<p>The inspector is included in <code>GodotDefaultPlugins</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>#[bevy_app]
-fn build_app(app: &amp;mut App) {
-    app.add_plugins(GodotDefaultPlugins);
-}
-<span class="boring">}</span></code></pre></pre>
-<p>Or add it individually:</p>
+<p>Godot-bevy's entity inspector shows Bevy entities, component values and scene-tree
+relationships in the Godot editor while your game runs.</p>
+<h2 id="entity-inspector"><a class="header" href="#entity-inspector">Entity inspector</a></h2>
+<p>The <strong>Entities</strong> pane is the map of the running ECS world; Godot's <strong>Inspector</strong> shows
+and edits the selected entity's components in a Bevy section below the node properties.
+Node-backed entities contain their pure-ECS children through <code>GodotChildOf</code>. The pane hides
+unnamed internal root entities by default, shows the hidden count, and has a toggle to reveal
+them. Search matches names, decimal entity IDs, component type paths or an exact runtime node
+path; matching entities keep their ancestors visible.</p>
+<p>Selecting a node-backed entity selects it in Godot's Remote tree, where native node properties
+remain editable. Remote selection also selects the entity in the pane. This adapter uses
+version-specific editor widgets on 4.2–4.6; missing widgets show “not available”. Pure-ECS
+entities use the same Bevy Inspector through a proxy object. Choose the running instance with
+the session selector; the newest started session is the default.</p>
+<p>The native Bevy section for node-backed entities requires Godot 4.4 or later. Godot 4.2
+and 4.3 retain the previous component rows and identify that fallback in the section header;
+the Entities pane remains available. The native section has one Bevy heading. Scalars and
+tuples with one scalar field appear as one row named for the component, such as <code>Speed</code>. Components
+with named fields or several values have foldable groups. Full Rust types are in tooltips;
+generic labels preserve their arguments, such as <code>PreviousState&lt;GameState&gt;</code>, and expand to
+full paths when short names collide. Runtime fields have no default-value revert.
+Nested fields use Inspector sections; after three levels, field labels
+show the remaining path as a breadcrumb with a copy action. Collection sizes are fixed,
+and maps, sets, unsupported values and read-only fields retain their explanations.</p>
+<h3 id="enabling-the-inspector"><a class="header" href="#enabling-the-inspector">Enabling the inspector</a></h3>
+<p><code>GodotDefaultPlugins</code> includes the inspector. To add it individually:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>#[bevy_app]
@@ -4114,57 +4125,115 @@ fn build_app(app: &amp;mut App) {
     app.add_plugins(GodotDebuggerPlugin);
 }
 <span class="boring">}</span></code></pre></pre>
-<h3 id="configuration-1"><a class="header" href="#configuration-1">Configuration</a></h3>
-<p>Control the inspector through the <code>DebuggerConfig</code> resource:</p>
+<h3 id="registering-components"><a class="header" href="#registering-components">Registering components</a></h3>
+<p>Enable automatic reflection registration on your Bevy dependency:</p>
+<pre><code class="language-toml">bevy = { version = "0.20", default-features = false, features = ["reflect_auto_register"] }
+</code></pre>
+<p>Derive <code>Reflect</code> on components you want to inspect. Add <code>#[reflect(Component)]</code>
+to allow the runtime inspection service to edit their supported leaves:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bevy::prelude::*;
+
+#[derive(Component, Reflect)]
+#[reflect(Component)]
+pub struct Speed(pub f32);
+<span class="boring">}</span></code></pre></pre>
+<p>The platformer example uses this automatic path for <code>Speed</code>, <code>JumpVelocity</code>,
+<code>Gravity</code> and <code>Player</code>. Unregistered components display their unsupported reason.</p>
+<p>For web and static builds, keep explicit registration as a fallback when automatic
+registration has not been verified with your build and loader:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>app.register_type::&lt;Speed&gt;();
+<span class="boring">}</span></code></pre></pre>
+<p>Registration also includes reflected dependencies. Spawning a component or exporting
+a Godot property does not register its type. Unregistered components remain listed;
+<code>#[reflect(ignore)]</code> fields are hidden. Components without <code>ReflectComponent</code> can
+still be read when registered, but cannot be edited generically.
+<code>#[reflect(@InspectorReadOnly)]</code> shows a field without allowing edits;
+<code>#[reflect(@InspectorRange::new(min, max))]</code> bounds scalar edits (both are in the prelude).</p>
+<h3 id="states"><a class="header" href="#states">States</a></h3>
+<p>The <strong>States</strong> view shares the pane's session selector and search. Derive <code>Reflect</code>
+on your state and add Bevy's registration line:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>app.register_type_mutable_state::&lt;GameState&gt;();
+<span class="boring">}</span></code></pre></pre>
+<p>Use <code>register_type_state::&lt;S&gt;()</code> for read-only or computed states. Registration
+does not initialize a state. Godot-bevy depends on <code>bevy_state</code>, but adding
+<code>StatesPlugin</code> and initializing states remain the game's choice.</p>
+<p>The Inspector separates <strong>Current</strong>, the game's <strong>Queued target</strong>, and <strong>Request</strong>.
+For mutable registrations, Request offers fieldless enum variants and writes only
+<code>NextState&lt;S&gt;</code> at the next <code>First</code> drain. It refuses to overwrite a queued transition
+and reports “Already current” for the current value. Absent states stay listed;
+a read-only registration without queue reflection displays “Unavailable”.</p>
+<p>Receipts sample <code>State&lt;S&gt;</code> and <code>NextState&lt;S&gt;</code> when the Inspector reads a state:
+“Queued: X; current: Y”, “Request replaced by Y”, or “No longer pending; transition
+to X not observed”. “Transition to X observed” means a sample saw X as current;
+it does not establish that the request caused it, and a later departure keeps
+that receipt. A transition that enters and leaves the requested state between
+two samples is not seen, so the receipt will say it was not observed.</p>
+<p>Requesting a transition is not a gameplay action. For example, entering the
+platformer's <code>InGame</code> state alone does not load a level; its Start handler also
+requests level loading.</p>
+<h3 id="editing-and-refresh"><a class="header" href="#editing-and-refresh">Editing and refresh</a></h3>
+<p>Expand a component in the Inspector to edit supported scalar leaves or select a unit enum
+variant. An edit displays the runtime's accepted value or an inline rejection reason; rejected
+edits leave the accepted value unchanged. Wide integers use exact decimal text. Entity and
+node references are navigation links. Game systems can overwrite accepted edits on later ticks.</p>
+<p>Text and exact decimal integers commit on Enter; Escape restores the accepted value.
+Submitting an edit disables its field and shows “Waiting for acknowledgement…”. The runtime
+response supplies the accepted value; a rejection shows its reason beside a warning icon.
+Value refreshes retain folds and unfinished input. Component shape or permission changes
+rebuild the property rows while the proxy retains edit state and section folds.
+The embedded section has its own property selection; the outer Inspector's property filter
+does not filter its rows. Runtime edits do not enter the scene's undo history.</p>
+<p>The pane subscribes only while visible, starting with a snapshot and applying later additions,
+removals, renames, reparentings and component membership changes without rebuilding the tree.
+Only the inspected entity's values are fetched at the subscription interval.
+<code>DebuggerConfig.update_interval</code> supplies the default (0.5 seconds); configure it before
+connecting the editor:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>fn configure_debugger(mut config: ResMut&lt;DebuggerConfig&gt;) {
-    config.enabled = true;       // Toggle on/off
-    config.update_interval = 0.5; // Seconds between updates
+    config.enabled = cfg!(debug_assertions);
+    config.update_interval = 1.0;
 }
 <span class="boring">}</span></code></pre></pre>
-<h3 id="using-the-inspector"><a class="header" href="#using-the-inspector">Using the Inspector</a></h3>
-<ol>
-<li>Open your project in Godot</li>
-<li>Look for the "Bevy" tab in the left dock (next to Scene/Import)</li>
-<li>Run your game</li>
-<li>The inspector populates with your ECS state</li>
-</ol>
-<p>Entities display as a tree. Click to expand and see:</p>
-<ul>
-<li>Child entities (nested under parents)</li>
-<li>Components (shown in blue, with full type path on hover)</li>
-</ul>
-<p>Entity icons indicate the Godot node type when a marker component is present (e.g., <code>Node2DMarker</code> shows the Node2D icon). Entities with a <code>GodotNodeHandle</code> but no specific marker show the Godot logo.</p>
-<h3 id="debugging-hierarchy-issues"><a class="header" href="#debugging-hierarchy-issues">Debugging Hierarchy Issues</a></h3>
-<p>The inspector mirrors the Godot scene tree via <code>GodotChildOf</code>/<code>GodotChildren</code>, not Bevy's
-built-in <code>ChildOf</code>/<code>Children</code>. If an entity appears at the wrong level:</p>
-<ol>
-<li>Verify the Godot node was in the scene tree when the entity was created</li>
-<li>If you reparent nodes, wait a frame for the hierarchy update to process</li>
-</ol>
+<p><code>DebuggerConfig::value_limits</code> bounds collection elements, nesting depth, and the total number
+of values in one inspection. The total budget (<code>max_values</code>) defaults to 16,384, including
+containers and read-limit notices; zero uses one so a single leaf can still be read.
+Omitted collection entries appear as "N more (read limit)". A struct, tuple, or enum whose
+fields cannot fit appears as a non-editable "maximum value count reached" notice.
+There is no unsolicited legacy entity stream.
+<code>DebuggerConfig::snapshot_chunk_size</code> limits the initial snapshot to 256 entity summaries per
+frame by default (zero uses one), sending one chunk per <code>First</code>; the pane shows a loading count
+and keeps its last complete tree until the final chunk arrives.
+The snapshot describes the world at subscription time; changes during loading follow in the
+next delta, after the configured update interval.
+Selections for entities still loading are retried after the final chunk. If the runtime
+disables the debugger or a chunk arrives out of sequence, the pane discards the unfinished
+snapshot and keeps its last complete tree; reopen the pane to subscribe again once the
+debugger is enabled.</p>
+<p>The runtime announces <code>godot.ready</code> once its debugger endpoint is registered. The editor then
+reads the debugger config and subscribes while the Entities pane is visible. If the readiness
+message is lost, it retries the config request every 500 ms for up to 20 seconds and reports
+an unanswered endpoint in the pane. Entity summaries remain subscription-only.</p>
 <h3 id="inspecting-live-properties"><a class="header" href="#inspecting-live-properties">Inspecting live properties</a></h3>
-<p>The remote Inspector authors Godot properties; an ECS inspector authors Bevy fields.
+<p>The remote Inspector authors Godot properties; the Bevy inspector authors ECS fields.
 <a href="debugging/../scene-tree/custom-nodes/live-property-sync.html">Live property sync</a> applies its usual
 read/write and conflict rules. Internal snapshots are not registered for reflection.
+Inspector edits run in <code>First</code>, after <code>SceneTreeSet::Apply</code> and <code>TimeSystems</code>.
+A conflicting edit to a <code>sync = two_way</code> Godot property loses to the Bevy edit,
+which publishes once in <code>PostUpdate</code> without echoing on the next frame.
 Inspector refresh intervals can delay display without changing synchronization timing.</p>
-<h3 id="performance-considerations-2"><a class="header" href="#performance-considerations-2">Performance Considerations</a></h3>
-<p>The inspector sends data every 0.5 seconds by default. For games with thousands of entities, you may want to increase the interval or disable it in release builds:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>fn setup_debugger(mut config: ResMut&lt;DebuggerConfig&gt;) {
-    #[cfg(debug_assertions)]
-    {
-        config.enabled = true;
-        config.update_interval = 1.0; // Slower updates for large scenes
-    }
-    
-    #[cfg(not(debug_assertions))]
-    {
-        config.enabled = false;
-    }
-}
-<span class="boring">}</span></code></pre></pre>
+<h3 id="limitations"><a class="header" href="#limitations">Limitations</a></h3>
+<p>Arbitrary not-yet-applied Bevy despawns cannot be observed through the public command queue,
+which holds private erased commands without target metadata
+(<a href="https://docs.rs/bevy_ecs/0.20.0/src/bevy_ecs/world/command_queue.rs.html">Bevy command queue source</a>).
+Wide integers are edited as decimal text because a spin box value is a double and cannot
+represent every integer exactly.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="integration-testing"><a class="header" href="#integration-testing">Integration Testing</a></h1>
 <p>Integration tests run game code in Godot with real frame progression. Use them when a system depends on the scene tree, Godot nodes, or Godot's frame loop. Pure Rust logic is still a good fit for unit tests.</p>
 <h2 id="project-layout"><a class="header" href="#project-layout">Project layout</a></h2>
@@ -4518,8 +4587,9 @@ Raise <code>max_delta</code> if your game needs to fast-forward further:</p>
     .resource_mut::&lt;Time&lt;Virtual&gt;&gt;()
     .set_max_delta(std::time::Duration::from_secs(1));</code></pre>
 <h2 id="behavior-event-observers-see-the-current-scene-tree-and-time"><a class="header" href="#behavior-event-observers-see-the-current-scene-tree-and-time">Behavior: Event observers see the current scene tree and time</a></h2>
-<p>Godot event-bridge and signal observers run after scene-tree mirroring and the time update in <code>First</code>,
-so they see current-frame nodes and time; this ordering was previously unspecified.</p>
+<p>Godot event-bridge and signal observers, and inspector requests, run after
+<code>SceneTreeSet::Apply</code> and <code>TimeSystems</code> in <code>First</code>, so they see current-frame nodes
+and time. Order systems that need mirrored entities after <code>SceneTreeSet::Apply</code>.</p>
 <h2 id="new-live-property-sync"><a class="header" href="#new-live-property-sync">New: Live property sync</a></h2>
 <p><code>GodotNode</code> and <code>BevyComponents</code> mappings accept <code>sync = two_way</code> and
 <code>sync = to_godot</code>. Existing mappings stay creation-only. See
@@ -5342,7 +5412,7 @@ fn children_of(entity: Entity, query: Query&lt;&amp;GodotChildren&gt;) -&gt; Vec
         .map(|children| children.iter().copied().collect())
         .unwrap_or_default()
 }</code></pre>
-<h4 id="configuration-2"><a class="header" href="#configuration-2">Configuration</a></h4>
+<h4 id="configuration-1"><a class="header" href="#configuration-1">Configuration</a></h4>
 <p>The <code>scene_tree_add_child_relationship</code> attribute and
 <code>GodotSceneTreePlugin { add_child_relationship: ... }</code> have been removed.</p>
 <p>If you want children to outlive their parents, use the new

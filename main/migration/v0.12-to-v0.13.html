@@ -225,8 +225,9 @@ Raise <code>max_delta</code> if your game needs to fast-forward further:</p>
     .resource_mut::&lt;Time&lt;Virtual&gt;&gt;()
     .set_max_delta(std::time::Duration::from_secs(1));</code></pre>
 <h2 id="behavior-event-observers-see-the-current-scene-tree-and-time"><a class="header" href="#behavior-event-observers-see-the-current-scene-tree-and-time">Behavior: Event observers see the current scene tree and time</a></h2>
-<p>Godot event-bridge and signal observers run after scene-tree mirroring and the time update in <code>First</code>,
-so they see current-frame nodes and time; this ordering was previously unspecified.</p>
+<p>Godot event-bridge and signal observers, and inspector requests, run after
+<code>SceneTreeSet::Apply</code> and <code>TimeSystems</code> in <code>First</code>, so they see current-frame nodes
+and time. Order systems that need mirrored entities after <code>SceneTreeSet::Apply</code>.</p>
 <h2 id="new-live-property-sync"><a class="header" href="#new-live-property-sync">New: Live property sync</a></h2>
 <p><code>GodotNode</code> and <code>BevyComponents</code> mappings accept <code>sync = two_way</code> and
 <code>sync = to_godot</code>. Existing mappings stay creation-only. See

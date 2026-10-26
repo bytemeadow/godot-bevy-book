@@ -338,8 +338,9 @@ fn read_health(health: Query&lt;&amp;Health&gt;) {
 <p>Before importing each field, the bridge checks whether Bevy changed it since
 its last snapshot. A pending Bevy edit prevents an import and is published at
 <code>Write</code>. This includes edits in <code>Startup</code>, <code>First</code>, signal observers, and the
-ECS inspector, as well as gameplay systems. An edit later in <code>FixedUpdate</code> or
-<code>Update</code> also publishes at <code>Write</code>. Normal Bevy system ordering decides the
+ECS inspector, as well as gameplay systems. Inspector requests drain in <code>First</code>,
+after <code>SceneTreeSet::Apply</code> and <code>TimeSystems</code>, before the property read. An edit
+later in <code>FixedUpdate</code> or <code>Update</code> also publishes at <code>Write</code>. Normal Bevy system ordering decides the
 final value when several Bevy systems write the same field.</p>
 <p>Conflicts are per field. If Godot changes speed and Bevy changes health on the
 same component, both changes survive. A Godot-only import does not cause an

@@ -213,7 +213,10 @@ fn find_player(query: Query&lt;&amp;Player&gt;) {
 <li><strong><code>write_scene_tree_messages</code></strong> - Receives events from Godot (via an mpsc channel) and writes them to Bevy's event system</li>
 <li><strong><code>read_scene_tree_messages</code></strong> - Processes those events to create/update/remove entities</li>
 </ul>
-<p>This separation allows other systems to also react to <code>SceneTreeEvent</code>s if needed.</p>
+<p><code>write_scene_tree_messages</code> runs before the reader. The reader belongs to
+<code>SceneTreeSet::Apply</code>; order systems after that set to see its deferred entity changes.
+Event-bridge, signal, and inspector request drains run after <code>SceneTreeSet::Apply</code>
+and <code>TimeSystems</code>, so they observe the current scene tree and time.</p>
 <p>Detaching a node with <code>remove_child()</code> preserves the node and its descendants. Once
 removal messages are processed, ordinary mirror entities are despawned.
 <code>ProtectedNodeEntity</code> entities keep their gameplay components but lose their Godot
